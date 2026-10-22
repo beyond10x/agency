@@ -1,0 +1,18 @@
+version: '3'
+
+env:
+  CARGO_TARGET_DIR: '{{.HOME}}/.cache/b10x-target/agency'
+
+tasks:
+  default:
+    cmds: [{task: check}]
+
+  check:
+    desc: The gate.
+    cmds:
+      - task: plan
+
+  plan:
+    desc: Validate the AEP planning store.
+    cmds:
+      - aep plan artifact validate
