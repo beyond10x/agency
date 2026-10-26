@@ -6,6 +6,17 @@ The ESS domain in `ess/` comes first; everything else is derived from it or held
 Running code is Rust with clap derive. Browser code is Vue 3 with TypeScript, built with Vite and
 pnpm, and its types are generated from `ess/`.
 
+## Serves
+
+The objectives of the collection this repository moves, by id from `atlas/ROADMAP.md`:
+
+- **O1 — governed reach.** The tools, credential grants and policy an agent may use are declared
+  on its definition before a run; Agency holds custody pointers, never a secret value.
+- **O2 — decisions as data, with evidence.** Its nouns are an ESS domain first; code, types and
+  the conformance suite are generated from it or held to it.
+- **O5 — the generic agent platform.** It is the product in which an operator configures agents,
+  tools, teams, work and auth, and sees how the work is done.
+
 ## Layout
 
 | Path | What it is | Who writes it |
