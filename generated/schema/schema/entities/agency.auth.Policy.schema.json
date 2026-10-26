@@ -1,0 +1,352 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Policy",
+  "description": "The rules a run is sealed under, versioned and digested.",
+  "x-ess-name": "agency.auth.Policy",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "policy_id": {
+      "$ref": "#/$defs/agency.auth.PolicyId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "policies",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.auth.Policy",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "name": {
+      "type": "string"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.auth.Rule"
+      }
+    },
+    "version": {
+      "type": "integer"
+    },
+    "digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.auth.Policy.State"
+    }
+  },
+  "required": [
+    "policy_id",
+    "tenant_id",
+    "name",
+    "rules",
+    "version",
+    "digest",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.DecisionMode": {
+      "title": "DecisionMode",
+      "x-ess-name": "agency.auth.DecisionMode",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Frame",
+        "Ask",
+        "Observe"
+      ]
+    },
+    "agency.auth.DefinitionSubject": {
+      "title": "DefinitionSubject",
+      "x-ess-name": "agency.auth.DefinitionSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.Policy.State": {
+      "title": "State",
+      "x-ess-name": "agency.auth.Policy.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Active",
+        "Draft",
+        "Superseded"
+      ]
+    },
+    "agency.auth.PolicyId": {
+      "title": "PolicyId",
+      "x-ess-name": "agency.auth.PolicyId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.RiskCeiling": {
+      "title": "RiskCeiling",
+      "x-ess-name": "agency.auth.RiskCeiling",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "agency.auth.Rule": {
+      "title": "Rule",
+      "x-ess-name": "agency.auth.Rule",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/agency.auth.RuleSubject"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        },
+        "verbs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          }
+        },
+        "risk_ceiling": {
+          "$ref": "#/$defs/agency.auth.RiskCeiling"
+        },
+        "decision_mode": {
+          "$ref": "#/$defs/agency.auth.DecisionMode"
+        },
+        "budget_ceiling": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "hermetic": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "subject",
+        "risk_ceiling",
+        "decision_mode",
+        "budget_ceiling",
+        "hermetic"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.RuleSubject": {
+      "title": "RuleSubject",
+      "x-ess-name": "agency.auth.RuleSubject",
+      "x-ess-kind": "union",
+      "oneOf": [
+        {
+          "title": "Definition",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Definition"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.DefinitionSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Team",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Team"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TeamSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Tenant",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Tenant"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TenantSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Workforce",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Workforce"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.WorkforceSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.TeamSubject": {
+      "title": "TeamSubject",
+      "x-ess-name": "agency.auth.TeamSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantSubject": {
+      "title": "TenantSubject",
+      "x-ess-name": "agency.auth.TenantSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.WorkforceSubject": {
+      "title": "WorkforceSubject",
+      "x-ess-name": "agency.auth.WorkforceSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.shared.Digest": {
+      "title": "Digest",
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "x-ess-name": "agency.shared.Digest",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.shared.RunBudget": {
+      "title": "RunBudget",
+      "description": "The token and deadline limits a run is held to.",
+      "x-ess-name": "agency.shared.RunBudget",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "max_tokens": {
+          "type": "integer"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "agency.shared.Verb": {
+      "title": "Verb",
+      "x-ess-name": "agency.shared.Verb",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.WorkforceId": {
+      "title": "WorkforceId",
+      "x-ess-name": "agency.teams.WorkforceId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

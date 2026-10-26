@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Return a work item input",
+  "x-ess-name": "agency.work.ReturnWorkItem",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "item_ref": {
+      "$ref": "#/$defs/agency.work.WorkItemRef"
+    }
+  },
+  "required": [
+    "item_ref"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:00140276de249e281d2e49daa967d18200763ef3f3545b2318af5f81b07175e8",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.WorkItemRef": {
+      "title": "WorkItemRef",
+      "description": "A work item's external id together with its source.",
+      "x-ess-name": "agency.work.WorkItemRef",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

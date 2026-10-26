@@ -1,0 +1,425 @@
+# Agents: definitions and the agents provisioned from them. Sources: §2.1 (nouns), §3.1
+# (commands, views, who), and Atlas ADR 0108 (accepted 2026-10-26), which amends §2.1: Loom owns
+# the agent schema `loom.agent/1`; an Agency agent definition is a versioned, governed record of
+# one such document, held by value as part of the version and its digest, and publishing a version
+# checks the document with Loom's `CheckAgentSpec`. Runs are agency.runs.
+#
+# ESS cannot name another system's type (loom/ess/domains/agent.yaml:8-9 says the same of Loom's
+# own copy of Commission's types), and ADR 0108 Decision 2 forbids redeclaring `loom.agent` types
+# here. So the document is a `Json` value: Agency stores, digests and hands it on; Loom types it.
+# §2.1's `kind`, `model`, `brief`, `tool_surface` and `default_budget` are members of that
+# document, not fields of the definition (ADR 0108 Consequences).
+domain: agency.agents
+
+summary: >-
+  Agent definitions an operator publishes, each a versioned record of one Loom `loom.agent/1`
+  document, and the agents provisioned from them.
+
+naming:
+  wire: agency
+  display: Agents
+
+types:
+  - name: agency.agents.DefinitionId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.agents.AgentId
+    kind: newtype
+    of: Uuid
+
+  # What Loom's check said: `Accepted` for exit code 0, `Refused` for any other (loom
+  # `loom.resource.RecordCheck`: "exit code 0 runs the agent, any other refuses it"). The verdict
+  # is an input beside the exit code so the outcome is chosen from a closed set; ess 0.69.2 cannot
+  # prove an integer guard pair (`== 0`, `!= 0`) exhaustive (ESS-COMMAND-005).
+  - name: agency.agents.CheckVerdict
+    kind: enum
+    variants: [Accepted, Refused]
+
+  # One `loom.agent/1` document (loom `ess/domains/agent.yaml`, `loom.agent.AgentSpec`), held by
+  # value (ADR 0108 F2 A). Its shape is Loom's; Agency checks it through Loom, never itself.
+  - name: agency.agents.AgentSpecDocument
+    kind: newtype
+    of: Json
+    naming:
+      summary: One loom.agent/1 document, held by value; its schema is Loom's.
+
+entities:
+  # §2.1 AgentDefinition, as ADR 0108 Decision 2 amends it.
+  - name: agency.agents.AgentDefinition
+    naming:
+      summary: >-
+        A versioned, governed record of one loom.agent/1 document: owner, tenant and policy around
+        a document Loom checks. Immutable once published.
+    identity:
+      name: definition_id
+      type: agency.agents.DefinitionId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: name
+        type: String
+      - name: description
+        type: String
+      # The document, by value (ADR 0108 Decision 2).
+      - name: agent_spec
+        type: agency.agents.AgentSpecDocument
+      - name: policy_id
+        type: agency.auth.PolicyId
+      # The implementation numbers and digests a definition when it is created; the digest covers
+      # the document (ADR 0108 Decision 2: "part of the version and of its digest").
+      - name: version
+        type: Integer
+      - name: digest
+        type: agency.shared.Digest
+      - name: created_by
+        type: agency.auth.PrincipalId
+      # What Loom's `CheckAgentSpec` last said of the document: its exit code and message
+      # (loom.resource.CheckResult carries the same pair). Absent until a check is recorded.
+      - name: check_exit_code
+        type: Optional<Integer>
+      - name: check_message
+        type: Optional<String>
+    # §2.1 relation `tool_bindings[]` is agency.tools.ToolBinding's `definition` read backwards.
+    relations:
+      - name: policy
+        kind: references
+        target: agency.auth.Policy
+        cardinality: one
+        via: policy_id
+      - name: creator
+        kind: references
+        target: agency.auth.Principal
+        cardinality: one
+        via: created_by
+    # §2.1 `draft -> published -> deprecated`, with ADR 0108's check before publication: a draft
+    # whose document Loom accepted is Checked, and only a checked definition is published. No
+    # command changes a definition's document, so every version is immutable; a next version is a
+    # new definition with the same name *(inferred)*.
+    lifecycle:
+      initial: Draft
+      states: [Draft, Checked, Published, Deprecated]
+      terminal: [Deprecated]
+      transitions:
+        - name: check
+          from: [Draft]
+          to: Checked
+        # A refused check leaves a draft a draft. A self-transition, so a check recorded in any
+        # other state falls to `wrong-state`: ess 0.69.2 refuses a stored-field guard beside the
+        # verdict guard on this system-issued step (ESS-SYNTH-024).
+        - name: refuse
+          from: [Draft]
+          to: Draft
+        - name: publish
+          from: [Checked]
+          to: Published
+        - name: deprecate
+          from: [Published]
+          to: Deprecated
+
+  # §2.1 Agent.
+  - name: agency.agents.Agent
+    naming:
+      summary: An agent provisioned from one published definition version.
+    identity:
+      name: agent_id
+      type: agency.agents.AgentId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: definition_id
+        type: agency.agents.DefinitionId
+      - name: definition_version
+        type: Integer
+      - name: display_name
+        type: String
+      # An Agent is also a principal (§2.1, §2.5).
+      - name: principal_id
+        type: agency.auth.PrincipalId
+      - name: current_run_id
+        type: Optional<agency.runs.RunId>
+      - name: last_seen_at
+        type: Timestamp
+    # §2.1 relations `team_memberships[]` and `credential_grants[]` are agency.teams.Team's
+    # `members` and agency.auth.CredentialGrant's `grantee_agent` read backwards.
+    relations:
+      - name: definition
+        kind: references
+        target: agency.agents.AgentDefinition
+        cardinality: one
+        via: definition_id
+      - name: principal
+        kind: references
+        target: agency.auth.Principal
+        cardinality: one
+        via: principal_id
+      - name: current_run
+        kind: references
+        target: agency.runs.Run
+        cardinality: one
+        via: current_run_id
+    # UNMAPPED: §2.1 gives `provisioned -> idle -> running -> idle`, `idle -> retired`; §3.1 gives
+    # `provisioned -> idle -> running -> retired`. The two chains disagree, and no §3.1 command
+    # moves an agent to Idle or Running (StartRun creates a Run; one outcome changes one record).
+    # Idle and Running are left out; `current_run_id` and `last_seen_at` are set by no command for
+    # the same reason. Open question: which chain holds, and what moves an agent idle and running.
+    lifecycle:
+      initial: Provisioned
+      states: [Provisioned, Retired]
+      terminal: [Retired]
+      transitions:
+        - name: retire
+          from: [Provisioned]
+          to: Retired
+
+errors:
+  - name: agency.agents.NotFound
+    summary: The addressed record does not exist, and nothing changed.
+  - name: agency.agents.StateConflict
+    summary: The addressed record is not in a state this command acts from, and nothing changed.
+
+events:
+  - name: agency.agents.AgentDefinitionCreated
+    fields:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: name, type: String}
+
+  - name: agency.agents.AgentSpecChecked
+    fields:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: message, type: String}
+
+  - name: agency.agents.AgentSpecRefused
+    fields:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: exit_code, type: Integer}
+      - {name: message, type: String}
+
+  - name: agency.agents.AgentDefinitionPublished
+    fields:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+
+  - name: agency.agents.AgentDefinitionDeprecated
+    fields:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+
+  - name: agency.agents.AgentProvisioned
+    fields:
+      - {name: agent_id, type: agency.agents.AgentId}
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: definition_version, type: Integer}
+
+  - name: agency.agents.AgentRetired
+    fields:
+      - {name: agent_id, type: agency.agents.AgentId}
+
+commands:
+  # §3.1 commands, in the order the design lists them; the run commands are agency.runs.
+  - name: agency.agents.CreateAgentDefinition
+    naming:
+      display: Create an agent definition
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: description, type: String}
+      - {name: agent_spec, type: agency.agents.AgentSpecDocument}
+      - {name: policy_id, type: agency.auth.PolicyId}
+      # UNMAPPED: `created_by` is the calling principal (§2.1); it is an input until the service
+      # binds callers (epic:agency-service). Open question: binding it to the caller.
+      - {name: created_by, type: agency.auth.PrincipalId}
+    outcomes:
+      - name: created
+        creates: agency.agents.AgentDefinition
+        instance: definition_id
+        sets:
+          tenant_id: input.tenant_id
+          name: input.name
+          description: input.description
+          agent_spec: input.agent_spec
+          policy_id: input.policy_id
+          version: {generated: true}
+          digest: {generated: true}
+          created_by: input.created_by
+        emits: [agency.agents.AgentDefinitionCreated]
+        payload:
+          agency.agents.AgentDefinitionCreated:
+            definition_id: {generated: true}
+            name: input.name
+
+  # ADR 0108 Decision 2: "Publishing a version checks its document with Loom's CheckAgentSpec".
+  # Agency runs Loom's check (`b10x-loom agent check`) and records its answer here; exit code 0
+  # accepts the document (loom.resource.RecordCheck reads the same exit code the same way); the
+  # checker sends the verdict it read from the exit code.
+  - name: agency.agents.RecordSpecCheck
+    naming:
+      display: Record Loom's check of a definition's document
+    input:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: exit_code, type: Integer}
+      - {name: verdict, type: agency.agents.CheckVerdict}
+      - {name: message, type: String}
+    outcomes:
+      - name: no-such-definition
+        unknown_instance: true
+        error: agency.agents.NotFound
+      - name: refused
+        when: verdict == Refused
+        moves: agency.agents.AgentDefinition.refuse
+        instance: definition_id
+        sets:
+          check_exit_code: input.exit_code
+          check_message: input.message
+        emits: [agency.agents.AgentSpecRefused]
+        payload:
+          agency.agents.AgentSpecRefused:
+            definition_id: input.definition_id
+            exit_code: input.exit_code
+            message: input.message
+      - name: checked
+        when: verdict == Accepted
+        moves: agency.agents.AgentDefinition.check
+        instance: definition_id
+        sets:
+          check_exit_code: input.exit_code
+          check_message: input.message
+        emits: [agency.agents.AgentSpecChecked]
+        payload:
+          agency.agents.AgentSpecChecked:
+            definition_id: input.definition_id
+            message: input.message
+      - name: wrong-state
+        wrong_state: true
+        error: agency.agents.StateConflict
+
+  - name: agency.agents.PublishAgentDefinition
+    naming:
+      display: Publish an agent definition
+    input:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+    outcomes:
+      - name: no-such-definition
+        unknown_instance: true
+        error: agency.agents.NotFound
+      - name: published
+        moves: agency.agents.AgentDefinition.publish
+        instance: definition_id
+        emits: [agency.agents.AgentDefinitionPublished]
+        payload:
+          agency.agents.AgentDefinitionPublished:
+            definition_id: input.definition_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.agents.StateConflict
+
+  - name: agency.agents.DeprecateAgentDefinition
+    naming:
+      display: Deprecate an agent definition
+    input:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+    outcomes:
+      - name: no-such-definition
+        unknown_instance: true
+        error: agency.agents.NotFound
+      - name: deprecated
+        moves: agency.agents.AgentDefinition.deprecate
+        instance: definition_id
+        emits: [agency.agents.AgentDefinitionDeprecated]
+        payload:
+          agency.agents.AgentDefinitionDeprecated:
+            definition_id: input.definition_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.agents.StateConflict
+
+  # UNMAPPED: provisioning from a definition that is not Published is not stated as refused, and
+  # `definition_version` is the definition's version at provisioning; both are inputs here,
+  # unchecked against the definition. Open question: the refusal and the version read.
+  - name: agency.agents.ProvisionAgent
+    naming:
+      display: Provision an agent
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: definition_version, type: Integer}
+      - {name: display_name, type: String}
+      - {name: principal_id, type: agency.auth.PrincipalId}
+    outcomes:
+      - name: provisioned
+        creates: agency.agents.Agent
+        instance: agent_id
+        sets:
+          tenant_id: input.tenant_id
+          definition_id: input.definition_id
+          definition_version: input.definition_version
+          display_name: input.display_name
+          principal_id: input.principal_id
+          last_seen_at: {generated: true}
+        emits: [agency.agents.AgentProvisioned]
+        payload:
+          agency.agents.AgentProvisioned:
+            agent_id: {generated: true}
+            definition_id: input.definition_id
+            definition_version: input.definition_version
+
+  - name: agency.agents.RetireAgent
+    naming:
+      display: Retire an agent
+    input:
+      - {name: agent_id, type: agency.agents.AgentId}
+    outcomes:
+      - name: no-such-agent
+        unknown_instance: true
+        error: agency.agents.NotFound
+      - name: retired
+        moves: agency.agents.Agent.retire
+        instance: agent_id
+        emits: [agency.agents.AgentRetired]
+        payload:
+          agency.agents.AgentRetired:
+            agent_id: input.agent_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.agents.StateConflict
+
+actors:
+  # The step Agency takes itself when Loom's `CheckAgentSpec` answers for a definition's document.
+  - name: agency.agents.SpecChecker
+    system: true
+    naming:
+      summary: Agency's caller of Loom's agent-spec check.
+    may:
+      - agency.agents.RecordSpecCheck
+
+views:
+  # §3.1 views. The document is published so a reader sees exactly what was checked and digested.
+  - name: agency.agents.AgentDefinitionList
+    source: agency.agents.AgentDefinition
+    consistency: read_your_writes
+    fields:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: description, type: String}
+      - {name: agent_spec, type: agency.agents.AgentSpecDocument}
+      - {name: policy_id, type: agency.auth.PolicyId}
+      - {name: version, type: Integer}
+      - {name: digest, type: agency.shared.Digest}
+      - {name: created_by, type: agency.auth.PrincipalId}
+      - {name: check_exit_code, type: Optional<Integer>}
+      - {name: check_message, type: Optional<String>}
+      - {name: state, type: agency.agents.AgentDefinition.State}
+
+  # "state, current run, last seen" (§3.1).
+  - name: agency.agents.AgentList
+    source: agency.agents.Agent
+    consistency: read_your_writes
+    fields:
+      - {name: agent_id, type: agency.agents.AgentId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: definition_version, type: Integer}
+      - {name: display_name, type: String}
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: current_run_id, type: Optional<agency.runs.RunId>}
+      - {name: last_seen_at, type: Timestamp}
+      - {name: state, type: agency.agents.Agent.State}

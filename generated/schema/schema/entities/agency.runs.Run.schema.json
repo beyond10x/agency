@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Run",
+  "description": "Agency's record of one run Loom executes for an agent.",
+  "x-ess-name": "agency.runs.Run",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "runs",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.runs.Run",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId",
+      "x-ess-relation": {
+        "name": "agent",
+        "kind": "references",
+        "source": "agency.runs.Run",
+        "target": "agency.agents.Agent",
+        "cardinality": "one",
+        "via": "agent_id"
+      }
+    },
+    "work_item_ref": {
+      "$ref": "#/$defs/agency.work.WorkItemRef",
+      "x-ess-relation": {
+        "name": "work_item",
+        "kind": "references",
+        "source": "agency.runs.Run",
+        "target": "agency.work.WorkItem",
+        "cardinality": "one",
+        "via": "work_item_ref"
+      }
+    },
+    "budget": {
+      "$ref": "#/$defs/agency.shared.RunBudget"
+    },
+    "workspace": {
+      "$ref": "#/$defs/agency.runs.RunWorkspace"
+    },
+    "session_id": {
+      "$ref": "#/$defs/agency.runs.LoomSessionId"
+    },
+    "credential_source": {
+      "$ref": "#/$defs/agency.runs.CredentialSource"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outcome": {
+      "$ref": "#/$defs/agency.runs.RunOutcome"
+    },
+    "usage": {
+      "$ref": "#/$defs/agency.runs.RunUsage"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.runs.Run.State"
+    }
+  },
+  "required": [
+    "run_id",
+    "tenant_id",
+    "agent_id",
+    "work_item_ref",
+    "budget",
+    "started_at",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.CredentialSource": {
+      "title": "CredentialSource",
+      "x-ess-name": "agency.runs.CredentialSource",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "OperatorLogin",
+        "ApiKey",
+        "Loopback",
+        "None"
+      ]
+    },
+    "agency.runs.LoomSessionId": {
+      "title": "LoomSessionId",
+      "x-ess-name": "agency.runs.LoomSessionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.Run.State": {
+      "title": "State",
+      "x-ess-name": "agency.runs.Run.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Admitted",
+        "Failed",
+        "Proposed",
+        "Requested",
+        "Running",
+        "Stopped"
+      ]
+    },
+    "agency.runs.RunEndReason": {
+      "title": "RunEndReason",
+      "x-ess-name": "agency.runs.RunEndReason",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunOutcome": {
+      "title": "RunOutcome",
+      "x-ess-name": "agency.runs.RunOutcome",
+      "x-ess-kind": "union",
+      "oneOf": [
+        {
+          "title": "Failed",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Failed"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.runs.RunEndReason"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Proposal",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Proposal"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Stopped",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Stopped"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.runs.RunEndReason"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-ess-union-tag": "kind"
+    },
+    "agency.runs.RunUsage": {
+      "title": "RunUsage",
+      "description": "The totals of Loom's RunUsageReport for one run.",
+      "x-ess-name": "agency.runs.RunUsage",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "model_calls": {
+          "type": "integer"
+        },
+        "input_tokens": {
+          "type": "integer"
+        },
+        "output_tokens": {
+          "type": "integer"
+        },
+        "cached_input_tokens": {
+          "type": "integer"
+        },
+        "cost_micro_usd": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model_calls",
+        "input_tokens",
+        "output_tokens",
+        "cached_input_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "agency.runs.RunWorkspace": {
+      "title": "RunWorkspace",
+      "description": "The repository, base branch and volume claim a run works in.",
+      "x-ess-name": "agency.runs.RunWorkspace",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "base_branch": {
+          "type": "string"
+        },
+        "volume_claim": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "base_branch"
+      ],
+      "additionalProperties": false
+    },
+    "agency.shared.RunBudget": {
+      "title": "RunBudget",
+      "description": "The token and deadline limits a run is held to.",
+      "x-ess-name": "agency.shared.RunBudget",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "max_tokens": {
+          "type": "integer"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "agency.work.WorkItemRef": {
+      "title": "WorkItemRef",
+      "description": "A work item's external id together with its source.",
+      "x-ess-name": "agency.work.WorkItemRef",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

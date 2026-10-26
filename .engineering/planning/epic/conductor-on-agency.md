@@ -2,10 +2,21 @@
 format: aep.planning-md/3
 id: epic:conductor-on-agency
 kind: epic
-status: draft
+status: proposed
 title: M4 conductor as an application on Agency
 summary: 'conductor gains an agency client: Spawn becomes StartRun, broker verbs become Send/Report, the team broker moves to Agency.'
-revision: 1
+relations:
+- depends_on: story:agency-program-agents
+- depends_on: story:agency-deployed-runs
+- depends_on: story:agency-settle-from-program-outcome
+- depends_on: story:agency-run-workspace
+- depends_on: story:agency-run-approvals
+- depends_on: story:agency-application-principal
+- depends_on: story:agency-credential-headroom
+- depends_on: story:agency-run-storage-capacity
+revision: 2
+transitions:
+- {from: "draft", to: "proposed", at: "2026-10-26T14:54:21Z", actor: "human:timo", revision: 2}
 ---
 ## Outcome
 

@@ -1,0 +1,111 @@
+# §2.1 and §3.1: a definition is drafted, published and an agent provisioned from it; the agent is
+# then retired and the definition deprecated.
+type: ess-scenario/1
+domain: agency.agents
+scenario: publish-and-provision
+summary: An agent is provisioned from a published definition, retired, and the definition deprecated.
+
+arrange:
+  - instance: tenant
+    entity: agency.auth.Tenant
+  - instance: supervisor
+    entity: agency.auth.Principal
+  - instance: policy
+    entity: agency.auth.Policy
+  - instance: definition
+    entity: agency.agents.AgentDefinition
+  - instance: agent
+    entity: agency.agents.Agent
+
+timeline:
+  - at: 2026-10-22T09:00:00Z
+    command: agency.auth.CreateTenant
+    actor: agency.auth.Supervisor
+    input:
+      name: local
+    outcome: created
+    capture: {instance: tenant, event: agency.auth.TenantCreated, field: tenant_id}
+
+  - at: 2026-10-22T09:00:01Z
+    command: agency.auth.InvitePrincipal
+    actor: agency.auth.Supervisor
+    input:
+      tenant_id: {$instance: tenant}
+      kind: Human
+      subject: operator
+      roles: [Supervisor]
+    outcome: invited
+    capture: {instance: supervisor, event: agency.auth.PrincipalInvited, field: principal_id}
+
+  - at: 2026-10-22T09:00:02Z
+    command: agency.auth.CreatePolicy
+    actor: agency.auth.Supervisor
+    input:
+      tenant_id: {$instance: tenant}
+      name: default
+      rules: []
+    outcome: created
+    capture: {instance: policy, event: agency.auth.PolicyCreated, field: policy_id}
+
+  - at: 2026-10-22T09:00:03Z
+    command: agency.agents.CreateAgentDefinition
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      name: reviewer
+      description: Reviews merge requests.
+      agent_spec:
+        format: loom.agent/1
+        agent: {id: reviewer, name: Reviewer, brief: Review the change and report findings.}
+      policy_id: {$instance: policy}
+      created_by: {$instance: supervisor}
+    outcome: created
+    capture: {instance: definition, event: agency.agents.AgentDefinitionCreated, field: definition_id}
+
+  # Awaited: the service issues it once Loom has checked the document. ess 0.69.2 marks an awaited
+  # act unsupported when it compares an input the system chooses, so only the definition is named.
+  - at: 2026-10-22T09:00:04Z
+    command: agency.agents.RecordSpecCheck
+    input:
+      definition_id: {$instance: definition}
+    outcome: checked
+
+  - at: 2026-10-22T09:00:05Z
+    command: agency.agents.PublishAgentDefinition
+    actor: agency.auth.Operator
+    input:
+      definition_id: {$instance: definition}
+    outcome: published
+
+  - at: 2026-10-22T09:00:06Z
+    command: agency.agents.ProvisionAgent
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      definition_id: {$instance: definition}
+      definition_version: 1
+      display_name: reviewer-1
+      principal_id: {$instance: supervisor}
+    outcome: provisioned
+    capture: {instance: agent, event: agency.agents.AgentProvisioned, field: agent_id}
+
+  - at: 2026-10-22T09:00:07Z
+    command: agency.agents.RetireAgent
+    actor: agency.auth.Operator
+    input:
+      agent_id: {$instance: agent}
+    outcome: retired
+
+  - at: 2026-10-22T09:00:08Z
+    command: agency.agents.DeprecateAgentDefinition
+    actor: agency.auth.Supervisor
+    input:
+      definition_id: {$instance: definition}
+    outcome: deprecated
+
+  - at: 2026-10-22T09:00:09Z
+    command: agency.agents.PublishAgentDefinition
+    actor: agency.auth.Operator
+    input:
+      definition_id: {$instance: definition}
+    outcome: wrong-state

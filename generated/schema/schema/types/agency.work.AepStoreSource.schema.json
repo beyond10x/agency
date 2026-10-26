@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.work.AepStoreSource",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:032311e43233dafdd0cf9ad1a8c6e8fc8038cf61cb1a30f3a2acde6226d428d2",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.AepStoreSource": {
+      "title": "AepStoreSource",
+      "x-ess-name": "agency.work.AepStoreSource",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "filter": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repo",
+        "filter"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

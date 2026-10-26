@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tool",
+  "description": "A tool registered from a tool-contract/1 contract.",
+  "x-ess-name": "agency.tools.Tool",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "tool_id": {
+      "$ref": "#/$defs/agency.tools.ToolId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "tools",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.tools.Tool",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "contract_ref": {
+      "$ref": "#/$defs/agency.tools.ContractRef"
+    },
+    "verbs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.shared.Verb"
+      }
+    },
+    "risk": {
+      "$ref": "#/$defs/agency.tools.RiskEnvelope"
+    },
+    "implementation_ref": {
+      "type": "string"
+    },
+    "connector_instance_id": {
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.tools.Tool.State"
+    }
+  },
+  "required": [
+    "tool_id",
+    "tenant_id",
+    "contract_ref",
+    "verbs",
+    "risk",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.shared.Verb": {
+      "title": "Verb",
+      "x-ess-name": "agency.shared.Verb",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.tools.ContractRef": {
+      "title": "ContractRef",
+      "description": "The tool-contract/1 contract a tool was registered from.",
+      "x-ess-name": "agency.tools.ContractRef",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "toolset": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolset",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.RiskEnvelope": {
+      "title": "RiskEnvelope",
+      "x-ess-name": "agency.tools.RiskEnvelope",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "effects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "risk": {
+          "$ref": "#/$defs/agency.tools.ToolRisk"
+        },
+        "idempotency": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "effects",
+        "risk",
+        "idempotency"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.Tool.State": {
+      "title": "State",
+      "x-ess-name": "agency.tools.Tool.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Registered",
+        "Withdrawn"
+      ]
+    },
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.tools.ToolRisk": {
+      "title": "ToolRisk",
+      "x-ess-name": "agency.tools.ToolRisk",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "None",
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ]
+    }
+  }
+}

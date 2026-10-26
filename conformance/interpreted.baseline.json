@@ -1,0 +1,45 @@
+{
+  "target": "interpreted",
+  "ess": "0.69.2",
+  "total_floor": 360,
+  "answered_floor": 360,
+  "unanswered_ceiling": 0,
+  "quarantine": [
+    {
+      "scenario": "agency.agents.AgentDefinition/transition/refuse/by/agency.agents.RecordSpecCheck/refused",
+      "reason": "ess 0.69.2: an awaited system-issued step carries no constraint from its outcome's input guard, so the interpreted target chooses verdict Accepted where the scenario expects refused"
+    },
+    {
+      "scenario": "agency.agents.RecordSpecCheck/outcome/refused",
+      "reason": "ess 0.69.2: an awaited system-issued step carries no constraint from its outcome's input guard, so the interpreted target chooses verdict Accepted where the scenario expects refused"
+    },
+    {
+      "scenario": "agency.auth.GrantCredential/outcome/granted-to-agent",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.GrantCredential/outcome/granted-to-team",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.GrantCredential/outcome/granted-to-workforce",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.StoreCredential/grant/denied",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.StoreCredential/outcome/stored",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.work.ConfigureWorkInput/grant/denied",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.work.ConfigureWorkInput/outcome/configured",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    }
+  ]
+}

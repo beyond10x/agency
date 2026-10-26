@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.tools.ContractRef",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:cf98b911b334b6fc342ec373ab11a633ff77e45acdc0b72a406485c4b5e1a6c3",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.ContractRef": {
+      "title": "ContractRef",
+      "description": "The tool-contract/1 contract a tool was registered from.",
+      "x-ess-name": "agency.tools.ContractRef",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "toolset": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolset",
+        "version"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

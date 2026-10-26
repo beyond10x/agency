@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.shared.Digest",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:3da31a9d2f06ed331817f6eab44e8c8d9c54f3ef45db0a95f4f2101c31ed82ee",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.shared.Digest": {
+      "title": "Digest",
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "x-ess-name": "agency.shared.Digest",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

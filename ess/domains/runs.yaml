@@ -1,0 +1,620 @@
+# Runs: Agency's record of each run Loom executes for an agent, and the approvals a run asks for.
+# Sources: §2.1 (Run), §3.1 (run commands, views, who), §4.3 (credential custody marked on the
+# run), §5.4 (Loom readback); conductor `docs/design/conductor-on-agency.md` § 3.2 G4 (the
+# repository workspace) and G5 (run-level approvals). Answer taken: Q6, Codex uses the ApiKey
+# fallback and the custody used is marked on the Run.
+#
+# ADR 0108 (accepted 2026-10-26): how a session runs (kind, model, stop policy, the run budget
+# Loom enforces) is the agent's `loom.agent/1` document, which the definition holds. A Run keeps
+# Agency's budget (agency.shared.RunBudget, the ceiling a policy sets) and what Loom reports back.
+domain: agency.runs
+
+summary: >-
+  Agency's record of each run Loom executes for an agent: what it was asked to work on, where,
+  under which budget, what Loom reported back, and the approvals the run asked for.
+
+naming:
+  wire: agency
+  display: Runs
+
+types:
+  - name: agency.runs.RunId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.runs.ApprovalId
+    kind: newtype
+    of: Uuid
+
+  # §2.1 Run `outcome: {Proposal, Stopped{reason}, Failed{reason}}`.
+  - name: agency.runs.RunOutcome
+    kind: union
+    tag: kind
+    variants:
+      Proposal:
+      Stopped: agency.runs.RunEndReason
+      Failed: agency.runs.RunEndReason
+
+  - name: agency.runs.RunEndReason
+    kind: struct
+    fields:
+      - name: reason
+        type: String
+
+  # §2.1 Run `session_id` (Loom `loom.session`): Loom's SessionId is a Uuid
+  # (loom/ess/domains/session.yaml). A cross-system id, not a relation.
+  - name: agency.runs.LoomSessionId
+    kind: newtype
+    of: Uuid
+
+  # §2.1 Run `usage: loom.metering.RunUsageReport` (loom/ess/domains/metering.yaml:76-94).
+  # UNMAPPED: Loom's ESS types cannot be named here, and RunUsageReport's `commission_run`,
+  # `steps` and `effects` are Loom's own nested records. Agency keeps the scalar totals only. Open
+  # question: whether Agency stores the whole report or reads it from Loom.
+  - name: agency.runs.RunUsage
+    kind: struct
+    naming:
+      summary: The totals of Loom's RunUsageReport for one run.
+    fields:
+      - name: model_calls
+        type: Integer
+      - name: input_tokens
+        type: Integer
+      - name: output_tokens
+        type: Integer
+      - name: cached_input_tokens
+        type: Integer
+      - name: cost_micro_usd
+        type: Optional<Integer>
+
+  # §4.3 "Agency marks the custody actually used on the Run" (Q6). Mirrors metaharness
+  # `CredentialSource{OperatorLogin, ApiKey, Loopback, None}` (spec.rs:110-134).
+  - name: agency.runs.CredentialSource
+    kind: enum
+    variants: [OperatorLogin, ApiKey, Loopback, None]
+
+  # conductor-on-agency § 3.2 G4: "which repository, base branch and volume a run works in";
+  # Loom's `spec.workspace` is where a deployed run mounts it. The volume is a claim name.
+  - name: agency.runs.RunWorkspace
+    kind: struct
+    naming:
+      summary: The repository, base branch and volume claim a run works in.
+    fields:
+      - name: repository
+        type: String
+      - name: base_branch
+        type: String
+      - name: volume_claim
+        type: Optional<String>
+
+entities:
+  # §2.1 Run: Agency's projection of one Loom run (§2.1, §5.4).
+  - name: agency.runs.Run
+    naming:
+      summary: Agency's record of one run Loom executes for an agent.
+    identity:
+      name: run_id
+      type: agency.runs.RunId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: agent_id
+        type: agency.agents.AgentId
+      - name: work_item_ref
+        type: agency.work.WorkItemRef
+      - name: budget
+        type: agency.shared.RunBudget
+      # G4: absent where the agent's document needs no repository.
+      - name: workspace
+        type: Optional<agency.runs.RunWorkspace>
+      # Loom's session for this run; a cross-system id, known once Loom starts it.
+      - name: session_id
+        type: Optional<agency.runs.LoomSessionId>
+      # §4.3 / Q6: the credential source the run actually used, known once Loom starts it.
+      - name: credential_source
+        type: Optional<agency.runs.CredentialSource>
+      - name: started_at
+        type: Timestamp
+      - name: ended_at
+        type: Optional<Timestamp>
+      - name: outcome
+        type: Optional<agency.runs.RunOutcome>
+      - name: usage
+        type: Optional<agency.runs.RunUsage>
+    relations:
+      - name: agent
+        kind: references
+        target: agency.agents.Agent
+        cardinality: one
+        via: agent_id
+      # §2.1 relation `work_item`; agency.work.WorkItem's `runs[]` is this read backwards.
+      - name: work_item
+        kind: references
+        target: agency.work.WorkItem
+        cardinality: one
+        via: work_item_ref
+    # §2.1 `requested -> admitted -> running -> {proposed, stopped, failed}`, "owned by Loom,
+    # Agency keeps a projection". Admitted, Running, Proposed and Failed are Loom's readback
+    # (§5.4), recorded here by the system-issued commands below.
+    lifecycle:
+      initial: Requested
+      states: [Requested, Admitted, Running, Proposed, Stopped, Failed]
+      terminal: [Proposed, Stopped, Failed]
+      transitions:
+        - name: admit
+          from: [Requested]
+          to: Admitted
+        - name: start
+          from: [Admitted]
+          to: Running
+        - name: propose
+          from: [Running]
+          to: Proposed
+        # StopRun from a run not yet running *(inferred: §3.1 names StopRun, not the states it
+        # acts from)*.
+        - name: stop
+          from: [Requested, Admitted, Running]
+          to: Stopped
+        - name: fail
+          from: [Running]
+          to: Failed
+
+  # conductor-on-agency § 3.2 G5: a question a run stops on and waits to have answered, such as
+  # takt's `ApprovalRequired` for a case (exit 4, answered by `takt approve <case> <capability>`).
+  # Per-call metaharness `Ask` decisions are agency.tools' concern (epic:agency-tools-policy).
+  - name: agency.runs.RunApproval
+    naming:
+      summary: A run's request for an approval of one capability, and its answer.
+    identity:
+      name: approval_id
+      type: agency.runs.ApprovalId
+    fields:
+      - name: run_id
+        type: agency.runs.RunId
+      # What the run asks about, as the run names it: for takt, the case.
+      - name: subject
+        type: String
+      - name: capability
+        type: String
+      - name: requested_at
+        type: Timestamp
+      - name: answered_by
+        type: Optional<agency.auth.PrincipalId>
+      - name: answered_at
+        type: Optional<Timestamp>
+    relations:
+      - name: run
+        kind: references
+        target: agency.runs.Run
+        cardinality: one
+        via: run_id
+      - name: answerer
+        kind: references
+        target: agency.auth.Principal
+        cardinality: one
+        via: answered_by
+    lifecycle:
+      initial: Pending
+      states: [Pending, Granted, Denied]
+      terminal: [Granted, Denied]
+      transitions:
+        - name: grant
+          from: [Pending]
+          to: Granted
+        - name: deny
+          from: [Pending]
+          to: Denied
+
+errors:
+  - name: agency.runs.NotFound
+    summary: The addressed record does not exist, and nothing changed.
+  - name: agency.runs.StateConflict
+    summary: The addressed record is not in a state this command acts from, and nothing changed.
+  - name: agency.runs.RunEnded
+    summary: The run has ended, so its budget is not changed.
+
+events:
+  - name: agency.runs.RunRequested
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: agent_id, type: agency.agents.AgentId}
+      - {name: work_item_ref, type: agency.work.WorkItemRef}
+
+  - name: agency.runs.RunAdmitted
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+
+  - name: agency.runs.RunStarted
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: session_id, type: agency.runs.LoomSessionId}
+      - {name: credential_source, type: agency.runs.CredentialSource}
+
+  - name: agency.runs.RunProposed
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: usage, type: agency.runs.RunUsage}
+
+  - name: agency.runs.RunStopped
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: reason, type: String}
+
+  - name: agency.runs.RunFailed
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: reason, type: String}
+
+  - name: agency.runs.RunBudgetSet
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: budget, type: agency.shared.RunBudget}
+
+  - name: agency.runs.RunApprovalRequested
+    fields:
+      - {name: approval_id, type: agency.runs.ApprovalId}
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: subject, type: String}
+      - {name: capability, type: String}
+
+  - name: agency.runs.RunApprovalGranted
+    fields:
+      - {name: approval_id, type: agency.runs.ApprovalId}
+      - {name: answered_by, type: agency.auth.PrincipalId}
+
+  - name: agency.runs.RunApprovalDenied
+    fields:
+      - {name: approval_id, type: agency.runs.ApprovalId}
+      - {name: answered_by, type: agency.auth.PrincipalId}
+
+commands:
+  # §5.4: StartRun hands the run to Loom. The per-run bearer minted here (§4.1) is a secret and is
+  # no field of the run or of the event (agency.service.Session keeps its digest).
+  # UNMAPPED: §4.4 step 2 passes the effective policy to Loom at StartRun; how it is resolved is
+  # not expressible (see EffectivePolicy in agency.auth).
+  - name: agency.runs.StartRun
+    naming:
+      display: Start a run
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: agent_id, type: agency.agents.AgentId}
+      - {name: work_item_ref, type: agency.work.WorkItemRef}
+      - {name: budget, type: agency.shared.RunBudget}
+      - {name: workspace, type: Optional<agency.runs.RunWorkspace>}
+    outcomes:
+      - name: requested
+        creates: agency.runs.Run
+        instance: run_id
+        sets:
+          tenant_id: input.tenant_id
+          agent_id: input.agent_id
+          work_item_ref: input.work_item_ref
+          budget: input.budget
+          workspace: input.workspace
+          started_at: {generated: true}
+        emits: [agency.runs.RunRequested]
+        payload:
+          agency.runs.RunRequested:
+            run_id: {generated: true}
+            agent_id: input.agent_id
+            work_item_ref: input.work_item_ref
+
+  - name: agency.runs.StopRun
+    naming:
+      display: Stop a run
+    input:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: reason, type: String}
+    outcomes:
+      - name: no-such-run
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: stopped
+        moves: agency.runs.Run.stop
+        instance: run_id
+        sets:
+          ended_at: {generated: true}
+        emits: [agency.runs.RunStopped]
+        payload:
+          agency.runs.RunStopped:
+            run_id: input.run_id
+            reason: input.reason
+      - name: wrong-state
+        wrong_state: true
+        error: agency.runs.StateConflict
+
+  - name: agency.runs.SetRunBudget
+    naming:
+      display: Set a run's budget
+    input:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: budget, type: agency.shared.RunBudget}
+    outcomes:
+      - name: no-such-run
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: ended
+        when_subject:
+          predicate: {any: [state == Proposed, state == Stopped, state == Failed]}
+        error: agency.runs.RunEnded
+      - name: set
+        updates: agency.runs.Run
+        instance: run_id
+        sets:
+          budget: input.budget
+        emits: [agency.runs.RunBudgetSet]
+        payload:
+          agency.runs.RunBudgetSet:
+            run_id: input.run_id
+            budget: input.budget
+
+  # UNMAPPED: the four commands below are not in §3.1. They record Loom's readback (§5.4: "Agency
+  # reads back Proposal..., RunUsageReport, and the session's trace-ir/1 events") so the designed
+  # Run states are reachable. Their names and inputs are this specification's, issued by the
+  # system actor agency.runs.LoomReadback. Open question: whether Loom's events drive these
+  # transitions directly.
+  - name: agency.runs.AdmitRun
+    naming:
+      display: Record a run admitted by Loom
+    input:
+      - {name: run_id, type: agency.runs.RunId}
+    outcomes:
+      - name: no-such-run
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: admitted
+        moves: agency.runs.Run.admit
+        instance: run_id
+        emits: [agency.runs.RunAdmitted]
+        payload:
+          agency.runs.RunAdmitted:
+            run_id: input.run_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.runs.StateConflict
+
+  - name: agency.runs.RecordRunStarted
+    naming:
+      display: Record a run started in Loom
+    input:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: session_id, type: agency.runs.LoomSessionId}
+      - {name: credential_source, type: agency.runs.CredentialSource}
+    outcomes:
+      - name: no-such-run
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: started
+        moves: agency.runs.Run.start
+        instance: run_id
+        sets:
+          session_id: input.session_id
+          credential_source: input.credential_source
+        emits: [agency.runs.RunStarted]
+        payload:
+          agency.runs.RunStarted:
+            run_id: input.run_id
+            session_id: input.session_id
+            credential_source: input.credential_source
+      - name: wrong-state
+        wrong_state: true
+        error: agency.runs.StateConflict
+
+  # UNMAPPED: the RunOutcome union value (Proposal / Stopped{reason} / Failed{reason}) is not
+  # written into `outcome` by these commands: a union literal per branch is not a value source
+  # this specification found. The lifecycle state carries which outcome it was; `outcome` stays
+  # absent. Open question for ESS.
+  - name: agency.runs.RecordRunProposal
+    naming:
+      display: Record a run's proposal from Loom
+    input:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: usage, type: agency.runs.RunUsage}
+    outcomes:
+      - name: no-such-run
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: proposed
+        moves: agency.runs.Run.propose
+        instance: run_id
+        sets:
+          ended_at: {generated: true}
+          usage: input.usage
+        emits: [agency.runs.RunProposed]
+        payload:
+          agency.runs.RunProposed:
+            run_id: input.run_id
+            usage: input.usage
+      - name: wrong-state
+        wrong_state: true
+        error: agency.runs.StateConflict
+
+  - name: agency.runs.RecordRunFailure
+    naming:
+      display: Record a run's failure from Loom
+    input:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: reason, type: String}
+    outcomes:
+      - name: no-such-run
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: failed
+        moves: agency.runs.Run.fail
+        instance: run_id
+        sets:
+          ended_at: {generated: true}
+        emits: [agency.runs.RunFailed]
+        payload:
+          agency.runs.RunFailed:
+            run_id: input.run_id
+            reason: input.reason
+      - name: wrong-state
+        wrong_state: true
+        error: agency.runs.StateConflict
+
+  # G5: Loom's readback records the question a run stopped on.
+  # UNMAPPED: whether the run must be Running when it asks is not stated; the run id is unchecked.
+  - name: agency.runs.RequestRunApproval
+    naming:
+      display: Record a run's request for an approval
+    input:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: subject, type: String}
+      - {name: capability, type: String}
+    outcomes:
+      - name: requested
+        creates: agency.runs.RunApproval
+        instance: approval_id
+        sets:
+          run_id: input.run_id
+          subject: input.subject
+          capability: input.capability
+          requested_at: {generated: true}
+        emits: [agency.runs.RunApprovalRequested]
+        payload:
+          agency.runs.RunApprovalRequested:
+            approval_id: {generated: true}
+            run_id: input.run_id
+            subject: input.subject
+            capability: input.capability
+
+  # G5 / conductor-on-agency D5: conductor answers by its decision classes, or the operator does.
+  # UNMAPPED: `answered_by` is the calling principal; an input until the service binds callers.
+  - name: agency.runs.GrantRunApproval
+    naming:
+      display: Grant a run's approval
+    input:
+      - {name: approval_id, type: agency.runs.ApprovalId}
+      - {name: answered_by, type: agency.auth.PrincipalId}
+    outcomes:
+      - name: no-such-approval
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: granted
+        moves: agency.runs.RunApproval.grant
+        instance: approval_id
+        sets:
+          answered_by: input.answered_by
+          answered_at: {generated: true}
+        emits: [agency.runs.RunApprovalGranted]
+        payload:
+          agency.runs.RunApprovalGranted:
+            approval_id: input.approval_id
+            answered_by: input.answered_by
+      - name: wrong-state
+        wrong_state: true
+        error: agency.runs.StateConflict
+
+  - name: agency.runs.DenyRunApproval
+    naming:
+      display: Deny a run's approval
+    input:
+      - {name: approval_id, type: agency.runs.ApprovalId}
+      - {name: answered_by, type: agency.auth.PrincipalId}
+    outcomes:
+      - name: no-such-approval
+        unknown_instance: true
+        error: agency.runs.NotFound
+      - name: denied
+        moves: agency.runs.RunApproval.deny
+        instance: approval_id
+        sets:
+          answered_by: input.answered_by
+          answered_at: {generated: true}
+        emits: [agency.runs.RunApprovalDenied]
+        payload:
+          agency.runs.RunApprovalDenied:
+            approval_id: input.approval_id
+            answered_by: input.answered_by
+      - name: wrong-state
+        wrong_state: true
+        error: agency.runs.StateConflict
+
+actors:
+  # The step Agency takes itself when Loom reports on a run (§5.4).
+  - name: agency.runs.LoomReadback
+    system: true
+    naming:
+      summary: Agency's reader of Loom's run reports.
+    may:
+      - agency.runs.AdmitRun
+      - agency.runs.RecordRunStarted
+      - agency.runs.RecordRunProposal
+      - agency.runs.RecordRunFailure
+      - agency.runs.RequestRunApproval
+
+views:
+  # "filter by agent/team/work item" (§3.1).
+  # UNMAPPED: the filters are optional query parameters; an ESS view parameter filters on
+  # equality and is required, and a run carries no team. The view lists every run. Open question
+  # for ESS: optional view parameters; for the design: how a run names its team.
+  - name: agency.runs.RunList
+    source: agency.runs.Run
+    consistency: read_your_writes
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: agent_id, type: agency.agents.AgentId}
+      - {name: work_item_ref, type: agency.work.WorkItemRef}
+      - {name: budget, type: agency.shared.RunBudget}
+      - {name: workspace, type: Optional<agency.runs.RunWorkspace>}
+      - {name: session_id, type: Optional<agency.runs.LoomSessionId>}
+      - {name: credential_source, type: Optional<agency.runs.CredentialSource>}
+      - {name: started_at, type: Timestamp}
+      - {name: ended_at, type: Optional<Timestamp>}
+      - {name: usage, type: Optional<agency.runs.RunUsage>}
+      - {name: state, type: agency.runs.Run.State}
+
+  # §3.1 RunDetail: "Loom loom.session projection + metaharness trace-ir/1 events".
+  # UNMAPPED: the Loom session projection and the trace-ir/1 events are Loom's and metaharness's
+  # records, not Agency's; this view shows Agency's run record only. Open question: how RunDetail
+  # joins Loom's views.
+  - name: agency.runs.RunDetail
+    source: agency.runs.Run
+    consistency: read_your_writes
+    params:
+      - {name: run_id, type: agency.runs.RunId}
+    filter: run_id == param.run_id
+    fields:
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: agent_id, type: agency.agents.AgentId}
+      - {name: work_item_ref, type: agency.work.WorkItemRef}
+      - {name: budget, type: agency.shared.RunBudget}
+      - {name: workspace, type: Optional<agency.runs.RunWorkspace>}
+      - {name: session_id, type: Optional<agency.runs.LoomSessionId>}
+      - {name: credential_source, type: Optional<agency.runs.CredentialSource>}
+      - {name: started_at, type: Timestamp}
+      - {name: ended_at, type: Optional<Timestamp>}
+      - {name: outcome, type: Optional<agency.runs.RunOutcome>}
+      - {name: usage, type: Optional<agency.runs.RunUsage>}
+      - {name: state, type: agency.runs.Run.State}
+
+  # §3.1 UsageByAgent "(from loom.metering.RunUsageReport)": per agent, the runs.
+  # UNMAPPED: the token and cost sums read members of `usage` (a RunUsage struct); ESS aggregates
+  # a top-level field only (ESS-VIEW-009, "struct paths are not in this cut"). The view counts runs
+  # per agent. Open question for ESS, or flatten the totals onto Run.
+  - name: agency.runs.UsageByAgent
+    source: agency.runs.Run
+    consistency: read_your_writes
+    group_by: [agent_id]
+    fields:
+      - {name: agent_id, type: agency.agents.AgentId}
+      - name: runs
+        type: Integer
+        aggregate: {count: {}}
+
+  # G5: the run-level approval inbox the cockpit and conductor read.
+  - name: agency.runs.ApprovalInbox
+    source: agency.runs.RunApproval
+    consistency: read_your_writes
+    fields:
+      - {name: approval_id, type: agency.runs.ApprovalId}
+      - {name: run_id, type: agency.runs.RunId}
+      - {name: subject, type: String}
+      - {name: capability, type: String}
+      - {name: requested_at, type: Timestamp}
+      - {name: answered_by, type: Optional<agency.auth.PrincipalId>}
+      - {name: answered_at, type: Optional<Timestamp>}
+      - {name: state, type: agency.runs.RunApproval.State}

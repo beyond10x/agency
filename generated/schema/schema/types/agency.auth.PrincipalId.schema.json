@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.PrincipalId",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:bf61b3408cf4a188fe00500c53badd46a1c4f22575632b492e38470ed6a9ab91",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

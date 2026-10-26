@@ -1,0 +1,4420 @@
+{
+  "$defs": {
+    "agency.agents.Agent.State": {
+      "enum": [
+        "Provisioned",
+        "Retired"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.agents.Agent.State"
+    },
+    "agency.agents.AgentDefinition.State": {
+      "enum": [
+        "Checked",
+        "Deprecated",
+        "Draft",
+        "Published"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.agents.AgentDefinition.State"
+    },
+    "agency.agents.AgentDefinitionCreated": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition_id",
+        "name"
+      ],
+      "title": "AgentDefinitionCreated",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.agents.AgentDefinitionCreated"
+    },
+    "agency.agents.AgentDefinitionDeprecated": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "title": "AgentDefinitionDeprecated",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.agents.AgentDefinitionDeprecated"
+    },
+    "agency.agents.AgentDefinitionList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_spec": {
+          "$ref": "#/$defs/agency.agents.AgentSpecDocument"
+        },
+        "check_exit_code": {
+          "type": "integer"
+        },
+        "check_message": {
+          "type": "string"
+        },
+        "created_by": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "description": {
+          "type": "string"
+        },
+        "digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "name": {
+          "type": "string"
+        },
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.agents.AgentDefinition.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "version": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "definition_id",
+        "tenant_id",
+        "name",
+        "description",
+        "agent_spec",
+        "policy_id",
+        "version",
+        "digest",
+        "created_by",
+        "state"
+      ],
+      "title": "AgentDefinitionList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.agents.AgentDefinitionList"
+    },
+    "agency.agents.AgentDefinitionPublished": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "title": "AgentDefinitionPublished",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.agents.AgentDefinitionPublished"
+    },
+    "agency.agents.AgentId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "AgentId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.agents.AgentId"
+    },
+    "agency.agents.AgentList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "current_run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "definition_version": {
+          "type": "integer"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "last_seen_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.agents.Agent.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "agent_id",
+        "tenant_id",
+        "definition_id",
+        "definition_version",
+        "display_name",
+        "principal_id",
+        "last_seen_at",
+        "state"
+      ],
+      "title": "AgentList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.agents.AgentList"
+    },
+    "agency.agents.AgentProvisioned": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "definition_version": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "agent_id",
+        "definition_id",
+        "definition_version"
+      ],
+      "title": "AgentProvisioned",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.agents.AgentProvisioned"
+    },
+    "agency.agents.AgentRetired": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        }
+      },
+      "required": [
+        "agent_id"
+      ],
+      "title": "AgentRetired",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.agents.AgentRetired"
+    },
+    "agency.agents.AgentSpecChecked": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition_id",
+        "message"
+      ],
+      "title": "AgentSpecChecked",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.agents.AgentSpecChecked"
+    },
+    "agency.agents.AgentSpecDocument": {
+      "description": "One loom.agent/1 document, held by value; its schema is Loom's.",
+      "title": "AgentSpecDocument",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.agents.AgentSpecDocument"
+    },
+    "agency.agents.AgentSpecRefused": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "exit_code": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition_id",
+        "exit_code",
+        "message"
+      ],
+      "title": "AgentSpecRefused",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.agents.AgentSpecRefused"
+    },
+    "agency.agents.CheckVerdict": {
+      "enum": [
+        "Accepted",
+        "Refused"
+      ],
+      "title": "CheckVerdict",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.agents.CheckVerdict"
+    },
+    "agency.agents.CreateAgentDefinition.input": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_spec": {
+          "$ref": "#/$defs/agency.agents.AgentSpecDocument"
+        },
+        "created_by": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name",
+        "description",
+        "agent_spec",
+        "policy_id",
+        "created_by"
+      ],
+      "title": "Create an agent definition input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.agents.CreateAgentDefinition"
+    },
+    "agency.agents.DefinitionId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "DefinitionId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.agents.DefinitionId"
+    },
+    "agency.agents.DeprecateAgentDefinition.input": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "title": "Deprecate an agent definition input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.agents.DeprecateAgentDefinition"
+    },
+    "agency.agents.ProvisionAgent.input": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "definition_version": {
+          "type": "integer"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "definition_id",
+        "definition_version",
+        "display_name",
+        "principal_id"
+      ],
+      "title": "Provision an agent input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.agents.ProvisionAgent"
+    },
+    "agency.agents.PublishAgentDefinition.input": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "title": "Publish an agent definition input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.agents.PublishAgentDefinition"
+    },
+    "agency.agents.RecordSpecCheck.input": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "exit_code": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        },
+        "verdict": {
+          "$ref": "#/$defs/agency.agents.CheckVerdict"
+        }
+      },
+      "required": [
+        "definition_id",
+        "exit_code",
+        "verdict",
+        "message"
+      ],
+      "title": "Record Loom's check of a definition's document input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.agents.RecordSpecCheck"
+    },
+    "agency.agents.RetireAgent.input": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        }
+      },
+      "required": [
+        "agent_id"
+      ],
+      "title": "Retire an agent input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.agents.RetireAgent"
+    },
+    "agency.auth.ActivatePolicy.input": {
+      "additionalProperties": false,
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "Activate a policy input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.ActivatePolicy"
+    },
+    "agency.auth.AssignRole.input": {
+      "additionalProperties": false,
+      "properties": {
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "role": {
+          "$ref": "#/$defs/agency.auth.Role"
+        }
+      },
+      "required": [
+        "principal_id",
+        "role"
+      ],
+      "title": "Assign a role input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.AssignRole"
+    },
+    "agency.auth.ConnectorsCustody": {
+      "additionalProperties": false,
+      "properties": {
+        "instance_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "instance_id"
+      ],
+      "title": "ConnectorsCustody",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.ConnectorsCustody"
+    },
+    "agency.auth.CreatePolicy.input": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/agency.auth.Rule"
+          },
+          "type": "array"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name",
+        "rules"
+      ],
+      "title": "Create a policy input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.CreatePolicy"
+    },
+    "agency.auth.CreateTenant.input": {
+      "additionalProperties": false,
+      "properties": {
+        "mandate_tenant_ref": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Create a tenant input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.CreateTenant"
+    },
+    "agency.auth.Credential.State": {
+      "enum": [
+        "Revoked",
+        "Stored"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.Credential.State"
+    },
+    "agency.auth.CredentialGrant.State": {
+      "enum": [
+        "Granted",
+        "Revoked"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.CredentialGrant.State"
+    },
+    "agency.auth.CredentialGranted": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        },
+        "grant_id": {
+          "$ref": "#/$defs/agency.auth.GrantId"
+        },
+        "purpose": {
+          "$ref": "#/$defs/agency.auth.GrantPurpose"
+        }
+      },
+      "required": [
+        "grant_id",
+        "credential_id",
+        "purpose"
+      ],
+      "title": "CredentialGranted",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.CredentialGranted"
+    },
+    "agency.auth.CredentialId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "CredentialId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.auth.CredentialId"
+    },
+    "agency.auth.CredentialKind": {
+      "enum": [
+        "OperatorLogin",
+        "ApiKey",
+        "OAuthToken",
+        "ConnectorInstance"
+      ],
+      "title": "CredentialKind",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.CredentialKind"
+    },
+    "agency.auth.CredentialList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        },
+        "custody": {
+          "$ref": "#/$defs/agency.auth.Custody"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/agency.auth.CredentialKind"
+        },
+        "last_refreshed_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "owner_principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "scope": {
+          "$ref": "#/$defs/agency.auth.CredentialScope"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.auth.Credential.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "credential_id",
+        "tenant_id",
+        "kind",
+        "custody",
+        "scope",
+        "owner_principal_id",
+        "last_refreshed_at",
+        "state"
+      ],
+      "title": "CredentialList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.auth.CredentialList"
+    },
+    "agency.auth.CredentialRefreshed": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        }
+      },
+      "required": [
+        "credential_id"
+      ],
+      "title": "CredentialRefreshed",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.CredentialRefreshed"
+    },
+    "agency.auth.CredentialRevoked": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        }
+      },
+      "required": [
+        "credential_id"
+      ],
+      "title": "CredentialRevoked",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.CredentialRevoked"
+    },
+    "agency.auth.CredentialScope": {
+      "additionalProperties": false,
+      "properties": {
+        "models": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "providers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tools": {
+          "items": {
+            "$ref": "#/$defs/agency.tools.ToolId"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "models",
+        "providers",
+        "tools"
+      ],
+      "title": "CredentialScope",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.CredentialScope"
+    },
+    "agency.auth.CredentialStored": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        },
+        "custody": {
+          "$ref": "#/$defs/agency.auth.Custody"
+        },
+        "kind": {
+          "$ref": "#/$defs/agency.auth.CredentialKind"
+        }
+      },
+      "required": [
+        "credential_id",
+        "kind",
+        "custody"
+      ],
+      "title": "CredentialStored",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.CredentialStored"
+    },
+    "agency.auth.Custody": {
+      "description": "Where a credential's secret is held. Agency stores this pointer, never the value.",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "AgencyVault",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "title": "AgencyVault",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "ConnectorsInstance",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.ConnectorsCustody"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "ConnectorsInstance",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "HostFile",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.HostFileCustody"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "HostFile",
+          "type": "object"
+        }
+      ],
+      "title": "Custody",
+      "x-ess-kind": "union",
+      "x-ess-name": "agency.auth.Custody",
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.DecisionMode": {
+      "enum": [
+        "Frame",
+        "Ask",
+        "Observe"
+      ],
+      "title": "DecisionMode",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.DecisionMode"
+    },
+    "agency.auth.DefinitionSubject": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "title": "DefinitionSubject",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.DefinitionSubject"
+    },
+    "agency.auth.DisablePrincipal.input": {
+      "additionalProperties": false,
+      "properties": {
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        }
+      },
+      "required": [
+        "principal_id"
+      ],
+      "title": "Disable a principal input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.DisablePrincipal"
+    },
+    "agency.auth.EffectivePolicy.row": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        },
+        "policy_state": {
+          "$ref": "#/$defs/agency.auth.Policy.State"
+        },
+        "policy_version": {
+          "type": "integer"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/agency.auth.Rule"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "definition_id",
+        "policy_id"
+      ],
+      "title": "EffectivePolicy row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.auth.EffectivePolicy"
+    },
+    "agency.auth.GrantCredential.input": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "grantee_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "grantee_team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "grantee_workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        },
+        "purpose": {
+          "$ref": "#/$defs/agency.auth.GrantPurpose"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "credential_id",
+        "purpose"
+      ],
+      "title": "Grant a credential input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.GrantCredential"
+    },
+    "agency.auth.GrantId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "GrantId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.auth.GrantId"
+    },
+    "agency.auth.GrantMatrix.row": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "grant_id": {
+          "$ref": "#/$defs/agency.auth.GrantId"
+        },
+        "grantee_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "grantee_team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "grantee_workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        },
+        "purpose": {
+          "$ref": "#/$defs/agency.auth.GrantPurpose"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.auth.CredentialGrant.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "grant_id",
+        "tenant_id",
+        "credential_id",
+        "purpose",
+        "state"
+      ],
+      "title": "GrantMatrix row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.auth.GrantMatrix"
+    },
+    "agency.auth.GrantPurpose": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "ModelCalls",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "title": "ModelCalls",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "ToolCalls",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.ToolCallsPurpose"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "ToolCalls",
+          "type": "object"
+        }
+      ],
+      "title": "GrantPurpose",
+      "x-ess-kind": "union",
+      "x-ess-name": "agency.auth.GrantPurpose",
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.GrantRevoked": {
+      "additionalProperties": false,
+      "properties": {
+        "grant_id": {
+          "$ref": "#/$defs/agency.auth.GrantId"
+        }
+      },
+      "required": [
+        "grant_id"
+      ],
+      "title": "GrantRevoked",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.GrantRevoked"
+    },
+    "agency.auth.HostFileCustody": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "HostFileCustody",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.HostFileCustody"
+    },
+    "agency.auth.InvitePrincipal.input": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/agency.auth.PrincipalKind"
+        },
+        "mandate_ref": {
+          "type": "string"
+        },
+        "roles": {
+          "items": {
+            "$ref": "#/$defs/agency.auth.Role"
+          },
+          "type": "array"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "subject",
+        "roles"
+      ],
+      "title": "Invite a principal input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.InvitePrincipal"
+    },
+    "agency.auth.Policy.State": {
+      "enum": [
+        "Active",
+        "Draft",
+        "Superseded"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.Policy.State"
+    },
+    "agency.auth.PolicyActivated": {
+      "additionalProperties": false,
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "PolicyActivated",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.PolicyActivated"
+    },
+    "agency.auth.PolicyCreated": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        }
+      },
+      "required": [
+        "policy_id",
+        "name"
+      ],
+      "title": "PolicyCreated",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.PolicyCreated"
+    },
+    "agency.auth.PolicyId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "PolicyId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.auth.PolicyId"
+    },
+    "agency.auth.PolicyList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "name": {
+          "type": "string"
+        },
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/agency.auth.Rule"
+          },
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.auth.Policy.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "version": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "policy_id",
+        "tenant_id",
+        "name",
+        "rules",
+        "version",
+        "digest",
+        "state"
+      ],
+      "title": "PolicyList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.auth.PolicyList"
+    },
+    "agency.auth.PolicySuperseded": {
+      "additionalProperties": false,
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "PolicySuperseded",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.PolicySuperseded"
+    },
+    "agency.auth.Principal.State": {
+      "enum": [
+        "Disabled",
+        "Invited"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.Principal.State"
+    },
+    "agency.auth.PrincipalDisabled": {
+      "additionalProperties": false,
+      "properties": {
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        }
+      },
+      "required": [
+        "principal_id"
+      ],
+      "title": "PrincipalDisabled",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.PrincipalDisabled"
+    },
+    "agency.auth.PrincipalId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "PrincipalId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.auth.PrincipalId"
+    },
+    "agency.auth.PrincipalInvited": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/agency.auth.PrincipalKind"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "principal_id",
+        "tenant_id",
+        "kind",
+        "subject"
+      ],
+      "title": "PrincipalInvited",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.PrincipalInvited"
+    },
+    "agency.auth.PrincipalKind": {
+      "enum": [
+        "Human",
+        "Agent",
+        "Service"
+      ],
+      "title": "PrincipalKind",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.PrincipalKind"
+    },
+    "agency.auth.PrincipalList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/agency.auth.PrincipalKind"
+        },
+        "mandate_ref": {
+          "type": "string"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "roles": {
+          "items": {
+            "$ref": "#/$defs/agency.auth.Role"
+          },
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.auth.Principal.State"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "principal_id",
+        "tenant_id",
+        "kind",
+        "subject",
+        "roles",
+        "state"
+      ],
+      "title": "PrincipalList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.auth.PrincipalList"
+    },
+    "agency.auth.RefreshCredential.input": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        }
+      },
+      "required": [
+        "credential_id"
+      ],
+      "title": "Refresh a credential input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.RefreshCredential"
+    },
+    "agency.auth.RevokeCredential.input": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        }
+      },
+      "required": [
+        "credential_id"
+      ],
+      "title": "Revoke a credential input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.RevokeCredential"
+    },
+    "agency.auth.RevokeGrant.input": {
+      "additionalProperties": false,
+      "properties": {
+        "grant_id": {
+          "$ref": "#/$defs/agency.auth.GrantId"
+        }
+      },
+      "required": [
+        "grant_id"
+      ],
+      "title": "Revoke a grant input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.RevokeGrant"
+    },
+    "agency.auth.RiskCeiling": {
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "title": "RiskCeiling",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.RiskCeiling"
+    },
+    "agency.auth.Role": {
+      "enum": [
+        "Operator",
+        "Supervisor",
+        "Viewer",
+        "Agent"
+      ],
+      "title": "Role",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.Role"
+    },
+    "agency.auth.RoleAssigned": {
+      "additionalProperties": false,
+      "properties": {
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "role": {
+          "$ref": "#/$defs/agency.auth.Role"
+        }
+      },
+      "required": [
+        "principal_id",
+        "role"
+      ],
+      "title": "RoleAssigned",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.RoleAssigned"
+    },
+    "agency.auth.Rule": {
+      "additionalProperties": false,
+      "properties": {
+        "budget_ceiling": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "decision_mode": {
+          "$ref": "#/$defs/agency.auth.DecisionMode"
+        },
+        "hermetic": {
+          "type": "boolean"
+        },
+        "risk_ceiling": {
+          "$ref": "#/$defs/agency.auth.RiskCeiling"
+        },
+        "subject": {
+          "$ref": "#/$defs/agency.auth.RuleSubject"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        },
+        "verbs": {
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "subject",
+        "risk_ceiling",
+        "decision_mode",
+        "budget_ceiling",
+        "hermetic"
+      ],
+      "title": "Rule",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.Rule"
+    },
+    "agency.auth.RuleSubject": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Definition",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.DefinitionSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "Definition",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Team",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TeamSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "Team",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Tenant",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TenantSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "Tenant",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Workforce",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.WorkforceSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "Workforce",
+          "type": "object"
+        }
+      ],
+      "title": "RuleSubject",
+      "x-ess-kind": "union",
+      "x-ess-name": "agency.auth.RuleSubject",
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.StoreCredential.input": {
+      "additionalProperties": false,
+      "properties": {
+        "custody": {
+          "$ref": "#/$defs/agency.auth.Custody"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/agency.auth.CredentialKind"
+        },
+        "owner_principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "scope": {
+          "$ref": "#/$defs/agency.auth.CredentialScope"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "custody",
+        "scope",
+        "owner_principal_id"
+      ],
+      "title": "Store a credential input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.StoreCredential"
+    },
+    "agency.auth.SupersedePolicy.input": {
+      "additionalProperties": false,
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/agency.auth.PolicyId"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "Supersede a policy input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.auth.SupersedePolicy"
+    },
+    "agency.auth.TeamSubject": {
+      "additionalProperties": false,
+      "properties": {
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id"
+      ],
+      "title": "TeamSubject",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.TeamSubject"
+    },
+    "agency.auth.Tenant.State": {
+      "enum": [
+        "Created"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.auth.Tenant.State"
+    },
+    "agency.auth.TenantCreated": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "TenantCreated",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.auth.TenantCreated"
+    },
+    "agency.auth.TenantId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "TenantId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.auth.TenantId"
+    },
+    "agency.auth.TenantSubject": {
+      "additionalProperties": false,
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "title": "TenantSubject",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.TenantSubject"
+    },
+    "agency.auth.ToolCallsPurpose": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        }
+      },
+      "required": [
+        "tool_id"
+      ],
+      "title": "ToolCallsPurpose",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.ToolCallsPurpose"
+    },
+    "agency.auth.WorkforceSubject": {
+      "additionalProperties": false,
+      "properties": {
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id"
+      ],
+      "title": "WorkforceSubject",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.auth.WorkforceSubject"
+    },
+    "agency.runs.AdmitRun.input": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id"
+      ],
+      "title": "Record a run admitted by Loom input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.AdmitRun"
+    },
+    "agency.runs.ApprovalId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "ApprovalId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.runs.ApprovalId"
+    },
+    "agency.runs.ApprovalInbox.row": {
+      "additionalProperties": false,
+      "properties": {
+        "answered_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "answered_by": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/agency.runs.ApprovalId"
+        },
+        "capability": {
+          "type": "string"
+        },
+        "requested_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.runs.RunApproval.State"
+        },
+        "subject": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "approval_id",
+        "run_id",
+        "subject",
+        "capability",
+        "requested_at",
+        "state"
+      ],
+      "title": "ApprovalInbox row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.runs.ApprovalInbox"
+    },
+    "agency.runs.CredentialSource": {
+      "enum": [
+        "OperatorLogin",
+        "ApiKey",
+        "Loopback",
+        "None"
+      ],
+      "title": "CredentialSource",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.runs.CredentialSource"
+    },
+    "agency.runs.DenyRunApproval.input": {
+      "additionalProperties": false,
+      "properties": {
+        "answered_by": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/agency.runs.ApprovalId"
+        }
+      },
+      "required": [
+        "approval_id",
+        "answered_by"
+      ],
+      "title": "Deny a run's approval input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.DenyRunApproval"
+    },
+    "agency.runs.GrantRunApproval.input": {
+      "additionalProperties": false,
+      "properties": {
+        "answered_by": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/agency.runs.ApprovalId"
+        }
+      },
+      "required": [
+        "approval_id",
+        "answered_by"
+      ],
+      "title": "Grant a run's approval input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.GrantRunApproval"
+    },
+    "agency.runs.LoomSessionId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "LoomSessionId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.runs.LoomSessionId"
+    },
+    "agency.runs.RecordRunFailure.input": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id",
+        "reason"
+      ],
+      "title": "Record a run's failure from Loom input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.RecordRunFailure"
+    },
+    "agency.runs.RecordRunProposal.input": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "usage": {
+          "$ref": "#/$defs/agency.runs.RunUsage"
+        }
+      },
+      "required": [
+        "run_id",
+        "usage"
+      ],
+      "title": "Record a run's proposal from Loom input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.RecordRunProposal"
+    },
+    "agency.runs.RecordRunStarted.input": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_source": {
+          "$ref": "#/$defs/agency.runs.CredentialSource"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "session_id": {
+          "$ref": "#/$defs/agency.runs.LoomSessionId"
+        }
+      },
+      "required": [
+        "run_id",
+        "session_id",
+        "credential_source"
+      ],
+      "title": "Record a run started in Loom input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.RecordRunStarted"
+    },
+    "agency.runs.RequestRunApproval.input": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "subject": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "subject",
+        "capability"
+      ],
+      "title": "Record a run's request for an approval input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.RequestRunApproval"
+    },
+    "agency.runs.Run.State": {
+      "enum": [
+        "Admitted",
+        "Failed",
+        "Proposed",
+        "Requested",
+        "Running",
+        "Stopped"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.runs.Run.State"
+    },
+    "agency.runs.RunAdmitted": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id"
+      ],
+      "title": "RunAdmitted",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunAdmitted"
+    },
+    "agency.runs.RunApproval.State": {
+      "enum": [
+        "Denied",
+        "Granted",
+        "Pending"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.runs.RunApproval.State"
+    },
+    "agency.runs.RunApprovalDenied": {
+      "additionalProperties": false,
+      "properties": {
+        "answered_by": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/agency.runs.ApprovalId"
+        }
+      },
+      "required": [
+        "approval_id",
+        "answered_by"
+      ],
+      "title": "RunApprovalDenied",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunApprovalDenied"
+    },
+    "agency.runs.RunApprovalGranted": {
+      "additionalProperties": false,
+      "properties": {
+        "answered_by": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/agency.runs.ApprovalId"
+        }
+      },
+      "required": [
+        "approval_id",
+        "answered_by"
+      ],
+      "title": "RunApprovalGranted",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunApprovalGranted"
+    },
+    "agency.runs.RunApprovalRequested": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_id": {
+          "$ref": "#/$defs/agency.runs.ApprovalId"
+        },
+        "capability": {
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "subject": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "approval_id",
+        "run_id",
+        "subject",
+        "capability"
+      ],
+      "title": "RunApprovalRequested",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunApprovalRequested"
+    },
+    "agency.runs.RunBudgetSet": {
+      "additionalProperties": false,
+      "properties": {
+        "budget": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id",
+        "budget"
+      ],
+      "title": "RunBudgetSet",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunBudgetSet"
+    },
+    "agency.runs.RunDetail.row": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "budget": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "credential_source": {
+          "$ref": "#/$defs/agency.runs.CredentialSource"
+        },
+        "ended_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "outcome": {
+          "$ref": "#/$defs/agency.runs.RunOutcome"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "session_id": {
+          "$ref": "#/$defs/agency.runs.LoomSessionId"
+        },
+        "started_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.runs.Run.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "usage": {
+          "$ref": "#/$defs/agency.runs.RunUsage"
+        },
+        "work_item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        },
+        "workspace": {
+          "$ref": "#/$defs/agency.runs.RunWorkspace"
+        }
+      },
+      "required": [
+        "run_id",
+        "tenant_id",
+        "agent_id",
+        "work_item_ref",
+        "budget",
+        "started_at",
+        "state"
+      ],
+      "title": "RunDetail row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.runs.RunDetail"
+    },
+    "agency.runs.RunEndReason": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "title": "RunEndReason",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.runs.RunEndReason"
+    },
+    "agency.runs.RunFailed": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id",
+        "reason"
+      ],
+      "title": "RunFailed",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunFailed"
+    },
+    "agency.runs.RunId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "RunId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.runs.RunId"
+    },
+    "agency.runs.RunList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "budget": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "credential_source": {
+          "$ref": "#/$defs/agency.runs.CredentialSource"
+        },
+        "ended_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "session_id": {
+          "$ref": "#/$defs/agency.runs.LoomSessionId"
+        },
+        "started_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.runs.Run.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "usage": {
+          "$ref": "#/$defs/agency.runs.RunUsage"
+        },
+        "work_item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        },
+        "workspace": {
+          "$ref": "#/$defs/agency.runs.RunWorkspace"
+        }
+      },
+      "required": [
+        "run_id",
+        "tenant_id",
+        "agent_id",
+        "work_item_ref",
+        "budget",
+        "started_at",
+        "state"
+      ],
+      "title": "RunList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.runs.RunList"
+    },
+    "agency.runs.RunOutcome": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Failed",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.runs.RunEndReason"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "Failed",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Proposal",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "title": "Proposal",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Stopped",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.runs.RunEndReason"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "Stopped",
+          "type": "object"
+        }
+      ],
+      "title": "RunOutcome",
+      "x-ess-kind": "union",
+      "x-ess-name": "agency.runs.RunOutcome",
+      "x-ess-union-tag": "kind"
+    },
+    "agency.runs.RunProposed": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "usage": {
+          "$ref": "#/$defs/agency.runs.RunUsage"
+        }
+      },
+      "required": [
+        "run_id",
+        "usage"
+      ],
+      "title": "RunProposed",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunProposed"
+    },
+    "agency.runs.RunRequested": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "work_item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "run_id",
+        "agent_id",
+        "work_item_ref"
+      ],
+      "title": "RunRequested",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunRequested"
+    },
+    "agency.runs.RunStarted": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_source": {
+          "$ref": "#/$defs/agency.runs.CredentialSource"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "session_id": {
+          "$ref": "#/$defs/agency.runs.LoomSessionId"
+        }
+      },
+      "required": [
+        "run_id",
+        "session_id",
+        "credential_source"
+      ],
+      "title": "RunStarted",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunStarted"
+    },
+    "agency.runs.RunStopped": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id",
+        "reason"
+      ],
+      "title": "RunStopped",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.runs.RunStopped"
+    },
+    "agency.runs.RunUsage": {
+      "additionalProperties": false,
+      "description": "The totals of Loom's RunUsageReport for one run.",
+      "properties": {
+        "cached_input_tokens": {
+          "type": "integer"
+        },
+        "cost_micro_usd": {
+          "type": "integer"
+        },
+        "input_tokens": {
+          "type": "integer"
+        },
+        "model_calls": {
+          "type": "integer"
+        },
+        "output_tokens": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model_calls",
+        "input_tokens",
+        "output_tokens",
+        "cached_input_tokens"
+      ],
+      "title": "RunUsage",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.runs.RunUsage"
+    },
+    "agency.runs.RunWorkspace": {
+      "additionalProperties": false,
+      "description": "The repository, base branch and volume claim a run works in.",
+      "properties": {
+        "base_branch": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string"
+        },
+        "volume_claim": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "base_branch"
+      ],
+      "title": "RunWorkspace",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.runs.RunWorkspace"
+    },
+    "agency.runs.SetRunBudget.input": {
+      "additionalProperties": false,
+      "properties": {
+        "budget": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id",
+        "budget"
+      ],
+      "title": "Set a run's budget input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.SetRunBudget"
+    },
+    "agency.runs.StartRun.input": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "budget": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "work_item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        },
+        "workspace": {
+          "$ref": "#/$defs/agency.runs.RunWorkspace"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "agent_id",
+        "work_item_ref",
+        "budget"
+      ],
+      "title": "Start a run input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.StartRun"
+    },
+    "agency.runs.StopRun.input": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        }
+      },
+      "required": [
+        "run_id",
+        "reason"
+      ],
+      "title": "Stop a run input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.runs.StopRun"
+    },
+    "agency.runs.UsageByAgent.row": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "runs": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "agent_id",
+        "runs"
+      ],
+      "title": "UsageByAgent row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.runs.UsageByAgent"
+    },
+    "agency.service.CloseSession.input": {
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/agency.service.SessionId"
+        }
+      },
+      "required": [
+        "session_id"
+      ],
+      "title": "Close a session input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.service.CloseSession"
+    },
+    "agency.service.OpenSession.input": {
+      "additionalProperties": false,
+      "properties": {
+        "csrf_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/agency.service.SessionKind"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "token_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        }
+      },
+      "required": [
+        "principal_id",
+        "kind",
+        "token_digest"
+      ],
+      "title": "Open a session input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.service.OpenSession"
+    },
+    "agency.service.Session.State": {
+      "enum": [
+        "Closed",
+        "Open"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.service.Session.State"
+    },
+    "agency.service.SessionClosed": {
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/agency.service.SessionId"
+        }
+      },
+      "required": [
+        "session_id"
+      ],
+      "title": "SessionClosed",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.service.SessionClosed"
+    },
+    "agency.service.SessionId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "SessionId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.service.SessionId"
+    },
+    "agency.service.SessionKind": {
+      "enum": [
+        "OperatorCookie",
+        "ApplicationToken",
+        "RunBearer"
+      ],
+      "title": "SessionKind",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.service.SessionKind"
+    },
+    "agency.service.SessionList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/agency.service.SessionKind"
+        },
+        "opened_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "run_id": {
+          "$ref": "#/$defs/agency.runs.RunId"
+        },
+        "session_id": {
+          "$ref": "#/$defs/agency.service.SessionId"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.service.Session.State"
+        }
+      },
+      "required": [
+        "session_id",
+        "principal_id",
+        "kind",
+        "opened_at",
+        "state"
+      ],
+      "title": "SessionList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.service.SessionList"
+    },
+    "agency.service.SessionOpened": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/agency.service.SessionKind"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/agency.auth.PrincipalId"
+        },
+        "session_id": {
+          "$ref": "#/$defs/agency.service.SessionId"
+        }
+      },
+      "required": [
+        "session_id",
+        "principal_id",
+        "kind"
+      ],
+      "title": "SessionOpened",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.service.SessionOpened"
+    },
+    "agency.shared.Digest": {
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "title": "Digest",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.shared.Digest"
+    },
+    "agency.shared.RunBudget": {
+      "additionalProperties": false,
+      "description": "The token and deadline limits a run is held to.",
+      "properties": {
+        "deadline": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "max_tokens": {
+          "type": "integer"
+        }
+      },
+      "title": "RunBudget",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.shared.RunBudget"
+    },
+    "agency.shared.Verb": {
+      "title": "Verb",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.shared.Verb"
+    },
+    "agency.teams.AddMember.input": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "agent_id"
+      ],
+      "title": "Add a team member input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.AddMember"
+    },
+    "agency.teams.AttachQueue.input": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id",
+        "input_id"
+      ],
+      "title": "Attach a queue to a workforce input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.AttachQueue"
+    },
+    "agency.teams.Capacity": {
+      "additionalProperties": false,
+      "properties": {
+        "max_concurrent_runs": {
+          "type": "integer"
+        },
+        "max_tokens_per_hour": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_concurrent_runs"
+      ],
+      "title": "Capacity",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.teams.Capacity"
+    },
+    "agency.teams.DeclareSwarm.input": {
+      "additionalProperties": false,
+      "properties": {
+        "coordinator_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "frame_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "goal_ref": {
+          "type": "string"
+        },
+        "max_workers": {
+          "type": "integer"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "work_input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "goal_ref",
+        "coordinator_agent_id",
+        "frame_digest",
+        "max_workers",
+        "team_id",
+        "work_input_id"
+      ],
+      "title": "Declare a swarm input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.DeclareSwarm"
+    },
+    "agency.teams.DefineWorkforce.input": {
+      "additionalProperties": false,
+      "properties": {
+        "capacity": {
+          "$ref": "#/$defs/agency.teams.Capacity"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name",
+        "capacity"
+      ],
+      "title": "Define a workforce input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.DefineWorkforce"
+    },
+    "agency.teams.DisbandTeam.input": {
+      "additionalProperties": false,
+      "properties": {
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id"
+      ],
+      "title": "Disband a team input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.DisbandTeam"
+    },
+    "agency.teams.FormTeam.input": {
+      "additionalProperties": false,
+      "properties": {
+        "broker_ref": {
+          "type": "string"
+        },
+        "lead_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/agency.agents.AgentId"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name",
+        "lead_agent_id",
+        "members",
+        "broker_ref"
+      ],
+      "title": "Form a team input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.FormTeam"
+    },
+    "agency.teams.LeadSet": {
+      "additionalProperties": false,
+      "properties": {
+        "lead_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "lead_agent_id"
+      ],
+      "title": "LeadSet",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.LeadSet"
+    },
+    "agency.teams.MemberAdded": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "agent_id"
+      ],
+      "title": "MemberAdded",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.MemberAdded"
+    },
+    "agency.teams.MemberRemoved": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "agent_id"
+      ],
+      "title": "MemberRemoved",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.MemberRemoved"
+    },
+    "agency.teams.MessageSent": {
+      "additionalProperties": false,
+      "properties": {
+        "from_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "text": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "team_id",
+        "from_agent_id",
+        "to",
+        "text"
+      ],
+      "title": "MessageSent",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.MessageSent"
+    },
+    "agency.teams.QueueAttached": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id",
+        "input_id"
+      ],
+      "title": "QueueAttached",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.QueueAttached"
+    },
+    "agency.teams.RemoveMember.input": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "agent_id"
+      ],
+      "title": "Remove a team member input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.RemoveMember"
+    },
+    "agency.teams.Report.input": {
+      "additionalProperties": false,
+      "properties": {
+        "from_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "line": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "to": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "team_id",
+        "from_agent_id",
+        "status",
+        "line"
+      ],
+      "title": "Report up one level input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.Report"
+    },
+    "agency.teams.ReportSent": {
+      "additionalProperties": false,
+      "properties": {
+        "from_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "line": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "from_agent_id",
+        "status",
+        "line"
+      ],
+      "title": "ReportSent",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.ReportSent"
+    },
+    "agency.teams.RetireWorkforce.input": {
+      "additionalProperties": false,
+      "properties": {
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id"
+      ],
+      "title": "Retire a workforce input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.RetireWorkforce"
+    },
+    "agency.teams.Send.input": {
+      "additionalProperties": false,
+      "properties": {
+        "from_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "text": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "team_id",
+        "from_agent_id",
+        "to",
+        "text"
+      ],
+      "title": "Send a team message input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.Send"
+    },
+    "agency.teams.SetLead.input": {
+      "additionalProperties": false,
+      "properties": {
+        "lead_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "lead_agent_id"
+      ],
+      "title": "Set a team's lead input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.SetLead"
+    },
+    "agency.teams.StaffWorkforce.input": {
+      "additionalProperties": false,
+      "properties": {
+        "solo_agents": {
+          "items": {
+            "$ref": "#/$defs/agency.agents.AgentId"
+          },
+          "type": "array"
+        },
+        "teams": {
+          "items": {
+            "$ref": "#/$defs/agency.teams.TeamId"
+          },
+          "type": "array"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id",
+        "teams",
+        "solo_agents"
+      ],
+      "title": "Staff a workforce input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.StaffWorkforce"
+    },
+    "agency.teams.StopSwarm.input": {
+      "additionalProperties": false,
+      "properties": {
+        "swarm_id": {
+          "$ref": "#/$defs/agency.teams.SwarmId"
+        }
+      },
+      "required": [
+        "swarm_id"
+      ],
+      "title": "Stop a swarm input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.teams.StopSwarm"
+    },
+    "agency.teams.Swarm.State": {
+      "enum": [
+        "Declared",
+        "Stopped"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.teams.Swarm.State"
+    },
+    "agency.teams.SwarmDeclared": {
+      "additionalProperties": false,
+      "properties": {
+        "goal_ref": {
+          "type": "string"
+        },
+        "swarm_id": {
+          "$ref": "#/$defs/agency.teams.SwarmId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "swarm_id",
+        "goal_ref",
+        "team_id"
+      ],
+      "title": "SwarmDeclared",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.SwarmDeclared"
+    },
+    "agency.teams.SwarmId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "SwarmId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.teams.SwarmId"
+    },
+    "agency.teams.SwarmList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "coordinator_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "frame_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "goal_ref": {
+          "type": "string"
+        },
+        "max_workers": {
+          "type": "integer"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.teams.Swarm.State"
+        },
+        "swarm_id": {
+          "$ref": "#/$defs/agency.teams.SwarmId"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "work_input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        }
+      },
+      "required": [
+        "swarm_id",
+        "tenant_id",
+        "goal_ref",
+        "coordinator_agent_id",
+        "frame_digest",
+        "max_workers",
+        "team_id",
+        "work_input_id",
+        "state"
+      ],
+      "title": "SwarmList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.teams.SwarmList"
+    },
+    "agency.teams.SwarmStopped": {
+      "additionalProperties": false,
+      "properties": {
+        "swarm_id": {
+          "$ref": "#/$defs/agency.teams.SwarmId"
+        }
+      },
+      "required": [
+        "swarm_id"
+      ],
+      "title": "SwarmStopped",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.SwarmStopped"
+    },
+    "agency.teams.Team.State": {
+      "enum": [
+        "Disbanded",
+        "Formed"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.teams.Team.State"
+    },
+    "agency.teams.TeamDetail.row": {
+      "additionalProperties": false,
+      "properties": {
+        "broker_ref": {
+          "type": "string"
+        },
+        "lead_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/agency.agents.AgentId"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.teams.Team.State"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "team_id",
+        "tenant_id",
+        "name",
+        "lead_agent_id",
+        "members",
+        "broker_ref",
+        "state"
+      ],
+      "title": "TeamDetail row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.teams.TeamDetail"
+    },
+    "agency.teams.TeamDisbanded": {
+      "additionalProperties": false,
+      "properties": {
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id"
+      ],
+      "title": "TeamDisbanded",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.TeamDisbanded"
+    },
+    "agency.teams.TeamFormed": {
+      "additionalProperties": false,
+      "properties": {
+        "lead_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id",
+        "name",
+        "lead_agent_id"
+      ],
+      "title": "TeamFormed",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.TeamFormed"
+    },
+    "agency.teams.TeamId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "TeamId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.teams.TeamId"
+    },
+    "agency.teams.TeamList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "lead_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/agency.agents.AgentId"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.teams.Team.State"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "team_id",
+        "tenant_id",
+        "name",
+        "lead_agent_id",
+        "members",
+        "state"
+      ],
+      "title": "TeamList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.teams.TeamList"
+    },
+    "agency.teams.Workforce.State": {
+      "enum": [
+        "Defined",
+        "Retired",
+        "Staffed"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.teams.Workforce.State"
+    },
+    "agency.teams.WorkforceBoard.row": {
+      "additionalProperties": false,
+      "properties": {
+        "capacity": {
+          "$ref": "#/$defs/agency.teams.Capacity"
+        },
+        "name": {
+          "type": "string"
+        },
+        "solo_agents": {
+          "items": {
+            "$ref": "#/$defs/agency.agents.AgentId"
+          },
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.teams.Workforce.State"
+        },
+        "teams": {
+          "items": {
+            "$ref": "#/$defs/agency.teams.TeamId"
+          },
+          "type": "array"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id",
+        "tenant_id",
+        "name",
+        "teams",
+        "solo_agents",
+        "capacity",
+        "state"
+      ],
+      "title": "WorkforceBoard row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.teams.WorkforceBoard"
+    },
+    "agency.teams.WorkforceDefined": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id",
+        "name"
+      ],
+      "title": "WorkforceDefined",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.WorkforceDefined"
+    },
+    "agency.teams.WorkforceId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "WorkforceId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.teams.WorkforceId"
+    },
+    "agency.teams.WorkforceRetired": {
+      "additionalProperties": false,
+      "properties": {
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id"
+      ],
+      "title": "WorkforceRetired",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.WorkforceRetired"
+    },
+    "agency.teams.WorkforceStaffed": {
+      "additionalProperties": false,
+      "properties": {
+        "solo_agents": {
+          "items": {
+            "$ref": "#/$defs/agency.agents.AgentId"
+          },
+          "type": "array"
+        },
+        "teams": {
+          "items": {
+            "$ref": "#/$defs/agency.teams.TeamId"
+          },
+          "type": "array"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id",
+        "teams",
+        "solo_agents"
+      ],
+      "title": "WorkforceStaffed",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.teams.WorkforceStaffed"
+    },
+    "agency.tools.BindTool.input": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "max_output_bytes": {
+          "type": "integer"
+        },
+        "scope": {
+          "$ref": "#/$defs/agency.tools.BindingScope"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        },
+        "verbs": {
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "tool_id",
+        "verbs",
+        "scope",
+        "max_output_bytes"
+      ],
+      "title": "Bind a tool input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.tools.BindTool"
+    },
+    "agency.tools.BindingId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "BindingId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.tools.BindingId"
+    },
+    "agency.tools.BindingList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_id": {
+          "$ref": "#/$defs/agency.tools.BindingId"
+        },
+        "credential_id": {
+          "$ref": "#/$defs/agency.auth.CredentialId"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "max_output_bytes": {
+          "type": "integer"
+        },
+        "scope": {
+          "$ref": "#/$defs/agency.tools.BindingScope"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.tools.ToolBinding.State"
+        },
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        },
+        "verbs": {
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "binding_id",
+        "tenant_id",
+        "tool_id",
+        "verbs",
+        "scope",
+        "max_output_bytes",
+        "state"
+      ],
+      "title": "BindingList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.tools.BindingList"
+    },
+    "agency.tools.BindingRevoked": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_id": {
+          "$ref": "#/$defs/agency.tools.BindingId"
+        }
+      },
+      "required": [
+        "binding_id"
+      ],
+      "title": "BindingRevoked",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.tools.BindingRevoked"
+    },
+    "agency.tools.BindingScope": {
+      "additionalProperties": false,
+      "properties": {
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "repositories": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "subjects": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "repositories",
+        "paths",
+        "subjects"
+      ],
+      "title": "BindingScope",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.tools.BindingScope"
+    },
+    "agency.tools.ContractRef": {
+      "additionalProperties": false,
+      "description": "The tool-contract/1 contract a tool was registered from.",
+      "properties": {
+        "toolset": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolset",
+        "version"
+      ],
+      "title": "ContractRef",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.tools.ContractRef"
+    },
+    "agency.tools.RegisterTool.input": {
+      "additionalProperties": false,
+      "properties": {
+        "connector_instance_id": {
+          "type": "string"
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/agency.tools.ContractRef"
+        },
+        "implementation_ref": {
+          "type": "string"
+        },
+        "risk": {
+          "$ref": "#/$defs/agency.tools.RiskEnvelope"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "verbs": {
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "contract_ref",
+        "verbs",
+        "risk"
+      ],
+      "title": "Register a tool input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.tools.RegisterTool"
+    },
+    "agency.tools.RevokeBinding.input": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_id": {
+          "$ref": "#/$defs/agency.tools.BindingId"
+        }
+      },
+      "required": [
+        "binding_id"
+      ],
+      "title": "Revoke a binding input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.tools.RevokeBinding"
+    },
+    "agency.tools.RiskEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "effects": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "idempotency": {
+          "type": "string"
+        },
+        "risk": {
+          "$ref": "#/$defs/agency.tools.ToolRisk"
+        }
+      },
+      "required": [
+        "effects",
+        "risk",
+        "idempotency"
+      ],
+      "title": "RiskEnvelope",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.tools.RiskEnvelope"
+    },
+    "agency.tools.Tool.State": {
+      "enum": [
+        "Registered",
+        "Withdrawn"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.tools.Tool.State"
+    },
+    "agency.tools.ToolBinding.State": {
+      "enum": [
+        "Granted",
+        "Revoked"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.tools.ToolBinding.State"
+    },
+    "agency.tools.ToolBound": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_id": {
+          "$ref": "#/$defs/agency.tools.BindingId"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        },
+        "verbs": {
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "binding_id",
+        "tool_id",
+        "verbs"
+      ],
+      "title": "ToolBound",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.tools.ToolBound"
+    },
+    "agency.tools.ToolCatalogue.row": {
+      "additionalProperties": false,
+      "properties": {
+        "connector_instance_id": {
+          "type": "string"
+        },
+        "contract_ref": {
+          "$ref": "#/$defs/agency.tools.ContractRef"
+        },
+        "implementation_ref": {
+          "type": "string"
+        },
+        "risk": {
+          "$ref": "#/$defs/agency.tools.RiskEnvelope"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.tools.Tool.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        },
+        "verbs": {
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "tool_id",
+        "tenant_id",
+        "contract_ref",
+        "verbs",
+        "risk",
+        "state"
+      ],
+      "title": "ToolCatalogue row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.tools.ToolCatalogue"
+    },
+    "agency.tools.ToolId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "ToolId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.tools.ToolId"
+    },
+    "agency.tools.ToolRegistered": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_ref": {
+          "$ref": "#/$defs/agency.tools.ContractRef"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        }
+      },
+      "required": [
+        "tool_id",
+        "contract_ref"
+      ],
+      "title": "ToolRegistered",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.tools.ToolRegistered"
+    },
+    "agency.tools.ToolRisk": {
+      "enum": [
+        "None",
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ],
+      "title": "ToolRisk",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.tools.ToolRisk"
+    },
+    "agency.tools.ToolWithdrawn": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        }
+      },
+      "required": [
+        "tool_id"
+      ],
+      "title": "ToolWithdrawn",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.tools.ToolWithdrawn"
+    },
+    "agency.tools.WithdrawTool.input": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        }
+      },
+      "required": [
+        "tool_id"
+      ],
+      "title": "Withdraw a tool input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.tools.WithdrawTool"
+    },
+    "agency.work.AbandonWorkItem.input": {
+      "additionalProperties": false,
+      "properties": {
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref"
+      ],
+      "title": "Abandon a work item input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.AbandonWorkItem"
+    },
+    "agency.work.AepStoreSource": {
+      "additionalProperties": false,
+      "properties": {
+        "filter": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repo",
+        "filter"
+      ],
+      "title": "AepStoreSource",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.work.AepStoreSource"
+    },
+    "agency.work.AssignWorkItem.input": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref",
+        "agent_id"
+      ],
+      "title": "Assign a work item input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.AssignWorkItem"
+    },
+    "agency.work.ConfigureWorkInput.input": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "poll_interval": {
+          "format": "duration",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/agency.work.WorkSource"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "transform_ref": {
+          "type": "string"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name",
+        "source",
+        "workforce_id"
+      ],
+      "title": "Configure a work input input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.ConfigureWorkInput"
+    },
+    "agency.work.GitHubIssuesSource": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repo",
+        "label"
+      ],
+      "title": "GitHubIssuesSource",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.work.GitHubIssuesSource"
+    },
+    "agency.work.InputId": {
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "title": "InputId",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.work.InputId"
+    },
+    "agency.work.PauseWorkInput.input": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        }
+      },
+      "required": [
+        "input_id"
+      ],
+      "title": "Pause a work input input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.PauseWorkInput"
+    },
+    "agency.work.RemoveWorkInput.input": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        }
+      },
+      "required": [
+        "input_id"
+      ],
+      "title": "Remove a work input input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.RemoveWorkInput"
+    },
+    "agency.work.ReturnWorkItem.input": {
+      "additionalProperties": false,
+      "properties": {
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref"
+      ],
+      "title": "Return a work item input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.ReturnWorkItem"
+    },
+    "agency.work.SettleWorkItem.input": {
+      "additionalProperties": false,
+      "properties": {
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref"
+      ],
+      "title": "Settle a work item input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.SettleWorkItem"
+    },
+    "agency.work.SubmitWorkItem.input": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "item_ref",
+        "input_id",
+        "title",
+        "payload_digest"
+      ],
+      "title": "Submit a work item input",
+      "type": "object",
+      "x-ess-kind": "command-input",
+      "x-ess-name": "agency.work.SubmitWorkItem"
+    },
+    "agency.work.WebhookSource": {
+      "additionalProperties": false,
+      "properties": {
+        "secret_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "secret_ref"
+      ],
+      "title": "WebhookSource",
+      "type": "object",
+      "x-ess-kind": "struct",
+      "x-ess-name": "agency.work.WebhookSource"
+    },
+    "agency.work.WorkInput.State": {
+      "enum": [
+        "Configured",
+        "Paused",
+        "Removed"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.work.WorkInput.State"
+    },
+    "agency.work.WorkInputConfigured": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "input_id",
+        "name",
+        "workforce_id"
+      ],
+      "title": "WorkInputConfigured",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkInputConfigured"
+    },
+    "agency.work.WorkInputList.row": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "poll_interval": {
+          "format": "duration",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/agency.work.WorkSource"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.work.WorkInput.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "transform_ref": {
+          "type": "string"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "input_id",
+        "tenant_id",
+        "name",
+        "source",
+        "workforce_id",
+        "state"
+      ],
+      "title": "WorkInputList row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.work.WorkInputList"
+    },
+    "agency.work.WorkInputPaused": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        }
+      },
+      "required": [
+        "input_id"
+      ],
+      "title": "WorkInputPaused",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkInputPaused"
+    },
+    "agency.work.WorkInputRemoved": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        }
+      },
+      "required": [
+        "input_id"
+      ],
+      "title": "WorkInputRemoved",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkInputRemoved"
+    },
+    "agency.work.WorkItem.State": {
+      "enum": [
+        "Abandoned",
+        "Assigned",
+        "Done",
+        "Received",
+        "Returned"
+      ],
+      "title": "State",
+      "type": "string",
+      "x-ess-kind": "enum",
+      "x-ess-name": "agency.work.WorkItem.State"
+    },
+    "agency.work.WorkItemAbandoned": {
+      "additionalProperties": false,
+      "properties": {
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref"
+      ],
+      "title": "WorkItemAbandoned",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkItemAbandoned"
+    },
+    "agency.work.WorkItemAssigned": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref",
+        "agent_id"
+      ],
+      "title": "WorkItemAssigned",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkItemAssigned"
+    },
+    "agency.work.WorkItemDetail.row": {
+      "additionalProperties": false,
+      "properties": {
+        "assigned_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        },
+        "received_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "settled_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.work.WorkItem.State"
+        },
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "item_ref",
+        "tenant_id",
+        "input_id",
+        "title",
+        "payload_digest",
+        "received_at",
+        "state"
+      ],
+      "title": "WorkItemDetail row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.work.WorkItemDetail"
+    },
+    "agency.work.WorkItemRef": {
+      "description": "A work item's external id together with its source.",
+      "title": "WorkItemRef",
+      "type": "string",
+      "x-ess-kind": "newtype",
+      "x-ess-name": "agency.work.WorkItemRef"
+    },
+    "agency.work.WorkItemReturned": {
+      "additionalProperties": false,
+      "properties": {
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref"
+      ],
+      "title": "WorkItemReturned",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkItemReturned"
+    },
+    "agency.work.WorkItemSettled": {
+      "additionalProperties": false,
+      "properties": {
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        }
+      },
+      "required": [
+        "item_ref"
+      ],
+      "title": "WorkItemSettled",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkItemSettled"
+    },
+    "agency.work.WorkItemSubmitted": {
+      "additionalProperties": false,
+      "properties": {
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/agency.shared.Digest"
+        }
+      },
+      "required": [
+        "item_ref",
+        "input_id",
+        "payload_digest"
+      ],
+      "title": "WorkItemSubmitted",
+      "type": "object",
+      "x-ess-kind": "event-payload",
+      "x-ess-name": "agency.work.WorkItemSubmitted"
+    },
+    "agency.work.WorkQueue.row": {
+      "additionalProperties": false,
+      "properties": {
+        "assigned_agent_id": {
+          "$ref": "#/$defs/agency.agents.AgentId"
+        },
+        "input_id": {
+          "$ref": "#/$defs/agency.work.InputId"
+        },
+        "item_ref": {
+          "$ref": "#/$defs/agency.work.WorkItemRef"
+        },
+        "received_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/agency.work.WorkItem.State"
+        },
+        "title": {
+          "type": "string"
+        },
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "item_ref",
+        "input_id",
+        "title",
+        "received_at",
+        "state"
+      ],
+      "title": "WorkQueue row",
+      "type": "object",
+      "x-ess-kind": "view-row",
+      "x-ess-name": "agency.work.WorkQueue"
+    },
+    "agency.work.WorkSource": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "A2aTask",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "title": "A2aTask",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "AepStore",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.work.AepStoreSource"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "AepStore",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "GitHubIssues",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.work.GitHubIssuesSource"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "GitHubIssues",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Manual",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "title": "Manual",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "Webhook",
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.work.WebhookSource"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "title": "Webhook",
+          "type": "object"
+        }
+      ],
+      "title": "WorkSource",
+      "x-ess-kind": "union",
+      "x-ess-name": "agency.work.WorkSource",
+      "x-ess-union-tag": "kind"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "x-ess-provenance": {
+    "contract_digest": "slice-sha256/2:bf80360bfa3adcd12913628ca730e230cc5367b0f400b2ea49f452f2b39d55f8",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "specification_version": "v1",
+    "system": "agency"
+  }
+}

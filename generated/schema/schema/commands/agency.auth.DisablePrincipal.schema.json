@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Disable a principal input",
+  "x-ess-name": "agency.auth.DisablePrincipal",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "principal_id": {
+      "$ref": "#/$defs/agency.auth.PrincipalId"
+    }
+  },
+  "required": [
+    "principal_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:ce72f32c3d32bcb11d11014594073e9d590f79e01eb74f27a88dc6f791bfa42c",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

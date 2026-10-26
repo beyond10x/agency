@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-26T14:54:08Z",
+  "actor": "human:timo",
+  "artifact": "epic:agency-spec",
+  "kind": "epic",
+  "revision": 3,
+  "change": {
+    "change": "evidence",
+    "kind": "verification",
+    "source": "ess verify conform synthesize: 360 scenarios (5 authored), 0 refusals; generated/ holds no drift from ess/",
+    "reference": "generated/conformance/suite.json"
+  }
+}

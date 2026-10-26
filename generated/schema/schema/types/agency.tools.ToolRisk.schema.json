@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.tools.ToolRisk",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:80430c9035a8df7e2724d26ac56410aa4046bea202e7c7e61df7257e3d40508e",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.ToolRisk": {
+      "title": "ToolRisk",
+      "x-ess-name": "agency.tools.ToolRisk",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "None",
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ]
+    }
+  }
+}

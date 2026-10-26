@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentDefinition",
+  "description": "A versioned, governed record of one loom.agent/1 document: owner, tenant and policy around a document Loom checks. Immutable once published.",
+  "x-ess-name": "agency.agents.AgentDefinition",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "definition_id": {
+      "$ref": "#/$defs/agency.agents.DefinitionId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "agent_definitions",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.agents.AgentDefinition",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "agent_spec": {
+      "$ref": "#/$defs/agency.agents.AgentSpecDocument"
+    },
+    "policy_id": {
+      "$ref": "#/$defs/agency.auth.PolicyId",
+      "x-ess-relation": {
+        "name": "policy",
+        "kind": "references",
+        "source": "agency.agents.AgentDefinition",
+        "target": "agency.auth.Policy",
+        "cardinality": "one",
+        "via": "policy_id"
+      }
+    },
+    "version": {
+      "type": "integer"
+    },
+    "digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    },
+    "created_by": {
+      "$ref": "#/$defs/agency.auth.PrincipalId",
+      "x-ess-relation": {
+        "name": "creator",
+        "kind": "references",
+        "source": "agency.agents.AgentDefinition",
+        "target": "agency.auth.Principal",
+        "cardinality": "one",
+        "via": "created_by"
+      }
+    },
+    "check_exit_code": {
+      "type": "integer"
+    },
+    "check_message": {
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.agents.AgentDefinition.State"
+    }
+  },
+  "required": [
+    "definition_id",
+    "tenant_id",
+    "name",
+    "description",
+    "agent_spec",
+    "policy_id",
+    "version",
+    "digest",
+    "created_by",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentDefinition.State": {
+      "title": "State",
+      "x-ess-name": "agency.agents.AgentDefinition.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Checked",
+        "Deprecated",
+        "Draft",
+        "Published"
+      ]
+    },
+    "agency.agents.AgentSpecDocument": {
+      "title": "AgentSpecDocument",
+      "description": "One loom.agent/1 document, held by value; its schema is Loom's.",
+      "x-ess-name": "agency.agents.AgentSpecDocument",
+      "x-ess-kind": "newtype"
+    },
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.PolicyId": {
+      "title": "PolicyId",
+      "x-ess-name": "agency.auth.PolicyId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.shared.Digest": {
+      "title": "Digest",
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "x-ess-name": "agency.shared.Digest",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

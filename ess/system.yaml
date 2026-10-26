@@ -1,0 +1,22 @@
+# The ESS specification of Agency (docs/design/agency.md, milestone M0, §7). Sub-domains follow
+# §2: agents, tools, teams, work, auth, with runs split from agents and the service's sessions
+# (§4.1) as their own sub-domains; agency.shared holds the value types more than one of them
+# uses. Answers to the design's open questions: .engineering/planning/approval-record/design-answers.md.
+format: ess/31
+system: agency
+version: v1
+
+summary: >-
+  The deployable service and cockpit from which an agentic engineer defines agents, gives them
+  tools and credentials, forms them into teams, feeds them work, and watches the runs Loom
+  executes for them (docs/design/agency.md §1).
+
+domains:
+  - agency.shared
+  - agency.auth
+  - agency.agents
+  - agency.runs
+  - agency.tools
+  - agency.teams
+  - agency.work
+  - agency.service

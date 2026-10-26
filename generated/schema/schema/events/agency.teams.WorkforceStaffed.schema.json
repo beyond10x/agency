@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkforceStaffed payload",
+  "x-ess-name": "agency.teams.WorkforceStaffed",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "workforce_id": {
+      "$ref": "#/$defs/agency.teams.WorkforceId"
+    },
+    "teams": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.teams.TeamId"
+      }
+    },
+    "solo_agents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.agents.AgentId"
+      }
+    }
+  },
+  "required": [
+    "workforce_id",
+    "teams",
+    "solo_agents"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:2dd07498a2bf6dbd23d9690056cd422b925bcb8b4155aeae60a622e90eac4e28",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.WorkforceId": {
+      "title": "WorkforceId",
+      "x-ess-name": "agency.teams.WorkforceId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

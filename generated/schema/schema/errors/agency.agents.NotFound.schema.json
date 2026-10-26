@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NotFound payload",
+  "description": "The addressed record does not exist, and nothing changed.",
+  "x-ess-name": "agency.agents.NotFound",
+  "x-ess-kind": "error-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:fcc3d4dc65bf2fe90162614832506a604b85e0db1e652ff46669b98727721498",
+    "regenerate": "ess generate"
+  }
+}

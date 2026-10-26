@@ -1,0 +1,37 @@
+{
+  "target": "generated",
+  "ess": "0.69.2",
+  "total_floor": 360,
+  "answered_floor": 304,
+  "unanswered_ceiling": 56,
+  "quarantine": [
+    {
+      "scenario": "agency.auth.GrantCredential/outcome/granted-to-agent",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.GrantCredential/outcome/granted-to-team",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.GrantCredential/outcome/granted-to-workforce",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.StoreCredential/grant/denied",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.auth.StoreCredential/outcome/stored",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.work.ConfigureWorkInput/grant/denied",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    },
+    {
+      "scenario": "agency.work.ConfigureWorkInput/outcome/configured",
+      "reason": "ess 0.69.2: a scenario covering each union variant in turn reads the second row under the first event's observed identity"
+    }
+  ]
+}

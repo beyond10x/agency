@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Record a run's failure from Loom input",
+  "x-ess-name": "agency.runs.RecordRunFailure",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId"
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "reason"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:d2d2cb7bb3808dc50c422a68c8063f9e2b09e8c4aaee18f81b3dd5bc60498783",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

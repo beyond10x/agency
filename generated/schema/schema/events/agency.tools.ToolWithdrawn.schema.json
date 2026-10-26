@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolWithdrawn payload",
+  "x-ess-name": "agency.tools.ToolWithdrawn",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "tool_id": {
+      "$ref": "#/$defs/agency.tools.ToolId"
+    }
+  },
+  "required": [
+    "tool_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:0d09c4f7719be41b0653b0fdc9e3930ad0bba9231300a511681eeb89d4a58b68",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

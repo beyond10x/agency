@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageSent payload",
+  "x-ess-name": "agency.teams.MessageSent",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "team_id": {
+      "$ref": "#/$defs/agency.teams.TeamId"
+    },
+    "from_agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId"
+    },
+    "to": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "team_id",
+    "from_agent_id",
+    "to",
+    "text"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:a1546dadb75b7a9baa5f981a430c76cc6d3d2ca6cf3d2779eeae8a8ab92445ff",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

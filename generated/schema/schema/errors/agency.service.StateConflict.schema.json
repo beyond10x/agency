@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StateConflict payload",
+  "description": "The addressed record is not in a state this command acts from, and nothing changed.",
+  "x-ess-name": "agency.service.StateConflict",
+  "x-ess-kind": "error-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:79f0b5a56558350e6ceecf9e858b26bb7eb90e689178669eec130d2671d20a2f",
+    "regenerate": "ess generate"
+  }
+}

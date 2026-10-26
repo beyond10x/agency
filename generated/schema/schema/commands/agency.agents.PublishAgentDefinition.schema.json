@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Publish an agent definition input",
+  "x-ess-name": "agency.agents.PublishAgentDefinition",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "definition_id": {
+      "$ref": "#/$defs/agency.agents.DefinitionId"
+    }
+  },
+  "required": [
+    "definition_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:b2a5cd1439456a7ae792944ce5a179baf334451929abb4ea021616f13b6cdb45",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

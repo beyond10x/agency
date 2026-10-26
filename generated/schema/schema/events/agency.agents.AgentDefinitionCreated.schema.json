@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentDefinitionCreated payload",
+  "x-ess-name": "agency.agents.AgentDefinitionCreated",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "definition_id": {
+      "$ref": "#/$defs/agency.agents.DefinitionId"
+    },
+    "name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "definition_id",
+    "name"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:31120ff80f6b00597b73af1f0c078df9c4ecb474f1bf58dbc1c283d9d29501d9",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

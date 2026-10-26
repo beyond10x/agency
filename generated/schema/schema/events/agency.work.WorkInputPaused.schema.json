@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkInputPaused payload",
+  "x-ess-name": "agency.work.WorkInputPaused",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "input_id": {
+      "$ref": "#/$defs/agency.work.InputId"
+    }
+  },
+  "required": [
+    "input_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:045a8b8d40bf6968695bf38f9f552d5b7d2e07542770fe22f5f40cf721306a9c",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.InputId": {
+      "title": "InputId",
+      "x-ess-name": "agency.work.InputId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

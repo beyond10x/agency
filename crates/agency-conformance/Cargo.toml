@@ -1,0 +1,15 @@
+[package]
+name = "agency-conformance"
+description = "The Rust ESS conformance target that holds the synthesized crate generated/rust/agency to the suite synthesized from ess/."
+publish = false
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+agency = { path = "../../generated/rust/agency", features = ["server"] }
+ess-conformance = { workspace = true }
+ess-primitives = { workspace = true }
+serde_json = { workspace = true }
+time = { workspace = true }

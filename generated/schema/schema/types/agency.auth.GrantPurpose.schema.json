@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.GrantPurpose",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:b3795e90f182444d6c778d8e301e512698e8926c16ac39be816e1aa7a6fa8829",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.GrantPurpose": {
+      "title": "GrantPurpose",
+      "x-ess-name": "agency.auth.GrantPurpose",
+      "x-ess-kind": "union",
+      "oneOf": [
+        {
+          "title": "ModelCalls",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ModelCalls"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "ToolCalls",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ToolCalls"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.ToolCallsPurpose"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.ToolCallsPurpose": {
+      "title": "ToolCallsPurpose",
+      "x-ess-name": "agency.auth.ToolCallsPurpose",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        }
+      },
+      "required": [
+        "tool_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

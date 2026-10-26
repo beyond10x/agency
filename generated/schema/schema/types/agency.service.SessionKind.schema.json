@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.service.SessionKind",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:b89a680783d77fa406ce35e561e9b5f80bb2982e9e0e623a3e9e8ecd52f63ccd",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.service.SessionKind": {
+      "title": "SessionKind",
+      "x-ess-name": "agency.service.SessionKind",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "OperatorCookie",
+        "ApplicationToken",
+        "RunBearer"
+      ]
+    }
+  }
+}

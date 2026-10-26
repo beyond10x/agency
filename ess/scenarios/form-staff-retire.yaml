@@ -1,0 +1,68 @@
+# §2.3 and §3.3: a team is formed and staffs a workforce; the workforce is retired and the team
+# disbanded.
+type: ess-scenario/1
+domain: agency.teams
+scenario: form-staff-retire
+summary: A team staffs a workforce; the workforce is retired and the team disbanded.
+
+arrange:
+  - instance: tenant
+    entity: agency.auth.Tenant
+  - instance: team
+    entity: agency.teams.Team
+  - instance: workforce
+    entity: agency.teams.Workforce
+
+timeline:
+  - at: 2026-10-22T12:00:00Z
+    command: agency.auth.CreateTenant
+    actor: agency.auth.Supervisor
+    input:
+      name: local
+    outcome: created
+    capture: {instance: tenant, event: agency.auth.TenantCreated, field: tenant_id}
+
+  - at: 2026-10-22T12:00:01Z
+    command: agency.teams.FormTeam
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      name: release
+      lead_agent_id: 7f1c2a52-3b5e-4f7a-9d1e-2c4b6a8e0f13
+      members: [7f1c2a52-3b5e-4f7a-9d1e-2c4b6a8e0f13]
+      broker_ref: local
+    outcome: formed
+    capture: {instance: team, event: agency.teams.TeamFormed, field: team_id}
+
+  - at: 2026-10-22T12:00:02Z
+    command: agency.teams.DefineWorkforce
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      name: releases
+      capacity: {max_concurrent_runs: 1}
+    outcome: defined
+    capture: {instance: workforce, event: agency.teams.WorkforceDefined, field: workforce_id}
+
+  - at: 2026-10-22T12:00:03Z
+    command: agency.teams.StaffWorkforce
+    actor: agency.auth.Operator
+    input:
+      workforce_id: {$instance: workforce}
+      teams: [{$instance: team}]
+      solo_agents: []
+    outcome: staffed
+
+  - at: 2026-10-22T12:00:04Z
+    command: agency.teams.RetireWorkforce
+    actor: agency.auth.Operator
+    input:
+      workforce_id: {$instance: workforce}
+    outcome: retired
+
+  - at: 2026-10-22T12:00:05Z
+    command: agency.teams.DisbandTeam
+    actor: agency.auth.Operator
+    input:
+      team_id: {$instance: team}
+    outcome: disbanded

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Revoke a grant input",
+  "x-ess-name": "agency.auth.RevokeGrant",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "grant_id": {
+      "$ref": "#/$defs/agency.auth.GrantId"
+    }
+  },
+  "required": [
+    "grant_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:6a2eef288f1dbc1cd218d44f9a33a032ca1becc4d6242a32c74d5c81a98363cf",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.GrantId": {
+      "title": "GrantId",
+      "x-ess-name": "agency.auth.GrantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+# §2.5, §3.4 and §4.3: a credential is stored as a custody pointer (no secret value is an input),
+# granted for model calls, the grant revoked, then the credential revoked and refused a refresh.
+type: ess-scenario/1
+domain: agency.auth
+scenario: store-grant-revoke
+summary: A stored credential is granted, the grant and the credential revoked, and a refresh refused.
+
+arrange:
+  - instance: tenant
+    entity: agency.auth.Tenant
+  - instance: owner
+    entity: agency.auth.Principal
+  - instance: credential
+    entity: agency.auth.Credential
+  - instance: grant
+    entity: agency.auth.CredentialGrant
+
+timeline:
+  - at: 2026-10-22T11:00:00Z
+    command: agency.auth.CreateTenant
+    actor: agency.auth.Supervisor
+    input:
+      name: local
+    outcome: created
+    capture: {instance: tenant, event: agency.auth.TenantCreated, field: tenant_id}
+
+  - at: 2026-10-22T11:00:01Z
+    command: agency.auth.InvitePrincipal
+    actor: agency.auth.Supervisor
+    input:
+      tenant_id: {$instance: tenant}
+      kind: Human
+      subject: operator
+      roles: [Operator, Supervisor]
+    outcome: invited
+    capture: {instance: owner, event: agency.auth.PrincipalInvited, field: principal_id}
+
+  - at: 2026-10-22T11:00:02Z
+    command: agency.auth.StoreCredential
+    actor: agency.auth.Supervisor
+    input:
+      tenant_id: {$instance: tenant}
+      kind: OperatorLogin
+      custody: {kind: HostFile, value: {path: .claude/credentials.json}}
+      scope: {models: [claude-opus], providers: [anthropic], tools: []}
+      owner_principal_id: {$instance: owner}
+    outcome: stored
+    capture: {instance: credential, event: agency.auth.CredentialStored, field: credential_id}
+
+  - at: 2026-10-22T11:00:03Z
+    command: agency.auth.GrantCredential
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      credential_id: {$instance: credential}
+      grantee_agent_id: 7f1c2a52-3b5e-4f7a-9d1e-2c4b6a8e0f13
+      purpose: {kind: ModelCalls}
+    outcome: granted-to-agent
+    capture: {instance: grant, event: agency.auth.CredentialGranted, field: grant_id}
+
+  - at: 2026-10-22T11:00:04Z
+    command: agency.auth.RevokeGrant
+    actor: agency.auth.Operator
+    input:
+      grant_id: {$instance: grant}
+    outcome: revoked
+
+  - at: 2026-10-22T11:00:05Z
+    command: agency.auth.RevokeCredential
+    actor: agency.auth.Supervisor
+    input:
+      credential_id: {$instance: credential}
+    outcome: revoked
+
+  - at: 2026-10-22T11:00:06Z
+    command: agency.auth.RefreshCredential
+    actor: agency.auth.Supervisor
+    input:
+      credential_id: {$instance: credential}
+    outcome: revoked

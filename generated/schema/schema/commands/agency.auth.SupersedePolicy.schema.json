@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Supersede a policy input",
+  "x-ess-name": "agency.auth.SupersedePolicy",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "policy_id": {
+      "$ref": "#/$defs/agency.auth.PolicyId"
+    }
+  },
+  "required": [
+    "policy_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:cb87d86de59eff1a61a40a790d7129943a985d3bb07db3eeca3503b8118c7384",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PolicyId": {
+      "title": "PolicyId",
+      "x-ess-name": "agency.auth.PolicyId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

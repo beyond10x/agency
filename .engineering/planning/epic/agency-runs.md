@@ -2,10 +2,12 @@
 format: aep.planning-md/3
 id: epic:agency-runs
 kind: epic
-status: draft
+status: proposed
 title: M2 Runs driven through loom-sdk
 summary: StartRun drives a Loom SessionExecutor for Kind::Claude with budget and stop policy; RunDetail shows trace-ir/1 events; Loopback custody.
-revision: 1
+revision: 2
+transitions:
+- {from: "draft", to: "proposed", at: "2026-10-26T14:54:20Z", actor: "human:timo", revision: 2}
 ---
 ## Outcome
 

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkItemAbandoned payload",
+  "x-ess-name": "agency.work.WorkItemAbandoned",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "item_ref": {
+      "$ref": "#/$defs/agency.work.WorkItemRef"
+    }
+  },
+  "required": [
+    "item_ref"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:3a9d35d0895eaf42839049a257de4888a9fb316048cbb5554d6c2dbab5fdef2f",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.WorkItemRef": {
+      "title": "WorkItemRef",
+      "description": "A work item's external id together with its source.",
+      "x-ess-name": "agency.work.WorkItemRef",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

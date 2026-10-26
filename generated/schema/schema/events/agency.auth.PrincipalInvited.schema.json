@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PrincipalInvited payload",
+  "x-ess-name": "agency.auth.PrincipalInvited",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "principal_id": {
+      "$ref": "#/$defs/agency.auth.PrincipalId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "kind": {
+      "$ref": "#/$defs/agency.auth.PrincipalKind"
+    },
+    "subject": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "principal_id",
+    "tenant_id",
+    "kind",
+    "subject"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:47e33b0299bdaf50011a9f793693a3575c8d8d081cc3bca000eb20f6019463b2",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.PrincipalKind": {
+      "title": "PrincipalKind",
+      "x-ess-name": "agency.auth.PrincipalKind",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Human",
+        "Agent",
+        "Service"
+      ]
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

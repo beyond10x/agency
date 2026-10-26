@@ -2,10 +2,12 @@
 format: aep.planning-md/3
 id: epic:agency-service
 kind: epic
-status: draft
+status: proposed
 title: M1 Service skeleton
 summary: 'agency serve on loopback: eventlog SQLite, every command accepted and logged, every view answered from projections, SSE events; single tenant, OperatorLogin only.'
-revision: 1
+revision: 2
+transitions:
+- {from: "draft", to: "proposed", at: "2026-10-26T14:54:20Z", actor: "human:timo", revision: 2}
 ---
 ## Outcome
 

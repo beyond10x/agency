@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RunProposed payload",
+  "x-ess-name": "agency.runs.RunProposed",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId"
+    },
+    "usage": {
+      "$ref": "#/$defs/agency.runs.RunUsage"
+    }
+  },
+  "required": [
+    "run_id",
+    "usage"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:bffb9492127e3a756034b5a07a271a513742903faedaf6c22d163ea8aadd8670",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunUsage": {
+      "title": "RunUsage",
+      "description": "The totals of Loom's RunUsageReport for one run.",
+      "x-ess-name": "agency.runs.RunUsage",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "model_calls": {
+          "type": "integer"
+        },
+        "input_tokens": {
+          "type": "integer"
+        },
+        "output_tokens": {
+          "type": "integer"
+        },
+        "cached_input_tokens": {
+          "type": "integer"
+        },
+        "cost_micro_usd": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model_calls",
+        "input_tokens",
+        "output_tokens",
+        "cached_input_tokens"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

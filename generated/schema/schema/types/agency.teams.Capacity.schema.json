@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.teams.Capacity",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:073268b6e9dc0cdb534efff26f2ae3679ad1ac1d870ff99a7be736ca174db6e4",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.teams.Capacity": {
+      "title": "Capacity",
+      "x-ess-name": "agency.teams.Capacity",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "max_concurrent_runs": {
+          "type": "integer"
+        },
+        "max_tokens_per_hour": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_concurrent_runs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.tools.BindingScope",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:9e35ffb29b7ed3e15596bfff5502cc1d9221db1b10bd688981c9e6a033423b23",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.BindingScope": {
+      "title": "BindingScope",
+      "x-ess-name": "agency.tools.BindingScope",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "repositories",
+        "paths",
+        "subjects"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

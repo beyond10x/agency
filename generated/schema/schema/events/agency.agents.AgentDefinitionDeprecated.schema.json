@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentDefinitionDeprecated payload",
+  "x-ess-name": "agency.agents.AgentDefinitionDeprecated",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "definition_id": {
+      "$ref": "#/$defs/agency.agents.DefinitionId"
+    }
+  },
+  "required": [
+    "definition_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:c7cd26722657ff4f89d47719c412f8980c689a4591c07f769cd3a7903b1ed496",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

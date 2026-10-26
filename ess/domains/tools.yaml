@@ -1,0 +1,359 @@
+# Tools: tools registered from tool-contract/1 contracts and their bindings to definitions and
+# teams. Sources: §2.2 (nouns), §3.5 (commands, views, who), §4.4 (a binding feeds the effective
+# policy Loom seals into the metaharness frame).
+domain: agency.tools
+
+summary: >-
+  Tools Agency knows from their contracts, and the bindings that grant a definition or a team a
+  subset of a tool's verbs within a scope.
+
+naming:
+  wire: agency
+  display: Tools
+
+types:
+  - name: agency.tools.ToolId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.tools.BindingId
+    kind: newtype
+    of: Uuid
+
+  # §2.2 `contract_ref` (toolset + version from beyond10x/tools, ADR 0095 Decision 1-2). A
+  # cross-system reference, carried as strings, not a relation.
+  - name: agency.tools.ContractRef
+    kind: struct
+    naming:
+      summary: The tool-contract/1 contract a tool was registered from.
+    fields:
+      - name: toolset
+        type: String
+      - name: version
+        type: String
+
+  # tool-contract/1 risk levels (tools/docs/design/tool-contracts.md:30).
+  - name: agency.tools.ToolRisk
+    kind: enum
+    variants: [None, Low, Medium, High, Critical]
+
+  # §2.2 `risk` "from the contract's tool-contract/1 envelope: effects, risk, idempotency" (ADR
+  # 0095 Decision 2). Effects and idempotency are carried as the contract spells them.
+  - name: agency.tools.RiskEnvelope
+    kind: struct
+    fields:
+      - name: effects
+        type: List<String>
+      - name: risk
+        type: agency.tools.ToolRisk
+      - name: idempotency
+        type: String
+
+  # §2.2 `scope: {repositories[], paths[], subjects}` (conductor Grant fields,
+  # conductor/spec/domains/tool.yaml:277-329). `subjects` becomes metaharness
+  # `subjects: SubjectScope` (frame.rs:310-340); its shape there is not restated in the design, so
+  # it is carried as a list of strings *(inferred)*.
+  - name: agency.tools.BindingScope
+    kind: struct
+    fields:
+      - name: repositories
+        type: List<String>
+      - name: paths
+        type: List<String>
+      - name: subjects
+        type: List<String>
+
+entities:
+  # §2.2 Tool.
+  - name: agency.tools.Tool
+    naming:
+      summary: A tool registered from a tool-contract/1 contract.
+    identity:
+      name: tool_id
+      type: agency.tools.ToolId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: contract_ref
+        type: agency.tools.ContractRef
+      - name: verbs
+        type: List<agency.shared.Verb>
+      - name: risk
+        type: agency.tools.RiskEnvelope
+      # Which crate or MCP server implements the tool (§2.2).
+      - name: implementation_ref
+        type: Optional<String>
+      # The Connectors instance, when the tool reaches an external service (§2.2,
+      # connectors/README.md:3-8). A cross-system id, carried as a string.
+      - name: connector_instance_id
+        type: Optional<String>
+    # §2.2 relation `bindings[]` is agency.tools.ToolBinding's `tool` read backwards.
+    # UNMAPPED: §2.2 and §3.5 give `registered -> available -> withdrawn`; no §3.5 command makes a
+    # registered tool available. Available is left out, so WithdrawTool acts on a registered tool.
+    # Open question: what makes a tool available.
+    lifecycle:
+      initial: Registered
+      states: [Registered, Withdrawn]
+      terminal: [Withdrawn]
+      transitions:
+        - name: withdraw
+          from: [Registered]
+          to: Withdrawn
+
+  # §2.2 ToolBinding: what becomes the metaharness Frame.operations and subjects when Loom seals a
+  # run's frame (frame.rs:310-340).
+  - name: agency.tools.ToolBinding
+    naming:
+      summary: A grant of some of a tool's verbs, within a scope, to a definition or a team.
+    identity:
+      name: binding_id
+      type: agency.tools.BindingId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      # §2.2 "`definition_id` (or `team_id`)": exactly one of the two is held (invariant below).
+      - name: definition_id
+        type: Optional<agency.agents.DefinitionId>
+      - name: team_id
+        type: Optional<agency.teams.TeamId>
+      - name: tool_id
+        type: agency.tools.ToolId
+      # UNMAPPED: §2.2 says `verbs` is a subset of the tool's verbs; no check against the tool's
+      # verbs is declared.
+      - name: verbs
+        type: List<agency.shared.Verb>
+      - name: scope
+        type: agency.tools.BindingScope
+      - name: max_output_bytes
+        type: Integer
+      - name: expires_at
+        type: Optional<Timestamp>
+      - name: credential_id
+        type: Optional<agency.auth.CredentialId>
+    relations:
+      - name: definition
+        kind: references
+        target: agency.agents.AgentDefinition
+        cardinality: one
+        via: definition_id
+      - name: tool
+        kind: references
+        target: agency.tools.Tool
+        cardinality: one
+        via: tool_id
+      - name: credential
+        kind: references
+        target: agency.auth.Credential
+        cardinality: one
+        via: credential_id
+      - name: team
+        kind: references
+        target: agency.teams.Team
+        cardinality: one
+        via: team_id
+    # §2.2 "`definition_id` (or `team_id`)": a binding names exactly one of the two.
+    invariants:
+      - any:
+          - all: [defined(definition_id), not defined(team_id)]
+          - all: [not defined(definition_id), defined(team_id)]
+    # UNMAPPED: §2.2 and §3.5 give `granted -> active -> {expired, revoked}`; no §3.5 command makes
+    # a binding active, and no command records expiry. Active and Expired are left out.
+    lifecycle:
+      initial: Granted
+      states: [Granted, Revoked]
+      terminal: [Revoked]
+      transitions:
+        - name: revoke
+          from: [Granted]
+          to: Revoked
+
+errors:
+  - name: agency.tools.NotFound
+    summary: The addressed record does not exist, and nothing changed.
+  - name: agency.tools.StateConflict
+    summary: The addressed record is not in a state this command acts from, and nothing changed.
+  - name: agency.tools.BindingTargetInvalid
+    summary: A binding names neither or both of a definition and a team, and nothing changed.
+
+events:
+  - name: agency.tools.ToolRegistered
+    fields:
+      - {name: tool_id, type: agency.tools.ToolId}
+      - {name: contract_ref, type: agency.tools.ContractRef}
+
+  - name: agency.tools.ToolWithdrawn
+    fields:
+      - {name: tool_id, type: agency.tools.ToolId}
+
+  - name: agency.tools.ToolBound
+    fields:
+      - {name: binding_id, type: agency.tools.BindingId}
+      - {name: tool_id, type: agency.tools.ToolId}
+      - {name: verbs, type: List<agency.shared.Verb>}
+
+  - name: agency.tools.BindingRevoked
+    fields:
+      - {name: binding_id, type: agency.tools.BindingId}
+
+commands:
+  # §3.5 commands, in the order the design lists them.
+  - name: agency.tools.RegisterTool
+    naming:
+      display: Register a tool
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: contract_ref, type: agency.tools.ContractRef}
+      - {name: verbs, type: List<agency.shared.Verb>}
+      - {name: risk, type: agency.tools.RiskEnvelope}
+      - {name: implementation_ref, type: Optional<String>}
+      - {name: connector_instance_id, type: Optional<String>}
+    outcomes:
+      - name: registered
+        creates: agency.tools.Tool
+        instance: tool_id
+        sets:
+          tenant_id: input.tenant_id
+          contract_ref: input.contract_ref
+          verbs: input.verbs
+          risk: input.risk
+          implementation_ref: input.implementation_ref
+          connector_instance_id: input.connector_instance_id
+        emits: [agency.tools.ToolRegistered]
+        payload:
+          agency.tools.ToolRegistered:
+            tool_id: {generated: true}
+            contract_ref: input.contract_ref
+
+  - name: agency.tools.WithdrawTool
+    naming:
+      display: Withdraw a tool
+    input:
+      - {name: tool_id, type: agency.tools.ToolId}
+    outcomes:
+      - name: no-such-tool
+        unknown_instance: true
+        error: agency.tools.NotFound
+      - name: withdrawn
+        moves: agency.tools.Tool.withdraw
+        instance: tool_id
+        emits: [agency.tools.ToolWithdrawn]
+        payload:
+          agency.tools.ToolWithdrawn:
+            tool_id: input.tool_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.tools.StateConflict
+
+  # UNMAPPED: §3.5 "within policy" (Operator may bind only within policy) is not declared as a
+  # refusal; how a policy bounds a binding is not stated.
+  - name: agency.tools.BindTool
+    naming:
+      display: Bind a tool
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: definition_id, type: Optional<agency.agents.DefinitionId>}
+      - {name: team_id, type: Optional<agency.teams.TeamId>}
+      - {name: tool_id, type: agency.tools.ToolId}
+      - {name: verbs, type: List<agency.shared.Verb>}
+      - {name: scope, type: agency.tools.BindingScope}
+      - {name: max_output_bytes, type: Integer}
+      - {name: expires_at, type: Optional<Timestamp>}
+      - {name: credential_id, type: Optional<agency.auth.CredentialId>}
+    # §2.2 "exactly one of definition_id or team_id": one creating branch per target, each with the
+    # condition that selects it, and a refusal for every other input (none or both).
+    outcomes:
+      - name: bound-to-definition
+        when: {all: [defined(definition_id), not defined(team_id)]}
+        creates: agency.tools.ToolBinding
+        instance: binding_id
+        sets:
+          tenant_id: input.tenant_id
+          definition_id: input.definition_id
+          tool_id: input.tool_id
+          verbs: input.verbs
+          scope: input.scope
+          max_output_bytes: input.max_output_bytes
+          expires_at: input.expires_at
+          credential_id: input.credential_id
+        emits: [agency.tools.ToolBound]
+        payload:
+          agency.tools.ToolBound:
+            binding_id: {generated: true}
+            tool_id: input.tool_id
+            verbs: input.verbs
+      - name: bound-to-team
+        when: {all: [not defined(definition_id), defined(team_id)]}
+        creates: agency.tools.ToolBinding
+        instance: binding_id
+        sets:
+          tenant_id: input.tenant_id
+          team_id: input.team_id
+          tool_id: input.tool_id
+          verbs: input.verbs
+          scope: input.scope
+          max_output_bytes: input.max_output_bytes
+          expires_at: input.expires_at
+          credential_id: input.credential_id
+        emits: [agency.tools.ToolBound]
+        payload:
+          agency.tools.ToolBound:
+            binding_id: {generated: true}
+            tool_id: input.tool_id
+            verbs: input.verbs
+      - name: target-invalid
+        error: agency.tools.BindingTargetInvalid
+
+  - name: agency.tools.RevokeBinding
+    naming:
+      display: Revoke a binding
+    input:
+      - {name: binding_id, type: agency.tools.BindingId}
+    outcomes:
+      - name: no-such-binding
+        unknown_instance: true
+        error: agency.tools.NotFound
+      - name: revoked
+        moves: agency.tools.ToolBinding.revoke
+        instance: binding_id
+        emits: [agency.tools.BindingRevoked]
+        payload:
+          agency.tools.BindingRevoked:
+            binding_id: input.binding_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.tools.StateConflict
+
+views:
+  # §3.5 views. UNMAPPED: ToolCallLog ("per run: Decision outcomes allow/deny/replace, from
+  # metaharness events") has no Agency record to read: the decisions are metaharness events no §2
+  # entity holds. Not declared. Open question: whether Agency stores the decisions it relays.
+  #
+  # "contract, verbs, risk envelope" (§3.5).
+  - name: agency.tools.ToolCatalogue
+    source: agency.tools.Tool
+    consistency: read_your_writes
+    fields:
+      - {name: tool_id, type: agency.tools.ToolId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: contract_ref, type: agency.tools.ContractRef}
+      - {name: verbs, type: List<agency.shared.Verb>}
+      - {name: risk, type: agency.tools.RiskEnvelope}
+      - {name: implementation_ref, type: Optional<String>}
+      - {name: connector_instance_id, type: Optional<String>}
+      - {name: state, type: agency.tools.Tool.State}
+
+  - name: agency.tools.BindingList
+    source: agency.tools.ToolBinding
+    consistency: read_your_writes
+    fields:
+      - {name: binding_id, type: agency.tools.BindingId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: definition_id, type: Optional<agency.agents.DefinitionId>}
+      - {name: team_id, type: Optional<agency.teams.TeamId>}
+      - {name: tool_id, type: agency.tools.ToolId}
+      - {name: verbs, type: List<agency.shared.Verb>}
+      - {name: scope, type: agency.tools.BindingScope}
+      - {name: max_output_bytes, type: Integer}
+      - {name: expires_at, type: Optional<Timestamp>}
+      - {name: credential_id, type: Optional<agency.auth.CredentialId>}
+      - {name: state, type: agency.tools.ToolBinding.State}

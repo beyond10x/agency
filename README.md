@@ -5,13 +5,15 @@ and credentials, forms them into teams, feeds them work, and watches the runs th
 [Loom](https://github.com/beyond10x/loom) executes for them. One Rust service with one HTTP API, one
 event stream and a browser cockpit; applications such as conductor drive it through that API.
 
-Status: specification first. The ESS domain `agency` (agents, tools, teams, work, auth) is the
-contract; the service, the Loom driver and the cockpit follow.
+Status: specification first. The ESS system `agency` (domains shared, auth, agents, runs, tools,
+teams, work and service; ess 0.69.2) is the contract; the service, the Loom driver and the cockpit
+follow. An agent definition holds its `loom.agent/1` document by value; Loom owns that format.
 
 | Path | Contents |
 |---|---|
 | `ess/` | The specification of the `agency` domain |
-| `generated/` | What ESS derives from it: OpenAPI, AsyncAPI, JSON Schema, Rust and TypeScript types, the conformance suite |
+| `generated/` | What ESS derives from it: OpenAPI, AsyncAPI, JSON Schema, a synthesized Rust crate, TypeScript types, the conformance suite |
+| `conformance/` | The counts each conformance target must hold, and its known failures by name |
 | `crates/` | Hand-written Rust |
 | `.engineering/` | The plan |
 
@@ -19,7 +21,8 @@ contract; the service, the Loom driver and the cockpit follow.
 task check
 ```
 
-validates the specification and fails when anything generated from it has drifted.
+validates the specification and the plan, fails when anything generated from it has drifted, and
+runs the conformance suite, holding its counts to `conformance/`.
 
 Agent instructions are in [AGENTS.md](AGENTS.md); changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

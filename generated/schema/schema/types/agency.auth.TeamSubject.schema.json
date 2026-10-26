@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.TeamSubject",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:923b71441df445e63fca3c07aa6b573dd4a2f2cd6727b00661732c825c99a682",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.TeamSubject": {
+      "title": "TeamSubject",
+      "x-ess-name": "agency.auth.TeamSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

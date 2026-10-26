@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Swarm",
+  "description": "Agency's record of a swarm, and the lever that stops it.",
+  "x-ess-name": "agency.teams.Swarm",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "swarm_id": {
+      "$ref": "#/$defs/agency.teams.SwarmId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "swarms",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.teams.Swarm",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "goal_ref": {
+      "type": "string"
+    },
+    "coordinator_agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId",
+      "x-ess-relation": {
+        "name": "coordinator",
+        "kind": "references",
+        "source": "agency.teams.Swarm",
+        "target": "agency.agents.Agent",
+        "cardinality": "one",
+        "via": "coordinator_agent_id"
+      }
+    },
+    "frame_digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    },
+    "max_workers": {
+      "type": "integer"
+    },
+    "team_id": {
+      "$ref": "#/$defs/agency.teams.TeamId",
+      "x-ess-relation": {
+        "name": "team",
+        "kind": "references",
+        "source": "agency.teams.Swarm",
+        "target": "agency.teams.Team",
+        "cardinality": "one",
+        "via": "team_id"
+      }
+    },
+    "work_input_id": {
+      "$ref": "#/$defs/agency.work.InputId",
+      "x-ess-relation": {
+        "name": "work_input",
+        "kind": "references",
+        "source": "agency.teams.Swarm",
+        "target": "agency.work.WorkInput",
+        "cardinality": "one",
+        "via": "work_input_id"
+      }
+    },
+    "state": {
+      "$ref": "#/$defs/agency.teams.Swarm.State"
+    }
+  },
+  "required": [
+    "swarm_id",
+    "tenant_id",
+    "goal_ref",
+    "coordinator_agent_id",
+    "frame_digest",
+    "max_workers",
+    "team_id",
+    "work_input_id",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.shared.Digest": {
+      "title": "Digest",
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "x-ess-name": "agency.shared.Digest",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.teams.Swarm.State": {
+      "title": "State",
+      "x-ess-name": "agency.teams.Swarm.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Declared",
+        "Stopped"
+      ]
+    },
+    "agency.teams.SwarmId": {
+      "title": "SwarmId",
+      "x-ess-name": "agency.teams.SwarmId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.work.InputId": {
+      "title": "InputId",
+      "x-ess-name": "agency.work.InputId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

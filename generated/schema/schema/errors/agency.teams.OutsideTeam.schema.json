@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OutsideTeam payload",
+  "description": "The recipient is outside the sender's team, or the sender has no team.",
+  "x-ess-name": "agency.teams.OutsideTeam",
+  "x-ess-kind": "error-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:2fe7207b48651984e8e07958dfacaed0ca41738694ff9e594ac2ca1407b2aa8c",
+    "regenerate": "ess generate"
+  }
+}

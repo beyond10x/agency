@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Assign a role input",
+  "x-ess-name": "agency.auth.AssignRole",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "principal_id": {
+      "$ref": "#/$defs/agency.auth.PrincipalId"
+    },
+    "role": {
+      "$ref": "#/$defs/agency.auth.Role"
+    }
+  },
+  "required": [
+    "principal_id",
+    "role"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:eb36e7c795eb7f2b524e815d7af687910f52a7fbc3769c415858aa4b818a7d44",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.Role": {
+      "title": "Role",
+      "x-ess-name": "agency.auth.Role",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Operator",
+        "Supervisor",
+        "Viewer",
+        "Agent"
+      ]
+    }
+  }
+}

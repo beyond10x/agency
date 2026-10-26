@@ -1,0 +1,167 @@
+# Service: how a caller is authenticated to the one Agency service. Sources: §4.1 (identities:
+# the operator by session cookie and CSRF token, a running agent by a per-run bearer minted at
+# StartRun, an application by a service credential), §5.1-§5.2 (one service, one API), Q5 B (a
+# single local operator until M5), conductor `docs/design/conductor-on-agency.md` § 3.2 G6 (an
+# application principal before the deployment milestone).
+#
+# Hard rule (§5.3, AGENTS.md): no secret value is a field. A session keeps the digest of its token,
+# never the token.
+domain: agency.service
+
+summary: >-
+  The authenticated sessions of the Agency service: an operator's browser session, an
+  application's token and a run's bearer, each held by the digest of its secret.
+
+naming:
+  wire: agency
+  display: Service
+
+types:
+  - name: agency.service.SessionId
+    kind: newtype
+    of: Uuid
+
+  # §4.1's three identities and how each authenticates.
+  - name: agency.service.SessionKind
+    kind: enum
+    variants: [OperatorCookie, ApplicationToken, RunBearer]
+
+entities:
+  - name: agency.service.Session
+    naming:
+      summary: One authenticated session of a principal, held by its token's digest.
+    identity:
+      name: session_id
+      type: agency.service.SessionId
+    fields:
+      - name: principal_id
+        type: agency.auth.PrincipalId
+      - name: kind
+        type: agency.service.SessionKind
+      # The run a RunBearer is scoped to (§4.1: "scoped to agent_id, run_id ... expires with the
+      # run"); absent for the other kinds.
+      - name: run_id
+        type: Optional<agency.runs.RunId>
+      - name: token_digest
+        type: agency.shared.Digest
+      # The CSRF token's digest, for an OperatorCookie session (§4.1, control-plane's pattern).
+      - name: csrf_digest
+        type: Optional<agency.shared.Digest>
+      - name: opened_at
+        type: Timestamp
+      - name: expires_at
+        type: Optional<Timestamp>
+    relations:
+      - name: principal
+        kind: references
+        target: agency.auth.Principal
+        cardinality: one
+        via: principal_id
+      - name: run
+        kind: references
+        target: agency.runs.Run
+        cardinality: one
+        via: run_id
+    # UNMAPPED: expiry is a passage of `expires_at` no command records; a session past it is
+    # refused by the service, not moved here. Open question: whether expiry is recorded.
+    lifecycle:
+      initial: Open
+      states: [Open, Closed]
+      terminal: [Closed]
+      transitions:
+        - name: close
+          from: [Open]
+          to: Closed
+
+errors:
+  - name: agency.service.NotFound
+    summary: The addressed record does not exist, and nothing changed.
+  - name: agency.service.StateConflict
+    summary: The addressed record is not in a state this command acts from, and nothing changed.
+
+events:
+  - name: agency.service.SessionOpened
+    fields:
+      - {name: session_id, type: agency.service.SessionId}
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: kind, type: agency.service.SessionKind}
+
+  - name: agency.service.SessionClosed
+    fields:
+      - {name: session_id, type: agency.service.SessionId}
+
+commands:
+  # The service opens a session when a login, an application token or a run start authenticates
+  # (§4.1); the secret is handed to the caller once and only its digest is an input.
+  - name: agency.service.OpenSession
+    naming:
+      display: Open a session
+    input:
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: kind, type: agency.service.SessionKind}
+      - {name: run_id, type: Optional<agency.runs.RunId>}
+      - {name: token_digest, type: agency.shared.Digest}
+      - {name: csrf_digest, type: Optional<agency.shared.Digest>}
+      - {name: expires_at, type: Optional<Timestamp>}
+    outcomes:
+      - name: opened
+        creates: agency.service.Session
+        instance: session_id
+        sets:
+          principal_id: input.principal_id
+          kind: input.kind
+          run_id: input.run_id
+          token_digest: input.token_digest
+          csrf_digest: input.csrf_digest
+          opened_at: {generated: true}
+          expires_at: input.expires_at
+        emits: [agency.service.SessionOpened]
+        payload:
+          agency.service.SessionOpened:
+            session_id: {generated: true}
+            principal_id: input.principal_id
+            kind: input.kind
+
+  - name: agency.service.CloseSession
+    naming:
+      display: Close a session
+    input:
+      - {name: session_id, type: agency.service.SessionId}
+    outcomes:
+      - name: no-such-session
+        unknown_instance: true
+        error: agency.service.NotFound
+      - name: closed
+        moves: agency.service.Session.close
+        instance: session_id
+        emits: [agency.service.SessionClosed]
+        payload:
+          agency.service.SessionClosed:
+            session_id: input.session_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.service.StateConflict
+
+actors:
+  # The service's own step when a caller authenticates (§4.1).
+  - name: agency.service.Gatekeeper
+    system: true
+    naming:
+      summary: The service's authenticator, which opens and closes sessions.
+    may:
+      - agency.service.OpenSession
+      - agency.service.CloseSession
+
+views:
+  # Never the token: the digest and the session's standing only.
+  - name: agency.service.SessionList
+    source: agency.service.Session
+    consistency: read_your_writes
+    fields:
+      - {name: session_id, type: agency.service.SessionId}
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: kind, type: agency.service.SessionKind}
+      - {name: run_id, type: Optional<agency.runs.RunId>}
+      - {name: opened_at, type: Timestamp}
+      - {name: expires_at, type: Optional<Timestamp>}
+      - {name: state, type: agency.service.Session.State}

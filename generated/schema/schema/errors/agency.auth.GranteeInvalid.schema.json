@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GranteeInvalid payload",
+  "description": "A grant names no grantee or more than one, and nothing changed.",
+  "x-ess-name": "agency.auth.GranteeInvalid",
+  "x-ess-kind": "error-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:4014fda371df2ad57a3e973f5cebc276a5e9bedab44c8ba672c61f6e1ac13b11",
+    "regenerate": "ess generate"
+  }
+}

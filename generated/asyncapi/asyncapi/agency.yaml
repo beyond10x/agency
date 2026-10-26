@@ -1,0 +1,2556 @@
+# generated from agency v1
+# model digest 71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb
+# contract digest slice-sha256/2:c9652dbc5837f2cadeaf219925de817e3912aae234fa51388b67d2ea5da11fe5
+# do not edit: regenerate with `ess generate`
+asyncapi: 3.0.0
+info:
+  title: agency
+  version: v1
+  description: |-
+    `agency` in the `agency` specification.
+
+    The Agency service and cockpit API (docs/design/agency.md §5.1-§5.2).
+
+    The deployable service and cockpit from which an agentic engineer defines agents, gives them tools and credentials, forms them into teams, feeds them work, and watches the runs Loom executes for them (docs/design/agency.md §1).
+
+    The specification declares no transport, so each address below is a name and not a topic on a named broker. Servers, protocol bindings, security schemes, message keys, partitioning, retention and ordering are absent because the model does not state them.
+  x-ess-component: agency
+  x-ess-provenance:
+    system: agency
+    specification_version: v1
+    source_digest: 71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb
+    contract_digest: slice-sha256/2:c9652dbc5837f2cadeaf219925de817e3912aae234fa51388b67d2ea5da11fe5
+defaultContentType: application/json
+channels:
+  agency.agents.AgentDefinitionCreated:
+    address: agency.agents.AgentDefinitionCreated
+    title: AgentDefinitionCreated
+    messages:
+      agency.agents.AgentDefinitionCreated:
+        $ref: '#/components/messages/agency.agents.AgentDefinitionCreated'
+    x-ess-event: agency.agents.AgentDefinitionCreated
+    x-ess-address-source: qualified-name
+  agency.agents.AgentDefinitionDeprecated:
+    address: agency.agents.AgentDefinitionDeprecated
+    title: AgentDefinitionDeprecated
+    messages:
+      agency.agents.AgentDefinitionDeprecated:
+        $ref: '#/components/messages/agency.agents.AgentDefinitionDeprecated'
+    x-ess-event: agency.agents.AgentDefinitionDeprecated
+    x-ess-address-source: qualified-name
+  agency.agents.AgentDefinitionPublished:
+    address: agency.agents.AgentDefinitionPublished
+    title: AgentDefinitionPublished
+    messages:
+      agency.agents.AgentDefinitionPublished:
+        $ref: '#/components/messages/agency.agents.AgentDefinitionPublished'
+    x-ess-event: agency.agents.AgentDefinitionPublished
+    x-ess-address-source: qualified-name
+  agency.agents.AgentProvisioned:
+    address: agency.agents.AgentProvisioned
+    title: AgentProvisioned
+    messages:
+      agency.agents.AgentProvisioned:
+        $ref: '#/components/messages/agency.agents.AgentProvisioned'
+    x-ess-event: agency.agents.AgentProvisioned
+    x-ess-address-source: qualified-name
+  agency.agents.AgentRetired:
+    address: agency.agents.AgentRetired
+    title: AgentRetired
+    messages:
+      agency.agents.AgentRetired:
+        $ref: '#/components/messages/agency.agents.AgentRetired'
+    x-ess-event: agency.agents.AgentRetired
+    x-ess-address-source: qualified-name
+  agency.agents.AgentSpecChecked:
+    address: agency.agents.AgentSpecChecked
+    title: AgentSpecChecked
+    messages:
+      agency.agents.AgentSpecChecked:
+        $ref: '#/components/messages/agency.agents.AgentSpecChecked'
+    x-ess-event: agency.agents.AgentSpecChecked
+    x-ess-address-source: qualified-name
+  agency.agents.AgentSpecRefused:
+    address: agency.agents.AgentSpecRefused
+    title: AgentSpecRefused
+    messages:
+      agency.agents.AgentSpecRefused:
+        $ref: '#/components/messages/agency.agents.AgentSpecRefused'
+    x-ess-event: agency.agents.AgentSpecRefused
+    x-ess-address-source: qualified-name
+  agency.auth.CredentialGranted:
+    address: agency.auth.CredentialGranted
+    title: CredentialGranted
+    messages:
+      agency.auth.CredentialGranted:
+        $ref: '#/components/messages/agency.auth.CredentialGranted'
+    x-ess-event: agency.auth.CredentialGranted
+    x-ess-address-source: qualified-name
+  agency.auth.CredentialRefreshed:
+    address: agency.auth.CredentialRefreshed
+    title: CredentialRefreshed
+    messages:
+      agency.auth.CredentialRefreshed:
+        $ref: '#/components/messages/agency.auth.CredentialRefreshed'
+    x-ess-event: agency.auth.CredentialRefreshed
+    x-ess-address-source: qualified-name
+  agency.auth.CredentialRevoked:
+    address: agency.auth.CredentialRevoked
+    title: CredentialRevoked
+    messages:
+      agency.auth.CredentialRevoked:
+        $ref: '#/components/messages/agency.auth.CredentialRevoked'
+    x-ess-event: agency.auth.CredentialRevoked
+    x-ess-address-source: qualified-name
+  agency.auth.CredentialStored:
+    address: agency.auth.CredentialStored
+    title: CredentialStored
+    messages:
+      agency.auth.CredentialStored:
+        $ref: '#/components/messages/agency.auth.CredentialStored'
+    x-ess-event: agency.auth.CredentialStored
+    x-ess-address-source: qualified-name
+  agency.auth.GrantRevoked:
+    address: agency.auth.GrantRevoked
+    title: GrantRevoked
+    messages:
+      agency.auth.GrantRevoked:
+        $ref: '#/components/messages/agency.auth.GrantRevoked'
+    x-ess-event: agency.auth.GrantRevoked
+    x-ess-address-source: qualified-name
+  agency.auth.PolicyActivated:
+    address: agency.auth.PolicyActivated
+    title: PolicyActivated
+    messages:
+      agency.auth.PolicyActivated:
+        $ref: '#/components/messages/agency.auth.PolicyActivated'
+    x-ess-event: agency.auth.PolicyActivated
+    x-ess-address-source: qualified-name
+  agency.auth.PolicyCreated:
+    address: agency.auth.PolicyCreated
+    title: PolicyCreated
+    messages:
+      agency.auth.PolicyCreated:
+        $ref: '#/components/messages/agency.auth.PolicyCreated'
+    x-ess-event: agency.auth.PolicyCreated
+    x-ess-address-source: qualified-name
+  agency.auth.PolicySuperseded:
+    address: agency.auth.PolicySuperseded
+    title: PolicySuperseded
+    messages:
+      agency.auth.PolicySuperseded:
+        $ref: '#/components/messages/agency.auth.PolicySuperseded'
+    x-ess-event: agency.auth.PolicySuperseded
+    x-ess-address-source: qualified-name
+  agency.auth.PrincipalDisabled:
+    address: agency.auth.PrincipalDisabled
+    title: PrincipalDisabled
+    messages:
+      agency.auth.PrincipalDisabled:
+        $ref: '#/components/messages/agency.auth.PrincipalDisabled'
+    x-ess-event: agency.auth.PrincipalDisabled
+    x-ess-address-source: qualified-name
+  agency.auth.PrincipalInvited:
+    address: agency.auth.PrincipalInvited
+    title: PrincipalInvited
+    messages:
+      agency.auth.PrincipalInvited:
+        $ref: '#/components/messages/agency.auth.PrincipalInvited'
+    x-ess-event: agency.auth.PrincipalInvited
+    x-ess-address-source: qualified-name
+  agency.auth.RoleAssigned:
+    address: agency.auth.RoleAssigned
+    title: RoleAssigned
+    messages:
+      agency.auth.RoleAssigned:
+        $ref: '#/components/messages/agency.auth.RoleAssigned'
+    x-ess-event: agency.auth.RoleAssigned
+    x-ess-address-source: qualified-name
+  agency.auth.TenantCreated:
+    address: agency.auth.TenantCreated
+    title: TenantCreated
+    messages:
+      agency.auth.TenantCreated:
+        $ref: '#/components/messages/agency.auth.TenantCreated'
+    x-ess-event: agency.auth.TenantCreated
+    x-ess-address-source: qualified-name
+  agency.runs.RunAdmitted:
+    address: agency.runs.RunAdmitted
+    title: RunAdmitted
+    messages:
+      agency.runs.RunAdmitted:
+        $ref: '#/components/messages/agency.runs.RunAdmitted'
+    x-ess-event: agency.runs.RunAdmitted
+    x-ess-address-source: qualified-name
+  agency.runs.RunApprovalDenied:
+    address: agency.runs.RunApprovalDenied
+    title: RunApprovalDenied
+    messages:
+      agency.runs.RunApprovalDenied:
+        $ref: '#/components/messages/agency.runs.RunApprovalDenied'
+    x-ess-event: agency.runs.RunApprovalDenied
+    x-ess-address-source: qualified-name
+  agency.runs.RunApprovalGranted:
+    address: agency.runs.RunApprovalGranted
+    title: RunApprovalGranted
+    messages:
+      agency.runs.RunApprovalGranted:
+        $ref: '#/components/messages/agency.runs.RunApprovalGranted'
+    x-ess-event: agency.runs.RunApprovalGranted
+    x-ess-address-source: qualified-name
+  agency.runs.RunApprovalRequested:
+    address: agency.runs.RunApprovalRequested
+    title: RunApprovalRequested
+    messages:
+      agency.runs.RunApprovalRequested:
+        $ref: '#/components/messages/agency.runs.RunApprovalRequested'
+    x-ess-event: agency.runs.RunApprovalRequested
+    x-ess-address-source: qualified-name
+  agency.runs.RunBudgetSet:
+    address: agency.runs.RunBudgetSet
+    title: RunBudgetSet
+    messages:
+      agency.runs.RunBudgetSet:
+        $ref: '#/components/messages/agency.runs.RunBudgetSet'
+    x-ess-event: agency.runs.RunBudgetSet
+    x-ess-address-source: qualified-name
+  agency.runs.RunFailed:
+    address: agency.runs.RunFailed
+    title: RunFailed
+    messages:
+      agency.runs.RunFailed:
+        $ref: '#/components/messages/agency.runs.RunFailed'
+    x-ess-event: agency.runs.RunFailed
+    x-ess-address-source: qualified-name
+  agency.runs.RunProposed:
+    address: agency.runs.RunProposed
+    title: RunProposed
+    messages:
+      agency.runs.RunProposed:
+        $ref: '#/components/messages/agency.runs.RunProposed'
+    x-ess-event: agency.runs.RunProposed
+    x-ess-address-source: qualified-name
+  agency.runs.RunRequested:
+    address: agency.runs.RunRequested
+    title: RunRequested
+    messages:
+      agency.runs.RunRequested:
+        $ref: '#/components/messages/agency.runs.RunRequested'
+    x-ess-event: agency.runs.RunRequested
+    x-ess-address-source: qualified-name
+  agency.runs.RunStarted:
+    address: agency.runs.RunStarted
+    title: RunStarted
+    messages:
+      agency.runs.RunStarted:
+        $ref: '#/components/messages/agency.runs.RunStarted'
+    x-ess-event: agency.runs.RunStarted
+    x-ess-address-source: qualified-name
+  agency.runs.RunStopped:
+    address: agency.runs.RunStopped
+    title: RunStopped
+    messages:
+      agency.runs.RunStopped:
+        $ref: '#/components/messages/agency.runs.RunStopped'
+    x-ess-event: agency.runs.RunStopped
+    x-ess-address-source: qualified-name
+  agency.service.SessionClosed:
+    address: agency.service.SessionClosed
+    title: SessionClosed
+    messages:
+      agency.service.SessionClosed:
+        $ref: '#/components/messages/agency.service.SessionClosed'
+    x-ess-event: agency.service.SessionClosed
+    x-ess-address-source: qualified-name
+  agency.service.SessionOpened:
+    address: agency.service.SessionOpened
+    title: SessionOpened
+    messages:
+      agency.service.SessionOpened:
+        $ref: '#/components/messages/agency.service.SessionOpened'
+    x-ess-event: agency.service.SessionOpened
+    x-ess-address-source: qualified-name
+  agency.teams.LeadSet:
+    address: agency.teams.LeadSet
+    title: LeadSet
+    messages:
+      agency.teams.LeadSet:
+        $ref: '#/components/messages/agency.teams.LeadSet'
+    x-ess-event: agency.teams.LeadSet
+    x-ess-address-source: qualified-name
+  agency.teams.MemberAdded:
+    address: agency.teams.MemberAdded
+    title: MemberAdded
+    messages:
+      agency.teams.MemberAdded:
+        $ref: '#/components/messages/agency.teams.MemberAdded'
+    x-ess-event: agency.teams.MemberAdded
+    x-ess-address-source: qualified-name
+  agency.teams.MemberRemoved:
+    address: agency.teams.MemberRemoved
+    title: MemberRemoved
+    messages:
+      agency.teams.MemberRemoved:
+        $ref: '#/components/messages/agency.teams.MemberRemoved'
+    x-ess-event: agency.teams.MemberRemoved
+    x-ess-address-source: qualified-name
+  agency.teams.MessageSent:
+    address: agency.teams.MessageSent
+    title: MessageSent
+    messages:
+      agency.teams.MessageSent:
+        $ref: '#/components/messages/agency.teams.MessageSent'
+    x-ess-event: agency.teams.MessageSent
+    x-ess-address-source: qualified-name
+  agency.teams.QueueAttached:
+    address: agency.teams.QueueAttached
+    title: QueueAttached
+    messages:
+      agency.teams.QueueAttached:
+        $ref: '#/components/messages/agency.teams.QueueAttached'
+    x-ess-event: agency.teams.QueueAttached
+    x-ess-address-source: qualified-name
+  agency.teams.ReportSent:
+    address: agency.teams.ReportSent
+    title: ReportSent
+    messages:
+      agency.teams.ReportSent:
+        $ref: '#/components/messages/agency.teams.ReportSent'
+    x-ess-event: agency.teams.ReportSent
+    x-ess-address-source: qualified-name
+  agency.teams.SwarmDeclared:
+    address: agency.teams.SwarmDeclared
+    title: SwarmDeclared
+    messages:
+      agency.teams.SwarmDeclared:
+        $ref: '#/components/messages/agency.teams.SwarmDeclared'
+    x-ess-event: agency.teams.SwarmDeclared
+    x-ess-address-source: qualified-name
+  agency.teams.SwarmStopped:
+    address: agency.teams.SwarmStopped
+    title: SwarmStopped
+    messages:
+      agency.teams.SwarmStopped:
+        $ref: '#/components/messages/agency.teams.SwarmStopped'
+    x-ess-event: agency.teams.SwarmStopped
+    x-ess-address-source: qualified-name
+  agency.teams.TeamDisbanded:
+    address: agency.teams.TeamDisbanded
+    title: TeamDisbanded
+    messages:
+      agency.teams.TeamDisbanded:
+        $ref: '#/components/messages/agency.teams.TeamDisbanded'
+    x-ess-event: agency.teams.TeamDisbanded
+    x-ess-address-source: qualified-name
+  agency.teams.TeamFormed:
+    address: agency.teams.TeamFormed
+    title: TeamFormed
+    messages:
+      agency.teams.TeamFormed:
+        $ref: '#/components/messages/agency.teams.TeamFormed'
+    x-ess-event: agency.teams.TeamFormed
+    x-ess-address-source: qualified-name
+  agency.teams.WorkforceDefined:
+    address: agency.teams.WorkforceDefined
+    title: WorkforceDefined
+    messages:
+      agency.teams.WorkforceDefined:
+        $ref: '#/components/messages/agency.teams.WorkforceDefined'
+    x-ess-event: agency.teams.WorkforceDefined
+    x-ess-address-source: qualified-name
+  agency.teams.WorkforceRetired:
+    address: agency.teams.WorkforceRetired
+    title: WorkforceRetired
+    messages:
+      agency.teams.WorkforceRetired:
+        $ref: '#/components/messages/agency.teams.WorkforceRetired'
+    x-ess-event: agency.teams.WorkforceRetired
+    x-ess-address-source: qualified-name
+  agency.teams.WorkforceStaffed:
+    address: agency.teams.WorkforceStaffed
+    title: WorkforceStaffed
+    messages:
+      agency.teams.WorkforceStaffed:
+        $ref: '#/components/messages/agency.teams.WorkforceStaffed'
+    x-ess-event: agency.teams.WorkforceStaffed
+    x-ess-address-source: qualified-name
+  agency.tools.BindingRevoked:
+    address: agency.tools.BindingRevoked
+    title: BindingRevoked
+    messages:
+      agency.tools.BindingRevoked:
+        $ref: '#/components/messages/agency.tools.BindingRevoked'
+    x-ess-event: agency.tools.BindingRevoked
+    x-ess-address-source: qualified-name
+  agency.tools.ToolBound:
+    address: agency.tools.ToolBound
+    title: ToolBound
+    messages:
+      agency.tools.ToolBound:
+        $ref: '#/components/messages/agency.tools.ToolBound'
+    x-ess-event: agency.tools.ToolBound
+    x-ess-address-source: qualified-name
+  agency.tools.ToolRegistered:
+    address: agency.tools.ToolRegistered
+    title: ToolRegistered
+    messages:
+      agency.tools.ToolRegistered:
+        $ref: '#/components/messages/agency.tools.ToolRegistered'
+    x-ess-event: agency.tools.ToolRegistered
+    x-ess-address-source: qualified-name
+  agency.tools.ToolWithdrawn:
+    address: agency.tools.ToolWithdrawn
+    title: ToolWithdrawn
+    messages:
+      agency.tools.ToolWithdrawn:
+        $ref: '#/components/messages/agency.tools.ToolWithdrawn'
+    x-ess-event: agency.tools.ToolWithdrawn
+    x-ess-address-source: qualified-name
+  agency.work.WorkInputConfigured:
+    address: agency.work.WorkInputConfigured
+    title: WorkInputConfigured
+    messages:
+      agency.work.WorkInputConfigured:
+        $ref: '#/components/messages/agency.work.WorkInputConfigured'
+    x-ess-event: agency.work.WorkInputConfigured
+    x-ess-address-source: qualified-name
+  agency.work.WorkInputPaused:
+    address: agency.work.WorkInputPaused
+    title: WorkInputPaused
+    messages:
+      agency.work.WorkInputPaused:
+        $ref: '#/components/messages/agency.work.WorkInputPaused'
+    x-ess-event: agency.work.WorkInputPaused
+    x-ess-address-source: qualified-name
+  agency.work.WorkInputRemoved:
+    address: agency.work.WorkInputRemoved
+    title: WorkInputRemoved
+    messages:
+      agency.work.WorkInputRemoved:
+        $ref: '#/components/messages/agency.work.WorkInputRemoved'
+    x-ess-event: agency.work.WorkInputRemoved
+    x-ess-address-source: qualified-name
+  agency.work.WorkItemAbandoned:
+    address: agency.work.WorkItemAbandoned
+    title: WorkItemAbandoned
+    messages:
+      agency.work.WorkItemAbandoned:
+        $ref: '#/components/messages/agency.work.WorkItemAbandoned'
+    x-ess-event: agency.work.WorkItemAbandoned
+    x-ess-address-source: qualified-name
+  agency.work.WorkItemAssigned:
+    address: agency.work.WorkItemAssigned
+    title: WorkItemAssigned
+    messages:
+      agency.work.WorkItemAssigned:
+        $ref: '#/components/messages/agency.work.WorkItemAssigned'
+    x-ess-event: agency.work.WorkItemAssigned
+    x-ess-address-source: qualified-name
+  agency.work.WorkItemReturned:
+    address: agency.work.WorkItemReturned
+    title: WorkItemReturned
+    messages:
+      agency.work.WorkItemReturned:
+        $ref: '#/components/messages/agency.work.WorkItemReturned'
+    x-ess-event: agency.work.WorkItemReturned
+    x-ess-address-source: qualified-name
+  agency.work.WorkItemSettled:
+    address: agency.work.WorkItemSettled
+    title: WorkItemSettled
+    messages:
+      agency.work.WorkItemSettled:
+        $ref: '#/components/messages/agency.work.WorkItemSettled'
+    x-ess-event: agency.work.WorkItemSettled
+    x-ess-address-source: qualified-name
+  agency.work.WorkItemSubmitted:
+    address: agency.work.WorkItemSubmitted
+    title: WorkItemSubmitted
+    messages:
+      agency.work.WorkItemSubmitted:
+        $ref: '#/components/messages/agency.work.WorkItemSubmitted'
+    x-ess-event: agency.work.WorkItemSubmitted
+    x-ess-address-source: qualified-name
+operations:
+  send.agency.agents.AgentDefinitionCreated:
+    action: send
+    channel:
+      $ref: '#/channels/agency.agents.AgentDefinitionCreated'
+    title: Publish AgentDefinitionCreated
+    summary: Publishes `agency.agents.AgentDefinitionCreated`.
+    description: |-
+      Nothing in this specification reacts to `agency.agents.AgentDefinitionCreated`.
+      `agency.agents.CreateAgentDefinition` emits it on `created`, which creates a `agency.agents.AgentDefinition` in `Draft`. It carries the new instance's identity in `definition_id`.
+    messages:
+    - $ref: '#/channels/agency.agents.AgentDefinitionCreated/messages/agency.agents.AgentDefinitionCreated'
+  send.agency.agents.AgentDefinitionDeprecated:
+    action: send
+    channel:
+      $ref: '#/channels/agency.agents.AgentDefinitionDeprecated'
+    title: Publish AgentDefinitionDeprecated
+    summary: Publishes `agency.agents.AgentDefinitionDeprecated`.
+    description: |-
+      Nothing in this specification reacts to `agency.agents.AgentDefinitionDeprecated`.
+      `agency.agents.DeprecateAgentDefinition` emits it on `deprecated`, which moves a `agency.agents.AgentDefinition` to `Deprecated` along `deprecate`.
+    messages:
+    - $ref: '#/channels/agency.agents.AgentDefinitionDeprecated/messages/agency.agents.AgentDefinitionDeprecated'
+  send.agency.agents.AgentDefinitionPublished:
+    action: send
+    channel:
+      $ref: '#/channels/agency.agents.AgentDefinitionPublished'
+    title: Publish AgentDefinitionPublished
+    summary: Publishes `agency.agents.AgentDefinitionPublished`.
+    description: |-
+      Nothing in this specification reacts to `agency.agents.AgentDefinitionPublished`.
+      `agency.agents.PublishAgentDefinition` emits it on `published`, which moves a `agency.agents.AgentDefinition` to `Published` along `publish`.
+    messages:
+    - $ref: '#/channels/agency.agents.AgentDefinitionPublished/messages/agency.agents.AgentDefinitionPublished'
+  send.agency.agents.AgentProvisioned:
+    action: send
+    channel:
+      $ref: '#/channels/agency.agents.AgentProvisioned'
+    title: Publish AgentProvisioned
+    summary: Publishes `agency.agents.AgentProvisioned`.
+    description: |-
+      Nothing in this specification reacts to `agency.agents.AgentProvisioned`.
+      `agency.agents.ProvisionAgent` emits it on `provisioned`, which creates a `agency.agents.Agent` in `Provisioned`. It carries the new instance's identity in `agent_id`.
+    messages:
+    - $ref: '#/channels/agency.agents.AgentProvisioned/messages/agency.agents.AgentProvisioned'
+  send.agency.agents.AgentRetired:
+    action: send
+    channel:
+      $ref: '#/channels/agency.agents.AgentRetired'
+    title: Publish AgentRetired
+    summary: Publishes `agency.agents.AgentRetired`.
+    description: |-
+      Nothing in this specification reacts to `agency.agents.AgentRetired`.
+      `agency.agents.RetireAgent` emits it on `retired`, which moves a `agency.agents.Agent` to `Retired` along `retire`.
+    messages:
+    - $ref: '#/channels/agency.agents.AgentRetired/messages/agency.agents.AgentRetired'
+  send.agency.agents.AgentSpecChecked:
+    action: send
+    channel:
+      $ref: '#/channels/agency.agents.AgentSpecChecked'
+    title: Publish AgentSpecChecked
+    summary: Publishes `agency.agents.AgentSpecChecked`.
+    description: |-
+      Nothing in this specification reacts to `agency.agents.AgentSpecChecked`.
+      `agency.agents.RecordSpecCheck` emits it on `checked`, which moves a `agency.agents.AgentDefinition` to `Checked` along `check`.
+    messages:
+    - $ref: '#/channels/agency.agents.AgentSpecChecked/messages/agency.agents.AgentSpecChecked'
+  send.agency.agents.AgentSpecRefused:
+    action: send
+    channel:
+      $ref: '#/channels/agency.agents.AgentSpecRefused'
+    title: Publish AgentSpecRefused
+    summary: Publishes `agency.agents.AgentSpecRefused`.
+    description: |-
+      Nothing in this specification reacts to `agency.agents.AgentSpecRefused`.
+      `agency.agents.RecordSpecCheck` emits it on `refused`, which moves a `agency.agents.AgentDefinition` to `Draft` along `refuse`.
+    messages:
+    - $ref: '#/channels/agency.agents.AgentSpecRefused/messages/agency.agents.AgentSpecRefused'
+  send.agency.auth.CredentialGranted:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.CredentialGranted'
+    title: Publish CredentialGranted
+    summary: Publishes `agency.auth.CredentialGranted`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.CredentialGranted`.
+      `agency.auth.GrantCredential` emits it on `granted-to-agent`, which creates a `agency.auth.CredentialGrant` in `Granted`. It carries the new instance's identity in `grant_id`.
+      `agency.auth.GrantCredential` emits it on `granted-to-team`, which creates a `agency.auth.CredentialGrant` in `Granted`. It carries the new instance's identity in `grant_id`.
+      `agency.auth.GrantCredential` emits it on `granted-to-workforce`, which creates a `agency.auth.CredentialGrant` in `Granted`. It carries the new instance's identity in `grant_id`.
+    messages:
+    - $ref: '#/channels/agency.auth.CredentialGranted/messages/agency.auth.CredentialGranted'
+  send.agency.auth.CredentialRefreshed:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.CredentialRefreshed'
+    title: Publish CredentialRefreshed
+    summary: Publishes `agency.auth.CredentialRefreshed`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.CredentialRefreshed`.
+      `agency.auth.RefreshCredential` emits it on `refreshed`, which changes a `agency.auth.Credential` without moving it.
+    messages:
+    - $ref: '#/channels/agency.auth.CredentialRefreshed/messages/agency.auth.CredentialRefreshed'
+  send.agency.auth.CredentialRevoked:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.CredentialRevoked'
+    title: Publish CredentialRevoked
+    summary: Publishes `agency.auth.CredentialRevoked`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.CredentialRevoked`.
+      `agency.auth.RevokeCredential` emits it on `revoked`, which moves a `agency.auth.Credential` to `Revoked` along `revoke`.
+    messages:
+    - $ref: '#/channels/agency.auth.CredentialRevoked/messages/agency.auth.CredentialRevoked'
+  send.agency.auth.CredentialStored:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.CredentialStored'
+    title: Publish CredentialStored
+    summary: Publishes `agency.auth.CredentialStored`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.CredentialStored`.
+      `agency.auth.StoreCredential` emits it on `stored`, which creates a `agency.auth.Credential` in `Stored`. It carries the new instance's identity in `credential_id`.
+    messages:
+    - $ref: '#/channels/agency.auth.CredentialStored/messages/agency.auth.CredentialStored'
+  send.agency.auth.GrantRevoked:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.GrantRevoked'
+    title: Publish GrantRevoked
+    summary: Publishes `agency.auth.GrantRevoked`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.GrantRevoked`.
+      `agency.auth.RevokeGrant` emits it on `revoked`, which moves a `agency.auth.CredentialGrant` to `Revoked` along `revoke`.
+    messages:
+    - $ref: '#/channels/agency.auth.GrantRevoked/messages/agency.auth.GrantRevoked'
+  send.agency.auth.PolicyActivated:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.PolicyActivated'
+    title: Publish PolicyActivated
+    summary: Publishes `agency.auth.PolicyActivated`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.PolicyActivated`.
+      `agency.auth.ActivatePolicy` emits it on `activated`, which moves a `agency.auth.Policy` to `Active` along `activate`.
+    messages:
+    - $ref: '#/channels/agency.auth.PolicyActivated/messages/agency.auth.PolicyActivated'
+  send.agency.auth.PolicyCreated:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.PolicyCreated'
+    title: Publish PolicyCreated
+    summary: Publishes `agency.auth.PolicyCreated`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.PolicyCreated`.
+      `agency.auth.CreatePolicy` emits it on `created`, which creates a `agency.auth.Policy` in `Draft`. It carries the new instance's identity in `policy_id`.
+    messages:
+    - $ref: '#/channels/agency.auth.PolicyCreated/messages/agency.auth.PolicyCreated'
+  send.agency.auth.PolicySuperseded:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.PolicySuperseded'
+    title: Publish PolicySuperseded
+    summary: Publishes `agency.auth.PolicySuperseded`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.PolicySuperseded`.
+      `agency.auth.SupersedePolicy` emits it on `superseded`, which moves a `agency.auth.Policy` to `Superseded` along `supersede`.
+    messages:
+    - $ref: '#/channels/agency.auth.PolicySuperseded/messages/agency.auth.PolicySuperseded'
+  send.agency.auth.PrincipalDisabled:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.PrincipalDisabled'
+    title: Publish PrincipalDisabled
+    summary: Publishes `agency.auth.PrincipalDisabled`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.PrincipalDisabled`.
+      `agency.auth.DisablePrincipal` emits it on `disabled`, which moves a `agency.auth.Principal` to `Disabled` along `disable`.
+    messages:
+    - $ref: '#/channels/agency.auth.PrincipalDisabled/messages/agency.auth.PrincipalDisabled'
+  send.agency.auth.PrincipalInvited:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.PrincipalInvited'
+    title: Publish PrincipalInvited
+    summary: Publishes `agency.auth.PrincipalInvited`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.PrincipalInvited`.
+      `agency.auth.InvitePrincipal` emits it on `invited`, which creates a `agency.auth.Principal` in `Invited`. It carries the new instance's identity in `principal_id`.
+    messages:
+    - $ref: '#/channels/agency.auth.PrincipalInvited/messages/agency.auth.PrincipalInvited'
+  send.agency.auth.RoleAssigned:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.RoleAssigned'
+    title: Publish RoleAssigned
+    summary: Publishes `agency.auth.RoleAssigned`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.RoleAssigned`.
+      `agency.auth.AssignRole` emits it on `assigned`, which changes a `agency.auth.Principal` without moving it.
+    messages:
+    - $ref: '#/channels/agency.auth.RoleAssigned/messages/agency.auth.RoleAssigned'
+  send.agency.auth.TenantCreated:
+    action: send
+    channel:
+      $ref: '#/channels/agency.auth.TenantCreated'
+    title: Publish TenantCreated
+    summary: Publishes `agency.auth.TenantCreated`.
+    description: |-
+      Nothing in this specification reacts to `agency.auth.TenantCreated`.
+      `agency.auth.CreateTenant` emits it on `created`, which creates a `agency.auth.Tenant` in `Created`. It carries the new instance's identity in `tenant_id`.
+    messages:
+    - $ref: '#/channels/agency.auth.TenantCreated/messages/agency.auth.TenantCreated'
+  send.agency.runs.RunAdmitted:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunAdmitted'
+    title: Publish RunAdmitted
+    summary: Publishes `agency.runs.RunAdmitted`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunAdmitted`.
+      `agency.runs.AdmitRun` emits it on `admitted`, which moves a `agency.runs.Run` to `Admitted` along `admit`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunAdmitted/messages/agency.runs.RunAdmitted'
+  send.agency.runs.RunApprovalDenied:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunApprovalDenied'
+    title: Publish RunApprovalDenied
+    summary: Publishes `agency.runs.RunApprovalDenied`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunApprovalDenied`.
+      `agency.runs.DenyRunApproval` emits it on `denied`, which moves a `agency.runs.RunApproval` to `Denied` along `deny`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunApprovalDenied/messages/agency.runs.RunApprovalDenied'
+  send.agency.runs.RunApprovalGranted:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunApprovalGranted'
+    title: Publish RunApprovalGranted
+    summary: Publishes `agency.runs.RunApprovalGranted`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunApprovalGranted`.
+      `agency.runs.GrantRunApproval` emits it on `granted`, which moves a `agency.runs.RunApproval` to `Granted` along `grant`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunApprovalGranted/messages/agency.runs.RunApprovalGranted'
+  send.agency.runs.RunApprovalRequested:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunApprovalRequested'
+    title: Publish RunApprovalRequested
+    summary: Publishes `agency.runs.RunApprovalRequested`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunApprovalRequested`.
+      `agency.runs.RequestRunApproval` emits it on `requested`, which creates a `agency.runs.RunApproval` in `Pending`. It carries the new instance's identity in `approval_id`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunApprovalRequested/messages/agency.runs.RunApprovalRequested'
+  send.agency.runs.RunBudgetSet:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunBudgetSet'
+    title: Publish RunBudgetSet
+    summary: Publishes `agency.runs.RunBudgetSet`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunBudgetSet`.
+      `agency.runs.SetRunBudget` emits it on `set`, which changes a `agency.runs.Run` without moving it.
+    messages:
+    - $ref: '#/channels/agency.runs.RunBudgetSet/messages/agency.runs.RunBudgetSet'
+  send.agency.runs.RunFailed:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunFailed'
+    title: Publish RunFailed
+    summary: Publishes `agency.runs.RunFailed`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunFailed`.
+      `agency.runs.RecordRunFailure` emits it on `failed`, which moves a `agency.runs.Run` to `Failed` along `fail`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunFailed/messages/agency.runs.RunFailed'
+  send.agency.runs.RunProposed:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunProposed'
+    title: Publish RunProposed
+    summary: Publishes `agency.runs.RunProposed`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunProposed`.
+      `agency.runs.RecordRunProposal` emits it on `proposed`, which moves a `agency.runs.Run` to `Proposed` along `propose`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunProposed/messages/agency.runs.RunProposed'
+  send.agency.runs.RunRequested:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunRequested'
+    title: Publish RunRequested
+    summary: Publishes `agency.runs.RunRequested`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunRequested`.
+      `agency.runs.StartRun` emits it on `requested`, which creates a `agency.runs.Run` in `Requested`. It carries the new instance's identity in `run_id`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunRequested/messages/agency.runs.RunRequested'
+  send.agency.runs.RunStarted:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunStarted'
+    title: Publish RunStarted
+    summary: Publishes `agency.runs.RunStarted`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunStarted`.
+      `agency.runs.RecordRunStarted` emits it on `started`, which moves a `agency.runs.Run` to `Running` along `start`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunStarted/messages/agency.runs.RunStarted'
+  send.agency.runs.RunStopped:
+    action: send
+    channel:
+      $ref: '#/channels/agency.runs.RunStopped'
+    title: Publish RunStopped
+    summary: Publishes `agency.runs.RunStopped`.
+    description: |-
+      Nothing in this specification reacts to `agency.runs.RunStopped`.
+      `agency.runs.StopRun` emits it on `stopped`, which moves a `agency.runs.Run` to `Stopped` along `stop`.
+    messages:
+    - $ref: '#/channels/agency.runs.RunStopped/messages/agency.runs.RunStopped'
+  send.agency.service.SessionClosed:
+    action: send
+    channel:
+      $ref: '#/channels/agency.service.SessionClosed'
+    title: Publish SessionClosed
+    summary: Publishes `agency.service.SessionClosed`.
+    description: |-
+      Nothing in this specification reacts to `agency.service.SessionClosed`.
+      `agency.service.CloseSession` emits it on `closed`, which moves a `agency.service.Session` to `Closed` along `close`.
+    messages:
+    - $ref: '#/channels/agency.service.SessionClosed/messages/agency.service.SessionClosed'
+  send.agency.service.SessionOpened:
+    action: send
+    channel:
+      $ref: '#/channels/agency.service.SessionOpened'
+    title: Publish SessionOpened
+    summary: Publishes `agency.service.SessionOpened`.
+    description: |-
+      Nothing in this specification reacts to `agency.service.SessionOpened`.
+      `agency.service.OpenSession` emits it on `opened`, which creates a `agency.service.Session` in `Open`. It carries the new instance's identity in `session_id`.
+    messages:
+    - $ref: '#/channels/agency.service.SessionOpened/messages/agency.service.SessionOpened'
+  send.agency.teams.LeadSet:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.LeadSet'
+    title: Publish LeadSet
+    summary: Publishes `agency.teams.LeadSet`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.LeadSet`.
+      `agency.teams.SetLead` emits it on `set`, which changes a `agency.teams.Team` without moving it.
+    messages:
+    - $ref: '#/channels/agency.teams.LeadSet/messages/agency.teams.LeadSet'
+  send.agency.teams.MemberAdded:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.MemberAdded'
+    title: Publish MemberAdded
+    summary: Publishes `agency.teams.MemberAdded`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.MemberAdded`.
+      `agency.teams.AddMember` emits it on `added`, which changes a `agency.teams.Team` without moving it.
+    messages:
+    - $ref: '#/channels/agency.teams.MemberAdded/messages/agency.teams.MemberAdded'
+  send.agency.teams.MemberRemoved:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.MemberRemoved'
+    title: Publish MemberRemoved
+    summary: Publishes `agency.teams.MemberRemoved`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.MemberRemoved`.
+      `agency.teams.RemoveMember` emits it on `removed`, which changes a `agency.teams.Team` without moving it.
+    messages:
+    - $ref: '#/channels/agency.teams.MemberRemoved/messages/agency.teams.MemberRemoved'
+  send.agency.teams.MessageSent:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.MessageSent'
+    title: Publish MessageSent
+    summary: Publishes `agency.teams.MessageSent`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.MessageSent`.
+      `agency.teams.Send` emits it on `sent`, which changes a `agency.teams.Team` without moving it.
+    messages:
+    - $ref: '#/channels/agency.teams.MessageSent/messages/agency.teams.MessageSent'
+  send.agency.teams.QueueAttached:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.QueueAttached'
+    title: Publish QueueAttached
+    summary: Publishes `agency.teams.QueueAttached`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.QueueAttached`.
+      `agency.teams.AttachQueue` emits it on `attached`, which changes a `agency.work.WorkInput` without moving it.
+    messages:
+    - $ref: '#/channels/agency.teams.QueueAttached/messages/agency.teams.QueueAttached'
+  send.agency.teams.ReportSent:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.ReportSent'
+    title: Publish ReportSent
+    summary: Publishes `agency.teams.ReportSent`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.ReportSent`.
+      `agency.teams.Report` emits it on `reported`, which changes a `agency.teams.Team` without moving it.
+    messages:
+    - $ref: '#/channels/agency.teams.ReportSent/messages/agency.teams.ReportSent'
+  send.agency.teams.SwarmDeclared:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.SwarmDeclared'
+    title: Publish SwarmDeclared
+    summary: Publishes `agency.teams.SwarmDeclared`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.SwarmDeclared`.
+      `agency.teams.DeclareSwarm` emits it on `declared`, which creates a `agency.teams.Swarm` in `Declared`. It carries the new instance's identity in `swarm_id`.
+    messages:
+    - $ref: '#/channels/agency.teams.SwarmDeclared/messages/agency.teams.SwarmDeclared'
+  send.agency.teams.SwarmStopped:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.SwarmStopped'
+    title: Publish SwarmStopped
+    summary: Publishes `agency.teams.SwarmStopped`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.SwarmStopped`.
+      `agency.teams.StopSwarm` emits it on `stopped`, which moves a `agency.teams.Swarm` to `Stopped` along `stop`.
+    messages:
+    - $ref: '#/channels/agency.teams.SwarmStopped/messages/agency.teams.SwarmStopped'
+  send.agency.teams.TeamDisbanded:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.TeamDisbanded'
+    title: Publish TeamDisbanded
+    summary: Publishes `agency.teams.TeamDisbanded`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.TeamDisbanded`.
+      `agency.teams.DisbandTeam` emits it on `disbanded`, which moves a `agency.teams.Team` to `Disbanded` along `disband`.
+    messages:
+    - $ref: '#/channels/agency.teams.TeamDisbanded/messages/agency.teams.TeamDisbanded'
+  send.agency.teams.TeamFormed:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.TeamFormed'
+    title: Publish TeamFormed
+    summary: Publishes `agency.teams.TeamFormed`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.TeamFormed`.
+      `agency.teams.FormTeam` emits it on `formed`, which creates a `agency.teams.Team` in `Formed`. It carries the new instance's identity in `team_id`.
+    messages:
+    - $ref: '#/channels/agency.teams.TeamFormed/messages/agency.teams.TeamFormed'
+  send.agency.teams.WorkforceDefined:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.WorkforceDefined'
+    title: Publish WorkforceDefined
+    summary: Publishes `agency.teams.WorkforceDefined`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.WorkforceDefined`.
+      `agency.teams.DefineWorkforce` emits it on `defined`, which creates a `agency.teams.Workforce` in `Defined`. It carries the new instance's identity in `workforce_id`.
+    messages:
+    - $ref: '#/channels/agency.teams.WorkforceDefined/messages/agency.teams.WorkforceDefined'
+  send.agency.teams.WorkforceRetired:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.WorkforceRetired'
+    title: Publish WorkforceRetired
+    summary: Publishes `agency.teams.WorkforceRetired`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.WorkforceRetired`.
+      `agency.teams.RetireWorkforce` emits it on `retired`, which moves a `agency.teams.Workforce` to `Retired` along `retire`.
+    messages:
+    - $ref: '#/channels/agency.teams.WorkforceRetired/messages/agency.teams.WorkforceRetired'
+  send.agency.teams.WorkforceStaffed:
+    action: send
+    channel:
+      $ref: '#/channels/agency.teams.WorkforceStaffed'
+    title: Publish WorkforceStaffed
+    summary: Publishes `agency.teams.WorkforceStaffed`.
+    description: |-
+      Nothing in this specification reacts to `agency.teams.WorkforceStaffed`.
+      `agency.teams.StaffWorkforce` emits it on `staffed`, which moves a `agency.teams.Workforce` to `Staffed` along `staff`.
+    messages:
+    - $ref: '#/channels/agency.teams.WorkforceStaffed/messages/agency.teams.WorkforceStaffed'
+  send.agency.tools.BindingRevoked:
+    action: send
+    channel:
+      $ref: '#/channels/agency.tools.BindingRevoked'
+    title: Publish BindingRevoked
+    summary: Publishes `agency.tools.BindingRevoked`.
+    description: |-
+      Nothing in this specification reacts to `agency.tools.BindingRevoked`.
+      `agency.tools.RevokeBinding` emits it on `revoked`, which moves a `agency.tools.ToolBinding` to `Revoked` along `revoke`.
+    messages:
+    - $ref: '#/channels/agency.tools.BindingRevoked/messages/agency.tools.BindingRevoked'
+  send.agency.tools.ToolBound:
+    action: send
+    channel:
+      $ref: '#/channels/agency.tools.ToolBound'
+    title: Publish ToolBound
+    summary: Publishes `agency.tools.ToolBound`.
+    description: |-
+      Nothing in this specification reacts to `agency.tools.ToolBound`.
+      `agency.tools.BindTool` emits it on `bound-to-definition`, which creates a `agency.tools.ToolBinding` in `Granted`. It carries the new instance's identity in `binding_id`.
+      `agency.tools.BindTool` emits it on `bound-to-team`, which creates a `agency.tools.ToolBinding` in `Granted`. It carries the new instance's identity in `binding_id`.
+    messages:
+    - $ref: '#/channels/agency.tools.ToolBound/messages/agency.tools.ToolBound'
+  send.agency.tools.ToolRegistered:
+    action: send
+    channel:
+      $ref: '#/channels/agency.tools.ToolRegistered'
+    title: Publish ToolRegistered
+    summary: Publishes `agency.tools.ToolRegistered`.
+    description: |-
+      Nothing in this specification reacts to `agency.tools.ToolRegistered`.
+      `agency.tools.RegisterTool` emits it on `registered`, which creates a `agency.tools.Tool` in `Registered`. It carries the new instance's identity in `tool_id`.
+    messages:
+    - $ref: '#/channels/agency.tools.ToolRegistered/messages/agency.tools.ToolRegistered'
+  send.agency.tools.ToolWithdrawn:
+    action: send
+    channel:
+      $ref: '#/channels/agency.tools.ToolWithdrawn'
+    title: Publish ToolWithdrawn
+    summary: Publishes `agency.tools.ToolWithdrawn`.
+    description: |-
+      Nothing in this specification reacts to `agency.tools.ToolWithdrawn`.
+      `agency.tools.WithdrawTool` emits it on `withdrawn`, which moves a `agency.tools.Tool` to `Withdrawn` along `withdraw`.
+    messages:
+    - $ref: '#/channels/agency.tools.ToolWithdrawn/messages/agency.tools.ToolWithdrawn'
+  send.agency.work.WorkInputConfigured:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkInputConfigured'
+    title: Publish WorkInputConfigured
+    summary: Publishes `agency.work.WorkInputConfigured`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkInputConfigured`.
+      `agency.work.ConfigureWorkInput` emits it on `configured`, which creates a `agency.work.WorkInput` in `Configured`. It carries the new instance's identity in `input_id`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkInputConfigured/messages/agency.work.WorkInputConfigured'
+  send.agency.work.WorkInputPaused:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkInputPaused'
+    title: Publish WorkInputPaused
+    summary: Publishes `agency.work.WorkInputPaused`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkInputPaused`.
+      `agency.work.PauseWorkInput` emits it on `paused`, which moves a `agency.work.WorkInput` to `Paused` along `pause`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkInputPaused/messages/agency.work.WorkInputPaused'
+  send.agency.work.WorkInputRemoved:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkInputRemoved'
+    title: Publish WorkInputRemoved
+    summary: Publishes `agency.work.WorkInputRemoved`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkInputRemoved`.
+      `agency.work.RemoveWorkInput` emits it on `removed`, which moves a `agency.work.WorkInput` to `Removed` along `remove`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkInputRemoved/messages/agency.work.WorkInputRemoved'
+  send.agency.work.WorkItemAbandoned:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkItemAbandoned'
+    title: Publish WorkItemAbandoned
+    summary: Publishes `agency.work.WorkItemAbandoned`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkItemAbandoned`.
+      `agency.work.AbandonWorkItem` emits it on `abandoned`, which moves a `agency.work.WorkItem` to `Abandoned` along `abandon`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkItemAbandoned/messages/agency.work.WorkItemAbandoned'
+  send.agency.work.WorkItemAssigned:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkItemAssigned'
+    title: Publish WorkItemAssigned
+    summary: Publishes `agency.work.WorkItemAssigned`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkItemAssigned`.
+      `agency.work.AssignWorkItem` emits it on `assigned`, which moves a `agency.work.WorkItem` to `Assigned` along `assign`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkItemAssigned/messages/agency.work.WorkItemAssigned'
+  send.agency.work.WorkItemReturned:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkItemReturned'
+    title: Publish WorkItemReturned
+    summary: Publishes `agency.work.WorkItemReturned`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkItemReturned`.
+      `agency.work.ReturnWorkItem` emits it on `returned`, which moves a `agency.work.WorkItem` to `Returned` along `return`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkItemReturned/messages/agency.work.WorkItemReturned'
+  send.agency.work.WorkItemSettled:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkItemSettled'
+    title: Publish WorkItemSettled
+    summary: Publishes `agency.work.WorkItemSettled`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkItemSettled`.
+      `agency.work.SettleWorkItem` emits it on `settled`, which moves a `agency.work.WorkItem` to `Done` along `settle`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkItemSettled/messages/agency.work.WorkItemSettled'
+  send.agency.work.WorkItemSubmitted:
+    action: send
+    channel:
+      $ref: '#/channels/agency.work.WorkItemSubmitted'
+    title: Publish WorkItemSubmitted
+    summary: Publishes `agency.work.WorkItemSubmitted`.
+    description: |-
+      Nothing in this specification reacts to `agency.work.WorkItemSubmitted`.
+      `agency.work.SubmitWorkItem` emits it on `received`, which creates a `agency.work.WorkItem` in `Received`. It carries the new instance's identity in `item_ref`.
+    messages:
+    - $ref: '#/channels/agency.work.WorkItemSubmitted/messages/agency.work.WorkItemSubmitted'
+components:
+  messages:
+    agency.agents.AgentDefinitionCreated:
+      name: agency.agents.AgentDefinitionCreated
+      title: AgentDefinitionCreated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.agents.AgentDefinitionCreated'
+    agency.agents.AgentDefinitionDeprecated:
+      name: agency.agents.AgentDefinitionDeprecated
+      title: AgentDefinitionDeprecated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.agents.AgentDefinitionDeprecated'
+    agency.agents.AgentDefinitionPublished:
+      name: agency.agents.AgentDefinitionPublished
+      title: AgentDefinitionPublished
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.agents.AgentDefinitionPublished'
+    agency.agents.AgentProvisioned:
+      name: agency.agents.AgentProvisioned
+      title: AgentProvisioned
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.agents.AgentProvisioned'
+    agency.agents.AgentRetired:
+      name: agency.agents.AgentRetired
+      title: AgentRetired
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.agents.AgentRetired'
+    agency.agents.AgentSpecChecked:
+      name: agency.agents.AgentSpecChecked
+      title: AgentSpecChecked
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.agents.AgentSpecChecked'
+    agency.agents.AgentSpecRefused:
+      name: agency.agents.AgentSpecRefused
+      title: AgentSpecRefused
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.agents.AgentSpecRefused'
+    agency.auth.CredentialGranted:
+      name: agency.auth.CredentialGranted
+      title: CredentialGranted
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.CredentialGranted'
+    agency.auth.CredentialRefreshed:
+      name: agency.auth.CredentialRefreshed
+      title: CredentialRefreshed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.CredentialRefreshed'
+    agency.auth.CredentialRevoked:
+      name: agency.auth.CredentialRevoked
+      title: CredentialRevoked
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.CredentialRevoked'
+    agency.auth.CredentialStored:
+      name: agency.auth.CredentialStored
+      title: CredentialStored
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.CredentialStored'
+    agency.auth.GrantRevoked:
+      name: agency.auth.GrantRevoked
+      title: GrantRevoked
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.GrantRevoked'
+    agency.auth.PolicyActivated:
+      name: agency.auth.PolicyActivated
+      title: PolicyActivated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.PolicyActivated'
+    agency.auth.PolicyCreated:
+      name: agency.auth.PolicyCreated
+      title: PolicyCreated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.PolicyCreated'
+    agency.auth.PolicySuperseded:
+      name: agency.auth.PolicySuperseded
+      title: PolicySuperseded
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.PolicySuperseded'
+    agency.auth.PrincipalDisabled:
+      name: agency.auth.PrincipalDisabled
+      title: PrincipalDisabled
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.PrincipalDisabled'
+    agency.auth.PrincipalInvited:
+      name: agency.auth.PrincipalInvited
+      title: PrincipalInvited
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.PrincipalInvited'
+    agency.auth.RoleAssigned:
+      name: agency.auth.RoleAssigned
+      title: RoleAssigned
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.RoleAssigned'
+    agency.auth.TenantCreated:
+      name: agency.auth.TenantCreated
+      title: TenantCreated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.auth.TenantCreated'
+    agency.runs.RunAdmitted:
+      name: agency.runs.RunAdmitted
+      title: RunAdmitted
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunAdmitted'
+    agency.runs.RunApprovalDenied:
+      name: agency.runs.RunApprovalDenied
+      title: RunApprovalDenied
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunApprovalDenied'
+    agency.runs.RunApprovalGranted:
+      name: agency.runs.RunApprovalGranted
+      title: RunApprovalGranted
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunApprovalGranted'
+    agency.runs.RunApprovalRequested:
+      name: agency.runs.RunApprovalRequested
+      title: RunApprovalRequested
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunApprovalRequested'
+    agency.runs.RunBudgetSet:
+      name: agency.runs.RunBudgetSet
+      title: RunBudgetSet
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunBudgetSet'
+    agency.runs.RunFailed:
+      name: agency.runs.RunFailed
+      title: RunFailed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunFailed'
+    agency.runs.RunProposed:
+      name: agency.runs.RunProposed
+      title: RunProposed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunProposed'
+    agency.runs.RunRequested:
+      name: agency.runs.RunRequested
+      title: RunRequested
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunRequested'
+    agency.runs.RunStarted:
+      name: agency.runs.RunStarted
+      title: RunStarted
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunStarted'
+    agency.runs.RunStopped:
+      name: agency.runs.RunStopped
+      title: RunStopped
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.runs.RunStopped'
+    agency.service.SessionClosed:
+      name: agency.service.SessionClosed
+      title: SessionClosed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.service.SessionClosed'
+    agency.service.SessionOpened:
+      name: agency.service.SessionOpened
+      title: SessionOpened
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.service.SessionOpened'
+    agency.teams.LeadSet:
+      name: agency.teams.LeadSet
+      title: LeadSet
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.LeadSet'
+    agency.teams.MemberAdded:
+      name: agency.teams.MemberAdded
+      title: MemberAdded
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.MemberAdded'
+    agency.teams.MemberRemoved:
+      name: agency.teams.MemberRemoved
+      title: MemberRemoved
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.MemberRemoved'
+    agency.teams.MessageSent:
+      name: agency.teams.MessageSent
+      title: MessageSent
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.MessageSent'
+    agency.teams.QueueAttached:
+      name: agency.teams.QueueAttached
+      title: QueueAttached
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.QueueAttached'
+    agency.teams.ReportSent:
+      name: agency.teams.ReportSent
+      title: ReportSent
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.ReportSent'
+    agency.teams.SwarmDeclared:
+      name: agency.teams.SwarmDeclared
+      title: SwarmDeclared
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.SwarmDeclared'
+    agency.teams.SwarmStopped:
+      name: agency.teams.SwarmStopped
+      title: SwarmStopped
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.SwarmStopped'
+    agency.teams.TeamDisbanded:
+      name: agency.teams.TeamDisbanded
+      title: TeamDisbanded
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.TeamDisbanded'
+    agency.teams.TeamFormed:
+      name: agency.teams.TeamFormed
+      title: TeamFormed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.TeamFormed'
+    agency.teams.WorkforceDefined:
+      name: agency.teams.WorkforceDefined
+      title: WorkforceDefined
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.WorkforceDefined'
+    agency.teams.WorkforceRetired:
+      name: agency.teams.WorkforceRetired
+      title: WorkforceRetired
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.WorkforceRetired'
+    agency.teams.WorkforceStaffed:
+      name: agency.teams.WorkforceStaffed
+      title: WorkforceStaffed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.teams.WorkforceStaffed'
+    agency.tools.BindingRevoked:
+      name: agency.tools.BindingRevoked
+      title: BindingRevoked
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.tools.BindingRevoked'
+    agency.tools.ToolBound:
+      name: agency.tools.ToolBound
+      title: ToolBound
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.tools.ToolBound'
+    agency.tools.ToolRegistered:
+      name: agency.tools.ToolRegistered
+      title: ToolRegistered
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.tools.ToolRegistered'
+    agency.tools.ToolWithdrawn:
+      name: agency.tools.ToolWithdrawn
+      title: ToolWithdrawn
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.tools.ToolWithdrawn'
+    agency.work.WorkInputConfigured:
+      name: agency.work.WorkInputConfigured
+      title: WorkInputConfigured
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkInputConfigured'
+    agency.work.WorkInputPaused:
+      name: agency.work.WorkInputPaused
+      title: WorkInputPaused
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkInputPaused'
+    agency.work.WorkInputRemoved:
+      name: agency.work.WorkInputRemoved
+      title: WorkInputRemoved
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkInputRemoved'
+    agency.work.WorkItemAbandoned:
+      name: agency.work.WorkItemAbandoned
+      title: WorkItemAbandoned
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkItemAbandoned'
+    agency.work.WorkItemAssigned:
+      name: agency.work.WorkItemAssigned
+      title: WorkItemAssigned
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkItemAssigned'
+    agency.work.WorkItemReturned:
+      name: agency.work.WorkItemReturned
+      title: WorkItemReturned
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkItemReturned'
+    agency.work.WorkItemSettled:
+      name: agency.work.WorkItemSettled
+      title: WorkItemSettled
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkItemSettled'
+    agency.work.WorkItemSubmitted:
+      name: agency.work.WorkItemSubmitted
+      title: WorkItemSubmitted
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/event.agency.work.WorkItemSubmitted'
+  schemas:
+    event.agency.agents.AgentDefinitionCreated:
+      title: AgentDefinitionCreated payload
+      x-ess-name: agency.agents.AgentDefinitionCreated
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        definition_id:
+          $ref: '#/components/schemas/type.agency.agents.DefinitionId'
+        name:
+          type: string
+      required:
+      - definition_id
+      - name
+      additionalProperties: false
+    event.agency.agents.AgentDefinitionDeprecated:
+      title: AgentDefinitionDeprecated payload
+      x-ess-name: agency.agents.AgentDefinitionDeprecated
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        definition_id:
+          $ref: '#/components/schemas/type.agency.agents.DefinitionId'
+      required:
+      - definition_id
+      additionalProperties: false
+    event.agency.agents.AgentDefinitionPublished:
+      title: AgentDefinitionPublished payload
+      x-ess-name: agency.agents.AgentDefinitionPublished
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        definition_id:
+          $ref: '#/components/schemas/type.agency.agents.DefinitionId'
+      required:
+      - definition_id
+      additionalProperties: false
+    event.agency.agents.AgentProvisioned:
+      title: AgentProvisioned payload
+      x-ess-name: agency.agents.AgentProvisioned
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+        definition_id:
+          $ref: '#/components/schemas/type.agency.agents.DefinitionId'
+        definition_version:
+          type: integer
+      required:
+      - agent_id
+      - definition_id
+      - definition_version
+      additionalProperties: false
+    event.agency.agents.AgentRetired:
+      title: AgentRetired payload
+      x-ess-name: agency.agents.AgentRetired
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+      required:
+      - agent_id
+      additionalProperties: false
+    event.agency.agents.AgentSpecChecked:
+      title: AgentSpecChecked payload
+      x-ess-name: agency.agents.AgentSpecChecked
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        definition_id:
+          $ref: '#/components/schemas/type.agency.agents.DefinitionId'
+        message:
+          type: string
+      required:
+      - definition_id
+      - message
+      additionalProperties: false
+    event.agency.agents.AgentSpecRefused:
+      title: AgentSpecRefused payload
+      x-ess-name: agency.agents.AgentSpecRefused
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        definition_id:
+          $ref: '#/components/schemas/type.agency.agents.DefinitionId'
+        exit_code:
+          type: integer
+        message:
+          type: string
+      required:
+      - definition_id
+      - exit_code
+      - message
+      additionalProperties: false
+    event.agency.auth.CredentialGranted:
+      title: CredentialGranted payload
+      x-ess-name: agency.auth.CredentialGranted
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        grant_id:
+          $ref: '#/components/schemas/type.agency.auth.GrantId'
+        credential_id:
+          $ref: '#/components/schemas/type.agency.auth.CredentialId'
+        purpose:
+          $ref: '#/components/schemas/type.agency.auth.GrantPurpose'
+      required:
+      - grant_id
+      - credential_id
+      - purpose
+      additionalProperties: false
+    event.agency.auth.CredentialRefreshed:
+      title: CredentialRefreshed payload
+      x-ess-name: agency.auth.CredentialRefreshed
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        credential_id:
+          $ref: '#/components/schemas/type.agency.auth.CredentialId'
+      required:
+      - credential_id
+      additionalProperties: false
+    event.agency.auth.CredentialRevoked:
+      title: CredentialRevoked payload
+      x-ess-name: agency.auth.CredentialRevoked
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        credential_id:
+          $ref: '#/components/schemas/type.agency.auth.CredentialId'
+      required:
+      - credential_id
+      additionalProperties: false
+    event.agency.auth.CredentialStored:
+      title: CredentialStored payload
+      x-ess-name: agency.auth.CredentialStored
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        credential_id:
+          $ref: '#/components/schemas/type.agency.auth.CredentialId'
+        kind:
+          $ref: '#/components/schemas/type.agency.auth.CredentialKind'
+        custody:
+          $ref: '#/components/schemas/type.agency.auth.Custody'
+      required:
+      - credential_id
+      - kind
+      - custody
+      additionalProperties: false
+    event.agency.auth.GrantRevoked:
+      title: GrantRevoked payload
+      x-ess-name: agency.auth.GrantRevoked
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        grant_id:
+          $ref: '#/components/schemas/type.agency.auth.GrantId'
+      required:
+      - grant_id
+      additionalProperties: false
+    event.agency.auth.PolicyActivated:
+      title: PolicyActivated payload
+      x-ess-name: agency.auth.PolicyActivated
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        policy_id:
+          $ref: '#/components/schemas/type.agency.auth.PolicyId'
+      required:
+      - policy_id
+      additionalProperties: false
+    event.agency.auth.PolicyCreated:
+      title: PolicyCreated payload
+      x-ess-name: agency.auth.PolicyCreated
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        policy_id:
+          $ref: '#/components/schemas/type.agency.auth.PolicyId'
+        name:
+          type: string
+      required:
+      - policy_id
+      - name
+      additionalProperties: false
+    event.agency.auth.PolicySuperseded:
+      title: PolicySuperseded payload
+      x-ess-name: agency.auth.PolicySuperseded
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        policy_id:
+          $ref: '#/components/schemas/type.agency.auth.PolicyId'
+      required:
+      - policy_id
+      additionalProperties: false
+    event.agency.auth.PrincipalDisabled:
+      title: PrincipalDisabled payload
+      x-ess-name: agency.auth.PrincipalDisabled
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        principal_id:
+          $ref: '#/components/schemas/type.agency.auth.PrincipalId'
+      required:
+      - principal_id
+      additionalProperties: false
+    event.agency.auth.PrincipalInvited:
+      title: PrincipalInvited payload
+      x-ess-name: agency.auth.PrincipalInvited
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        principal_id:
+          $ref: '#/components/schemas/type.agency.auth.PrincipalId'
+        tenant_id:
+          $ref: '#/components/schemas/type.agency.auth.TenantId'
+        kind:
+          $ref: '#/components/schemas/type.agency.auth.PrincipalKind'
+        subject:
+          type: string
+      required:
+      - principal_id
+      - tenant_id
+      - kind
+      - subject
+      additionalProperties: false
+    event.agency.auth.RoleAssigned:
+      title: RoleAssigned payload
+      x-ess-name: agency.auth.RoleAssigned
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        principal_id:
+          $ref: '#/components/schemas/type.agency.auth.PrincipalId'
+        role:
+          $ref: '#/components/schemas/type.agency.auth.Role'
+      required:
+      - principal_id
+      - role
+      additionalProperties: false
+    event.agency.auth.TenantCreated:
+      title: TenantCreated payload
+      x-ess-name: agency.auth.TenantCreated
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        tenant_id:
+          $ref: '#/components/schemas/type.agency.auth.TenantId'
+        name:
+          type: string
+      required:
+      - tenant_id
+      - name
+      additionalProperties: false
+    event.agency.runs.RunAdmitted:
+      title: RunAdmitted payload
+      x-ess-name: agency.runs.RunAdmitted
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+      required:
+      - run_id
+      additionalProperties: false
+    event.agency.runs.RunApprovalDenied:
+      title: RunApprovalDenied payload
+      x-ess-name: agency.runs.RunApprovalDenied
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        approval_id:
+          $ref: '#/components/schemas/type.agency.runs.ApprovalId'
+        answered_by:
+          $ref: '#/components/schemas/type.agency.auth.PrincipalId'
+      required:
+      - approval_id
+      - answered_by
+      additionalProperties: false
+    event.agency.runs.RunApprovalGranted:
+      title: RunApprovalGranted payload
+      x-ess-name: agency.runs.RunApprovalGranted
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        approval_id:
+          $ref: '#/components/schemas/type.agency.runs.ApprovalId'
+        answered_by:
+          $ref: '#/components/schemas/type.agency.auth.PrincipalId'
+      required:
+      - approval_id
+      - answered_by
+      additionalProperties: false
+    event.agency.runs.RunApprovalRequested:
+      title: RunApprovalRequested payload
+      x-ess-name: agency.runs.RunApprovalRequested
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        approval_id:
+          $ref: '#/components/schemas/type.agency.runs.ApprovalId'
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+        subject:
+          type: string
+        capability:
+          type: string
+      required:
+      - approval_id
+      - run_id
+      - subject
+      - capability
+      additionalProperties: false
+    event.agency.runs.RunBudgetSet:
+      title: RunBudgetSet payload
+      x-ess-name: agency.runs.RunBudgetSet
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+        budget:
+          $ref: '#/components/schemas/type.agency.shared.RunBudget'
+      required:
+      - run_id
+      - budget
+      additionalProperties: false
+    event.agency.runs.RunFailed:
+      title: RunFailed payload
+      x-ess-name: agency.runs.RunFailed
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+        reason:
+          type: string
+      required:
+      - run_id
+      - reason
+      additionalProperties: false
+    event.agency.runs.RunProposed:
+      title: RunProposed payload
+      x-ess-name: agency.runs.RunProposed
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+        usage:
+          $ref: '#/components/schemas/type.agency.runs.RunUsage'
+      required:
+      - run_id
+      - usage
+      additionalProperties: false
+    event.agency.runs.RunRequested:
+      title: RunRequested payload
+      x-ess-name: agency.runs.RunRequested
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+        agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+        work_item_ref:
+          $ref: '#/components/schemas/type.agency.work.WorkItemRef'
+      required:
+      - run_id
+      - agent_id
+      - work_item_ref
+      additionalProperties: false
+    event.agency.runs.RunStarted:
+      title: RunStarted payload
+      x-ess-name: agency.runs.RunStarted
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+        session_id:
+          $ref: '#/components/schemas/type.agency.runs.LoomSessionId'
+        credential_source:
+          $ref: '#/components/schemas/type.agency.runs.CredentialSource'
+      required:
+      - run_id
+      - session_id
+      - credential_source
+      additionalProperties: false
+    event.agency.runs.RunStopped:
+      title: RunStopped payload
+      x-ess-name: agency.runs.RunStopped
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        run_id:
+          $ref: '#/components/schemas/type.agency.runs.RunId'
+        reason:
+          type: string
+      required:
+      - run_id
+      - reason
+      additionalProperties: false
+    event.agency.service.SessionClosed:
+      title: SessionClosed payload
+      x-ess-name: agency.service.SessionClosed
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        session_id:
+          $ref: '#/components/schemas/type.agency.service.SessionId'
+      required:
+      - session_id
+      additionalProperties: false
+    event.agency.service.SessionOpened:
+      title: SessionOpened payload
+      x-ess-name: agency.service.SessionOpened
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        session_id:
+          $ref: '#/components/schemas/type.agency.service.SessionId'
+        principal_id:
+          $ref: '#/components/schemas/type.agency.auth.PrincipalId'
+        kind:
+          $ref: '#/components/schemas/type.agency.service.SessionKind'
+      required:
+      - session_id
+      - principal_id
+      - kind
+      additionalProperties: false
+    event.agency.teams.LeadSet:
+      title: LeadSet payload
+      x-ess-name: agency.teams.LeadSet
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+        lead_agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+      required:
+      - team_id
+      - lead_agent_id
+      additionalProperties: false
+    event.agency.teams.MemberAdded:
+      title: MemberAdded payload
+      x-ess-name: agency.teams.MemberAdded
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+        agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+      required:
+      - team_id
+      - agent_id
+      additionalProperties: false
+    event.agency.teams.MemberRemoved:
+      title: MemberRemoved payload
+      x-ess-name: agency.teams.MemberRemoved
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+        agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+      required:
+      - team_id
+      - agent_id
+      additionalProperties: false
+    event.agency.teams.MessageSent:
+      title: MessageSent payload
+      x-ess-name: agency.teams.MessageSent
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+        from_agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+        to:
+          type: string
+        text:
+          type: string
+      required:
+      - team_id
+      - from_agent_id
+      - to
+      - text
+      additionalProperties: false
+    event.agency.teams.QueueAttached:
+      title: QueueAttached payload
+      x-ess-name: agency.teams.QueueAttached
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        workforce_id:
+          $ref: '#/components/schemas/type.agency.teams.WorkforceId'
+        input_id:
+          $ref: '#/components/schemas/type.agency.work.InputId'
+      required:
+      - workforce_id
+      - input_id
+      additionalProperties: false
+    event.agency.teams.ReportSent:
+      title: ReportSent payload
+      x-ess-name: agency.teams.ReportSent
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+        from_agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+        status:
+          type: string
+        line:
+          type: string
+      required:
+      - team_id
+      - from_agent_id
+      - status
+      - line
+      additionalProperties: false
+    event.agency.teams.SwarmDeclared:
+      title: SwarmDeclared payload
+      x-ess-name: agency.teams.SwarmDeclared
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        swarm_id:
+          $ref: '#/components/schemas/type.agency.teams.SwarmId'
+        goal_ref:
+          type: string
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+      required:
+      - swarm_id
+      - goal_ref
+      - team_id
+      additionalProperties: false
+    event.agency.teams.SwarmStopped:
+      title: SwarmStopped payload
+      x-ess-name: agency.teams.SwarmStopped
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        swarm_id:
+          $ref: '#/components/schemas/type.agency.teams.SwarmId'
+      required:
+      - swarm_id
+      additionalProperties: false
+    event.agency.teams.TeamDisbanded:
+      title: TeamDisbanded payload
+      x-ess-name: agency.teams.TeamDisbanded
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+      required:
+      - team_id
+      additionalProperties: false
+    event.agency.teams.TeamFormed:
+      title: TeamFormed payload
+      x-ess-name: agency.teams.TeamFormed
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        team_id:
+          $ref: '#/components/schemas/type.agency.teams.TeamId'
+        name:
+          type: string
+        lead_agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+      required:
+      - team_id
+      - name
+      - lead_agent_id
+      additionalProperties: false
+    event.agency.teams.WorkforceDefined:
+      title: WorkforceDefined payload
+      x-ess-name: agency.teams.WorkforceDefined
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        workforce_id:
+          $ref: '#/components/schemas/type.agency.teams.WorkforceId'
+        name:
+          type: string
+      required:
+      - workforce_id
+      - name
+      additionalProperties: false
+    event.agency.teams.WorkforceRetired:
+      title: WorkforceRetired payload
+      x-ess-name: agency.teams.WorkforceRetired
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        workforce_id:
+          $ref: '#/components/schemas/type.agency.teams.WorkforceId'
+      required:
+      - workforce_id
+      additionalProperties: false
+    event.agency.teams.WorkforceStaffed:
+      title: WorkforceStaffed payload
+      x-ess-name: agency.teams.WorkforceStaffed
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        workforce_id:
+          $ref: '#/components/schemas/type.agency.teams.WorkforceId'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/type.agency.teams.TeamId'
+        solo_agents:
+          type: array
+          items:
+            $ref: '#/components/schemas/type.agency.agents.AgentId'
+      required:
+      - workforce_id
+      - teams
+      - solo_agents
+      additionalProperties: false
+    event.agency.tools.BindingRevoked:
+      title: BindingRevoked payload
+      x-ess-name: agency.tools.BindingRevoked
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        binding_id:
+          $ref: '#/components/schemas/type.agency.tools.BindingId'
+      required:
+      - binding_id
+      additionalProperties: false
+    event.agency.tools.ToolBound:
+      title: ToolBound payload
+      x-ess-name: agency.tools.ToolBound
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        binding_id:
+          $ref: '#/components/schemas/type.agency.tools.BindingId'
+        tool_id:
+          $ref: '#/components/schemas/type.agency.tools.ToolId'
+        verbs:
+          type: array
+          items:
+            $ref: '#/components/schemas/type.agency.shared.Verb'
+      required:
+      - binding_id
+      - tool_id
+      - verbs
+      additionalProperties: false
+    event.agency.tools.ToolRegistered:
+      title: ToolRegistered payload
+      x-ess-name: agency.tools.ToolRegistered
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        tool_id:
+          $ref: '#/components/schemas/type.agency.tools.ToolId'
+        contract_ref:
+          $ref: '#/components/schemas/type.agency.tools.ContractRef'
+      required:
+      - tool_id
+      - contract_ref
+      additionalProperties: false
+    event.agency.tools.ToolWithdrawn:
+      title: ToolWithdrawn payload
+      x-ess-name: agency.tools.ToolWithdrawn
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        tool_id:
+          $ref: '#/components/schemas/type.agency.tools.ToolId'
+      required:
+      - tool_id
+      additionalProperties: false
+    event.agency.work.WorkInputConfigured:
+      title: WorkInputConfigured payload
+      x-ess-name: agency.work.WorkInputConfigured
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        input_id:
+          $ref: '#/components/schemas/type.agency.work.InputId'
+        name:
+          type: string
+        workforce_id:
+          $ref: '#/components/schemas/type.agency.teams.WorkforceId'
+      required:
+      - input_id
+      - name
+      - workforce_id
+      additionalProperties: false
+    event.agency.work.WorkInputPaused:
+      title: WorkInputPaused payload
+      x-ess-name: agency.work.WorkInputPaused
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        input_id:
+          $ref: '#/components/schemas/type.agency.work.InputId'
+      required:
+      - input_id
+      additionalProperties: false
+    event.agency.work.WorkInputRemoved:
+      title: WorkInputRemoved payload
+      x-ess-name: agency.work.WorkInputRemoved
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        input_id:
+          $ref: '#/components/schemas/type.agency.work.InputId'
+      required:
+      - input_id
+      additionalProperties: false
+    event.agency.work.WorkItemAbandoned:
+      title: WorkItemAbandoned payload
+      x-ess-name: agency.work.WorkItemAbandoned
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        item_ref:
+          $ref: '#/components/schemas/type.agency.work.WorkItemRef'
+      required:
+      - item_ref
+      additionalProperties: false
+    event.agency.work.WorkItemAssigned:
+      title: WorkItemAssigned payload
+      x-ess-name: agency.work.WorkItemAssigned
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        item_ref:
+          $ref: '#/components/schemas/type.agency.work.WorkItemRef'
+        agent_id:
+          $ref: '#/components/schemas/type.agency.agents.AgentId'
+      required:
+      - item_ref
+      - agent_id
+      additionalProperties: false
+    event.agency.work.WorkItemReturned:
+      title: WorkItemReturned payload
+      x-ess-name: agency.work.WorkItemReturned
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        item_ref:
+          $ref: '#/components/schemas/type.agency.work.WorkItemRef'
+      required:
+      - item_ref
+      additionalProperties: false
+    event.agency.work.WorkItemSettled:
+      title: WorkItemSettled payload
+      x-ess-name: agency.work.WorkItemSettled
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        item_ref:
+          $ref: '#/components/schemas/type.agency.work.WorkItemRef'
+      required:
+      - item_ref
+      additionalProperties: false
+    event.agency.work.WorkItemSubmitted:
+      title: WorkItemSubmitted payload
+      x-ess-name: agency.work.WorkItemSubmitted
+      x-ess-kind: event-payload
+      type: object
+      properties:
+        item_ref:
+          $ref: '#/components/schemas/type.agency.work.WorkItemRef'
+        input_id:
+          $ref: '#/components/schemas/type.agency.work.InputId'
+        payload_digest:
+          $ref: '#/components/schemas/type.agency.shared.Digest'
+      required:
+      - item_ref
+      - input_id
+      - payload_digest
+      additionalProperties: false
+    type.agency.agents.AgentId:
+      title: AgentId
+      x-ess-name: agency.agents.AgentId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.agents.DefinitionId:
+      title: DefinitionId
+      x-ess-name: agency.agents.DefinitionId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.auth.ConnectorsCustody:
+      title: ConnectorsCustody
+      x-ess-name: agency.auth.ConnectorsCustody
+      x-ess-kind: struct
+      type: object
+      properties:
+        instance_id:
+          type: string
+      required:
+      - instance_id
+      additionalProperties: false
+    type.agency.auth.CredentialId:
+      title: CredentialId
+      x-ess-name: agency.auth.CredentialId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.auth.CredentialKind:
+      title: CredentialKind
+      x-ess-name: agency.auth.CredentialKind
+      x-ess-kind: enum
+      type: string
+      enum:
+      - OperatorLogin
+      - ApiKey
+      - OAuthToken
+      - ConnectorInstance
+    type.agency.auth.Custody:
+      title: Custody
+      description: Where a credential's secret is held. Agency stores this pointer, never the value.
+      x-ess-name: agency.auth.Custody
+      x-ess-kind: union
+      oneOf:
+      - title: AgencyVault
+        type: object
+        properties:
+          kind:
+            type: string
+            const: AgencyVault
+        required:
+        - kind
+        additionalProperties: false
+      - title: ConnectorsInstance
+        type: object
+        properties:
+          kind:
+            type: string
+            const: ConnectorsInstance
+          value:
+            $ref: '#/components/schemas/type.agency.auth.ConnectorsCustody'
+        required:
+        - kind
+        - value
+        additionalProperties: false
+      - title: HostFile
+        type: object
+        properties:
+          kind:
+            type: string
+            const: HostFile
+          value:
+            $ref: '#/components/schemas/type.agency.auth.HostFileCustody'
+        required:
+        - kind
+        - value
+        additionalProperties: false
+      x-ess-union-tag: kind
+    type.agency.auth.GrantId:
+      title: GrantId
+      x-ess-name: agency.auth.GrantId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.auth.GrantPurpose:
+      title: GrantPurpose
+      x-ess-name: agency.auth.GrantPurpose
+      x-ess-kind: union
+      oneOf:
+      - title: ModelCalls
+        type: object
+        properties:
+          kind:
+            type: string
+            const: ModelCalls
+        required:
+        - kind
+        additionalProperties: false
+      - title: ToolCalls
+        type: object
+        properties:
+          kind:
+            type: string
+            const: ToolCalls
+          value:
+            $ref: '#/components/schemas/type.agency.auth.ToolCallsPurpose'
+        required:
+        - kind
+        - value
+        additionalProperties: false
+      x-ess-union-tag: kind
+    type.agency.auth.HostFileCustody:
+      title: HostFileCustody
+      x-ess-name: agency.auth.HostFileCustody
+      x-ess-kind: struct
+      type: object
+      properties:
+        path:
+          type: string
+      required:
+      - path
+      additionalProperties: false
+    type.agency.auth.PolicyId:
+      title: PolicyId
+      x-ess-name: agency.auth.PolicyId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.auth.PrincipalId:
+      title: PrincipalId
+      x-ess-name: agency.auth.PrincipalId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.auth.PrincipalKind:
+      title: PrincipalKind
+      x-ess-name: agency.auth.PrincipalKind
+      x-ess-kind: enum
+      type: string
+      enum:
+      - Human
+      - Agent
+      - Service
+    type.agency.auth.Role:
+      title: Role
+      x-ess-name: agency.auth.Role
+      x-ess-kind: enum
+      type: string
+      enum:
+      - Operator
+      - Supervisor
+      - Viewer
+      - Agent
+    type.agency.auth.TenantId:
+      title: TenantId
+      x-ess-name: agency.auth.TenantId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.auth.ToolCallsPurpose:
+      title: ToolCallsPurpose
+      x-ess-name: agency.auth.ToolCallsPurpose
+      x-ess-kind: struct
+      type: object
+      properties:
+        tool_id:
+          $ref: '#/components/schemas/type.agency.tools.ToolId'
+      required:
+      - tool_id
+      additionalProperties: false
+    type.agency.runs.ApprovalId:
+      title: ApprovalId
+      x-ess-name: agency.runs.ApprovalId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.runs.CredentialSource:
+      title: CredentialSource
+      x-ess-name: agency.runs.CredentialSource
+      x-ess-kind: enum
+      type: string
+      enum:
+      - OperatorLogin
+      - ApiKey
+      - Loopback
+      - None
+    type.agency.runs.LoomSessionId:
+      title: LoomSessionId
+      x-ess-name: agency.runs.LoomSessionId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.runs.RunId:
+      title: RunId
+      x-ess-name: agency.runs.RunId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.runs.RunUsage:
+      title: RunUsage
+      description: The totals of Loom's RunUsageReport for one run.
+      x-ess-name: agency.runs.RunUsage
+      x-ess-kind: struct
+      type: object
+      properties:
+        model_calls:
+          type: integer
+        input_tokens:
+          type: integer
+        output_tokens:
+          type: integer
+        cached_input_tokens:
+          type: integer
+        cost_micro_usd:
+          type: integer
+      required:
+      - model_calls
+      - input_tokens
+      - output_tokens
+      - cached_input_tokens
+      additionalProperties: false
+    type.agency.service.SessionId:
+      title: SessionId
+      x-ess-name: agency.service.SessionId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.service.SessionKind:
+      title: SessionKind
+      x-ess-name: agency.service.SessionKind
+      x-ess-kind: enum
+      type: string
+      enum:
+      - OperatorCookie
+      - ApplicationToken
+      - RunBearer
+    type.agency.shared.Digest:
+      title: Digest
+      description: A content digest, as a sealed definition, policy or frame carries it.
+      x-ess-name: agency.shared.Digest
+      x-ess-kind: newtype
+      type: string
+    type.agency.shared.RunBudget:
+      title: RunBudget
+      description: The token and deadline limits a run is held to.
+      x-ess-name: agency.shared.RunBudget
+      x-ess-kind: struct
+      type: object
+      properties:
+        max_tokens:
+          type: integer
+        deadline:
+          type: string
+          format: date-time
+      additionalProperties: false
+    type.agency.shared.Verb:
+      title: Verb
+      x-ess-name: agency.shared.Verb
+      x-ess-kind: newtype
+      type: string
+    type.agency.teams.SwarmId:
+      title: SwarmId
+      x-ess-name: agency.teams.SwarmId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.teams.TeamId:
+      title: TeamId
+      x-ess-name: agency.teams.TeamId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.teams.WorkforceId:
+      title: WorkforceId
+      x-ess-name: agency.teams.WorkforceId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.tools.BindingId:
+      title: BindingId
+      x-ess-name: agency.tools.BindingId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.tools.ContractRef:
+      title: ContractRef
+      description: The tool-contract/1 contract a tool was registered from.
+      x-ess-name: agency.tools.ContractRef
+      x-ess-kind: struct
+      type: object
+      properties:
+        toolset:
+          type: string
+        version:
+          type: string
+      required:
+      - toolset
+      - version
+      additionalProperties: false
+    type.agency.tools.ToolId:
+      title: ToolId
+      x-ess-name: agency.tools.ToolId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.work.InputId:
+      title: InputId
+      x-ess-name: agency.work.InputId
+      x-ess-kind: newtype
+      type: string
+      format: uuid
+      pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    type.agency.work.WorkItemRef:
+      title: WorkItemRef
+      description: A work item's external id together with its source.
+      x-ess-name: agency.work.WorkItemRef
+      x-ess-kind: newtype
+      type: string

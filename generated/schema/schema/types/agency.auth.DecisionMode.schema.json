@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.DecisionMode",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:489fd56cbfa8edffae35459325adff53774324eef9640de22225800eeb65de91",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.DecisionMode": {
+      "title": "DecisionMode",
+      "x-ess-name": "agency.auth.DecisionMode",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Frame",
+        "Ask",
+        "Observe"
+      ]
+    }
+  }
+}

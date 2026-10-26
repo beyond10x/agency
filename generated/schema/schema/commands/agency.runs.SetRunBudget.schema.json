@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Set a run's budget input",
+  "x-ess-name": "agency.runs.SetRunBudget",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId"
+    },
+    "budget": {
+      "$ref": "#/$defs/agency.shared.RunBudget"
+    }
+  },
+  "required": [
+    "run_id",
+    "budget"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:92e232205a0fc14c383c2325054047069edfb0035fc63ffaeec2ef4e94c9ea80",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.shared.RunBudget": {
+      "title": "RunBudget",
+      "description": "The token and deadline limits a run is held to.",
+      "x-ess-name": "agency.shared.RunBudget",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "max_tokens": {
+          "type": "integer"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Disband a team input",
+  "x-ess-name": "agency.teams.DisbandTeam",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "team_id": {
+      "$ref": "#/$defs/agency.teams.TeamId"
+    }
+  },
+  "required": [
+    "team_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:fadedfedbbc4ee19fd6e04f1bb85f3482821067781dbfbc35a0bad5689985495",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

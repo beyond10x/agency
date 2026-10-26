@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RunApprovalRequested payload",
+  "x-ess-name": "agency.runs.RunApprovalRequested",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "approval_id": {
+      "$ref": "#/$defs/agency.runs.ApprovalId"
+    },
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "capability": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "approval_id",
+    "run_id",
+    "subject",
+    "capability"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:5957ac63a73da835821163f11717fbb4f7b0f7414f4c9d5cdaac3ce8eb615ade",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.ApprovalId": {
+      "title": "ApprovalId",
+      "x-ess-name": "agency.runs.ApprovalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

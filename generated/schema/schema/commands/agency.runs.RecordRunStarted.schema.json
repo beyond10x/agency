@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Record a run started in Loom input",
+  "x-ess-name": "agency.runs.RecordRunStarted",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId"
+    },
+    "session_id": {
+      "$ref": "#/$defs/agency.runs.LoomSessionId"
+    },
+    "credential_source": {
+      "$ref": "#/$defs/agency.runs.CredentialSource"
+    }
+  },
+  "required": [
+    "run_id",
+    "session_id",
+    "credential_source"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:7d9654e56c9f81b0144bd6fe7ae60cd67d6c59a32460493e9d9f262570d67bec",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.CredentialSource": {
+      "title": "CredentialSource",
+      "x-ess-name": "agency.runs.CredentialSource",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "OperatorLogin",
+        "ApiKey",
+        "Loopback",
+        "None"
+      ]
+    },
+    "agency.runs.LoomSessionId": {
+      "title": "LoomSessionId",
+      "x-ess-name": "agency.runs.LoomSessionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

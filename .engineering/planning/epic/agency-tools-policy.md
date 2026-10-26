@@ -2,10 +2,12 @@
 format: aep.planning-md/3
 id: epic:agency-tools-policy
 kind: epic
-status: draft
+status: proposed
 title: M3 Tools and policy
 summary: RegisterTool from a tool-contract/1 ref, BindTool, Policy to EffectivePolicy to a sealed Frame; Ask decisions surface as approvals.
-revision: 1
+revision: 2
+transitions:
+- {from: "draft", to: "proposed", at: "2026-10-26T14:54:20Z", actor: "human:timo", revision: 2}
 ---
 ## Outcome
 

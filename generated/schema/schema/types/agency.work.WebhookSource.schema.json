@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.work.WebhookSource",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:ead7a1c05ef8283d3b20d220d7c94f46badf8a211e75d109d0a20e0288b8e2f4",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.WebhookSource": {
+      "title": "WebhookSource",
+      "x-ess-name": "agency.work.WebhookSource",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "secret_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "secret_ref"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

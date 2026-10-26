@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.work.GitHubIssuesSource",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:a8686432a18a1267749131f472e7060e9e672cdf020bc68d1ffdbd121255f391",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.GitHubIssuesSource": {
+      "title": "GitHubIssuesSource",
+      "x-ess-name": "agency.work.GitHubIssuesSource",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repo",
+        "label"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

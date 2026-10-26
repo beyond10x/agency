@@ -1,0 +1,1084 @@
+# Auth: tenants, principals, credentials, credential grants and policies. Sources: §2.5 (nouns),
+# §3.4 (commands, views, who), §4 (identities, tenancy, custody, per-call permission). Answers
+# taken: Q5 single local operator until M5 (Mandate login at M5); Q6 Codex uses ApiKey with the
+# custody marked on the Run (agency.runs.Run).
+#
+# Hard rule (§2.5, §5.3, AGENTS.md): no field of any entity, event or command input carries a
+# secret value. A Credential holds a custody pointer only.
+domain: agency.auth
+
+summary: >-
+  Who may act in Agency and with what: tenants, principals and their roles, credentials held as
+  custody pointers, grants of those credentials, and the policies runs are sealed under.
+
+naming:
+  wire: agency
+  display: Auth
+
+types:
+  - name: agency.auth.TenantId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.auth.PrincipalId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.auth.CredentialId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.auth.GrantId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.auth.PolicyId
+    kind: newtype
+    of: Uuid
+
+  # §2.5 Principal `kind: {Human, Agent, Service}` (Mandate: "people, services, agents").
+  - name: agency.auth.PrincipalKind
+    kind: enum
+    variants: [Human, Agent, Service]
+
+  # §2.5 `Role{Operator, Supervisor, Viewer, Agent}`. §3's fifth role, Application, is a Service
+  # principal (§4.1) and no Role value.
+  - name: agency.auth.Role
+    kind: enum
+    variants: [Operator, Supervisor, Viewer, Agent]
+
+  # §2.5 Credential `kind: {OperatorLogin, ApiKey, OAuthToken, ConnectorInstance}`.
+  - name: agency.auth.CredentialKind
+    kind: enum
+    variants: [OperatorLogin, ApiKey, OAuthToken, ConnectorInstance]
+
+  # §2.5 `custody: {AgencyVault, ConnectorsInstance{instance_id}, HostFile{path}}`, §4.3. A pointer
+  # to where the secret is held, never the secret.
+  - name: agency.auth.Custody
+    kind: union
+    tag: kind
+    naming:
+      summary: Where a credential's secret is held. Agency stores this pointer, never the value.
+    variants:
+      AgencyVault:
+      ConnectorsInstance: agency.auth.ConnectorsCustody
+      HostFile: agency.auth.HostFileCustody
+
+  # The Connectors instance holding the secret (§4.3; connectors/README.md:3-8). A cross-system
+  # id, carried as a string.
+  - name: agency.auth.ConnectorsCustody
+    kind: struct
+    fields:
+      - name: instance_id
+        type: String
+
+  # The host file holding the operator's own login, single-operator dev mode (§4.3).
+  - name: agency.auth.HostFileCustody
+    kind: struct
+    fields:
+      - name: path
+        type: String
+
+  # §2.5 `scope: {models[], providers[], tools[]}`.
+  - name: agency.auth.CredentialScope
+    kind: struct
+    fields:
+      - name: models
+        type: List<String>
+      - name: providers
+        type: List<String>
+      - name: tools
+        type: List<agency.tools.ToolId>
+
+  # §2.5 CredentialGrant `purpose: {ModelCalls, ToolCalls{tool_id}}`.
+  - name: agency.auth.GrantPurpose
+    kind: union
+    tag: kind
+    variants:
+      ModelCalls:
+      ToolCalls: agency.auth.ToolCallsPurpose
+
+  - name: agency.auth.ToolCallsPurpose
+    kind: struct
+    fields:
+      - name: tool_id
+        type: agency.tools.ToolId
+
+  # §2.5 Rule `subject: {definition, team, workforce, tenant}`: what a rule applies to.
+  - name: agency.auth.RuleSubject
+    kind: union
+    tag: kind
+    variants:
+      Definition: agency.auth.DefinitionSubject
+      Team: agency.auth.TeamSubject
+      Workforce: agency.auth.WorkforceSubject
+      Tenant: agency.auth.TenantSubject
+
+  - name: agency.auth.DefinitionSubject
+    kind: struct
+    fields:
+      - name: definition_id
+        type: agency.agents.DefinitionId
+
+  - name: agency.auth.TeamSubject
+    kind: struct
+    fields:
+      - name: team_id
+        type: agency.teams.TeamId
+
+  - name: agency.auth.WorkforceSubject
+    kind: struct
+    fields:
+      - name: workforce_id
+        type: agency.teams.WorkforceId
+
+  - name: agency.auth.TenantSubject
+    kind: struct
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+
+  # §2.5 `Rule{subject, tool_id?, verbs?, risk_ceiling, decision_mode, budget_ceiling: RunBudget,
+  # hermetic: bool}`.
+  - name: agency.auth.Rule
+    kind: struct
+    fields:
+      - name: subject
+        type: agency.auth.RuleSubject
+      - name: tool_id
+        type: Optional<agency.tools.ToolId>
+      - name: verbs
+        type: Optional<List<agency.shared.Verb>>
+      - name: risk_ceiling
+        type: agency.auth.RiskCeiling
+      - name: decision_mode
+        type: agency.auth.DecisionMode
+      - name: budget_ceiling
+        type: agency.shared.RunBudget
+      - name: hermetic
+        type: Boolean
+
+  # §2.5 Rule `risk_ceiling: {low, medium, high}` (harness `--approve-up-to medium|high`).
+  - name: agency.auth.RiskCeiling
+    kind: enum
+    variants: [Low, Medium, High]
+
+  # §2.5 Rule `decision_mode: {Frame, Ask, Observe}` (metaharness DecisionMode, spec.rs:57-61).
+  - name: agency.auth.DecisionMode
+    kind: enum
+    variants: [Frame, Ask, Observe]
+
+entities:
+  # §2.5 Tenant, §4.2: one Tenant per deployment until M5 (Q5).
+  - name: agency.auth.Tenant
+    naming:
+      summary: The tenancy every other Agency record belongs to.
+    identity:
+      name: tenant_id
+      type: agency.auth.TenantId
+    fields:
+      - name: name
+        type: String
+      # Mandate's tenant, when Mandate login lands (M5). A cross-system id, carried as a string.
+      - name: mandate_tenant_ref
+        type: Optional<String>
+    # §2.5 "owns everything above": every entity of §2.1-§2.4, each carrying `tenant_id` (§4.2).
+    relations:
+      - {name: agent_definitions, kind: owns, target: agency.agents.AgentDefinition, cardinality: many, via: tenant_id}
+      - {name: agents, kind: owns, target: agency.agents.Agent, cardinality: many, via: tenant_id}
+      - {name: runs, kind: owns, target: agency.runs.Run, cardinality: many, via: tenant_id}
+      - {name: tools, kind: owns, target: agency.tools.Tool, cardinality: many, via: tenant_id}
+      - {name: tool_bindings, kind: owns, target: agency.tools.ToolBinding, cardinality: many, via: tenant_id}
+      - {name: teams, kind: owns, target: agency.teams.Team, cardinality: many, via: tenant_id}
+      - {name: swarms, kind: owns, target: agency.teams.Swarm, cardinality: many, via: tenant_id}
+      - {name: workforces, kind: owns, target: agency.teams.Workforce, cardinality: many, via: tenant_id}
+      - {name: work_inputs, kind: owns, target: agency.work.WorkInput, cardinality: many, via: tenant_id}
+      - {name: work_items, kind: owns, target: agency.work.WorkItem, cardinality: many, via: tenant_id}
+      # §4.2 "every entity in §2 carries tenant_id"; the §2.5 records belong to their tenant as
+      # the §2.1-§2.4 ones do (decision taken for M0: owns, as "owns everything above" reads).
+      - {name: principals, kind: owns, target: agency.auth.Principal, cardinality: many, via: tenant_id}
+      - {name: credentials, kind: owns, target: agency.auth.Credential, cardinality: many, via: tenant_id}
+      - {name: credential_grants, kind: owns, target: agency.auth.CredentialGrant, cardinality: many, via: tenant_id}
+      - {name: policies, kind: owns, target: agency.auth.Policy, cardinality: many, via: tenant_id}
+    # UNMAPPED: §2.5 gives `created -> active -> suspended`; §3.4 names CreateTenant only. No
+    # command activates or suspends a tenant, so Active and Suspended are left out (ESS refuses a
+    # state no transition reaches). Open question: the commands that activate and suspend.
+    lifecycle:
+      initial: Created
+      states: [Created]
+      terminal: [Created]
+
+  # §2.5 Principal.
+  - name: agency.auth.Principal
+    naming:
+      summary: A human, agent or service that acts in Agency, with the roles it holds.
+    identity:
+      name: principal_id
+      type: agency.auth.PrincipalId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: kind
+        type: agency.auth.PrincipalKind
+      # "login or agent_id" (§2.5).
+      - name: subject
+        type: String
+      - name: roles
+        type: List<agency.auth.Role>
+      # Mandate's principal (M5). A cross-system id, carried as a string.
+      - name: mandate_ref
+        type: Optional<String>
+    # UNMAPPED: §2.5 gives `invited -> active -> disabled`; no §3.4 command makes an invited
+    # principal active (Mandate login is M5, Q5). Active is left out, so DisablePrincipal acts on
+    # an invited principal. Open question: the command or login that activates a principal.
+    lifecycle:
+      initial: Invited
+      states: [Invited, Disabled]
+      terminal: [Disabled]
+      transitions:
+        - name: disable
+          from: [Invited]
+          to: Disabled
+
+  # §2.5 Credential, §4.3 custody.
+  - name: agency.auth.Credential
+    naming:
+      summary: >-
+        A model or tool credential, held as a pointer to its custody. The secret value is never a
+        field of this record, of an event or of a command input.
+    identity:
+      name: credential_id
+      type: agency.auth.CredentialId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: kind
+        type: agency.auth.CredentialKind
+      - name: custody
+        type: agency.auth.Custody
+      - name: scope
+        type: agency.auth.CredentialScope
+      - name: owner_principal_id
+        type: agency.auth.PrincipalId
+      - name: expires_at
+        type: Optional<Timestamp>
+      - name: last_refreshed_at
+        type: Timestamp
+    relations:
+      # §2.5 relation `owner`.
+      - name: owner
+        kind: references
+        target: agency.auth.Principal
+        cardinality: one
+        via: owner_principal_id
+    # UNMAPPED: §2.5 gives `stored -> active -> {expired, revoked}`. No §3.4 command makes a stored
+    # credential active, and expiry is a passage of `expires_at` no command records. Active and
+    # Expired are left out. Open question: what activates a credential, and what records expiry.
+    lifecycle:
+      initial: Stored
+      states: [Stored, Revoked]
+      terminal: [Revoked]
+      transitions:
+        - name: revoke
+          from: [Stored]
+          to: Revoked
+
+  # §2.5 CredentialGrant.
+  - name: agency.auth.CredentialGrant
+    naming:
+      summary: A credential granted to an agent, team or workforce for one purpose.
+    identity:
+      name: grant_id
+      type: agency.auth.GrantId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: credential_id
+        type: agency.auth.CredentialId
+      # §2.5 `grantee: {agent_id, team_id, workforce_id}`: exactly one is held (invariant below).
+      - name: grantee_agent_id
+        type: Optional<agency.agents.AgentId>
+      - name: grantee_team_id
+        type: Optional<agency.teams.TeamId>
+      - name: grantee_workforce_id
+        type: Optional<agency.teams.WorkforceId>
+      - name: purpose
+        type: agency.auth.GrantPurpose
+      - name: expires_at
+        type: Optional<Timestamp>
+    relations:
+      # §2.5 relation `credential`; the credential's `grants[]` is the same link read backwards.
+      - name: credential
+        kind: references
+        target: agency.auth.Credential
+        cardinality: one
+        via: credential_id
+      # §2.5 relation `grantee`, one per kind of grantee.
+      - name: grantee_agent
+        kind: references
+        target: agency.agents.Agent
+        cardinality: one
+        via: grantee_agent_id
+      - name: grantee_team
+        kind: references
+        target: agency.teams.Team
+        cardinality: one
+        via: grantee_team_id
+      - name: grantee_workforce
+        kind: references
+        target: agency.teams.Workforce
+        cardinality: one
+        via: grantee_workforce_id
+    invariants:
+      - any:
+          - all: [defined(grantee_agent_id), not defined(grantee_team_id), not defined(grantee_workforce_id)]
+          - all: [not defined(grantee_agent_id), defined(grantee_team_id), not defined(grantee_workforce_id)]
+          - all: [not defined(grantee_agent_id), not defined(grantee_team_id), defined(grantee_workforce_id)]
+    # UNMAPPED: §2.5 gives `granted -> active -> {expired, revoked}`. No §3.4 command makes a grant
+    # active, and no command records expiry. Active and Expired are left out.
+    lifecycle:
+      initial: Granted
+      states: [Granted, Revoked]
+      terminal: [Revoked]
+      transitions:
+        - name: revoke
+          from: [Granted]
+          to: Revoked
+
+  # §2.5 Policy.
+  - name: agency.auth.Policy
+    naming:
+      summary: The rules a run is sealed under, versioned and digested.
+    identity:
+      name: policy_id
+      type: agency.auth.PolicyId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: name
+        type: String
+      - name: rules
+        type: List<agency.auth.Rule>
+      # The implementation numbers and digests a policy when it is created *(inferred: §2.5 names
+      # the fields, not who sets them)*.
+      - name: version
+        type: Integer
+      - name: digest
+        type: agency.shared.Digest
+    # §2.5 relation `definitions[]` is agency.agents.AgentDefinition's `policy` read backwards.
+    # UNMAPPED: §2.5 relation `teams[]` has no carrying field: agency.teams.Team holds no policy id
+    # (§2.3), so no relation is declared. A rule's `subject` may name a team. Open question: does a
+    # team carry a policy id.
+    lifecycle:
+      initial: Draft
+      states: [Draft, Active, Superseded]
+      terminal: [Superseded]
+      transitions:
+        - name: activate
+          from: [Draft]
+          to: Active
+        - name: supersede
+          from: [Active]
+          to: Superseded
+
+errors:
+  - name: agency.auth.NotFound
+    summary: The addressed record does not exist, and nothing changed.
+  - name: agency.auth.StateConflict
+    summary: The addressed record is not in a state this command acts from, and nothing changed.
+  - name: agency.auth.CredentialUnusable
+    summary: The credential is revoked, so it is not refreshed.
+  - name: agency.auth.GranteeInvalid
+    summary: A grant names no grantee or more than one, and nothing changed.
+
+events:
+  - name: agency.auth.TenantCreated
+    fields:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+
+  - name: agency.auth.PrincipalInvited
+    fields:
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: kind, type: agency.auth.PrincipalKind}
+      - {name: subject, type: String}
+
+  - name: agency.auth.PrincipalDisabled
+    fields:
+      - {name: principal_id, type: agency.auth.PrincipalId}
+
+  - name: agency.auth.RoleAssigned
+    fields:
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: role, type: agency.auth.Role}
+
+  # §5.3: "a StoreCredential event carries the custody pointer only".
+  - name: agency.auth.CredentialStored
+    fields:
+      - {name: credential_id, type: agency.auth.CredentialId}
+      - {name: kind, type: agency.auth.CredentialKind}
+      - {name: custody, type: agency.auth.Custody}
+
+  - name: agency.auth.CredentialRefreshed
+    fields:
+      - {name: credential_id, type: agency.auth.CredentialId}
+
+  - name: agency.auth.CredentialRevoked
+    fields:
+      - {name: credential_id, type: agency.auth.CredentialId}
+
+  - name: agency.auth.CredentialGranted
+    fields:
+      - {name: grant_id, type: agency.auth.GrantId}
+      - {name: credential_id, type: agency.auth.CredentialId}
+      - {name: purpose, type: agency.auth.GrantPurpose}
+
+  - name: agency.auth.GrantRevoked
+    fields:
+      - {name: grant_id, type: agency.auth.GrantId}
+
+  - name: agency.auth.PolicyCreated
+    fields:
+      - {name: policy_id, type: agency.auth.PolicyId}
+      - {name: name, type: String}
+
+  - name: agency.auth.PolicyActivated
+    fields:
+      - {name: policy_id, type: agency.auth.PolicyId}
+
+  - name: agency.auth.PolicySuperseded
+    fields:
+      - {name: policy_id, type: agency.auth.PolicyId}
+
+commands:
+  # §3.4 commands, in the order the design lists them.
+  - name: agency.auth.CreateTenant
+    naming:
+      display: Create a tenant
+    input:
+      - {name: name, type: String}
+      - {name: mandate_tenant_ref, type: Optional<String>}
+    outcomes:
+      - name: created
+        creates: agency.auth.Tenant
+        instance: tenant_id
+        sets:
+          name: input.name
+          mandate_tenant_ref: input.mandate_tenant_ref
+        emits: [agency.auth.TenantCreated]
+        payload:
+          agency.auth.TenantCreated:
+            tenant_id: {generated: true}
+            name: input.name
+
+  - name: agency.auth.InvitePrincipal
+    naming:
+      display: Invite a principal
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: kind, type: agency.auth.PrincipalKind}
+      - {name: subject, type: String}
+      - {name: roles, type: List<agency.auth.Role>}
+      - {name: mandate_ref, type: Optional<String>}
+    outcomes:
+      - name: invited
+        creates: agency.auth.Principal
+        instance: principal_id
+        sets:
+          tenant_id: input.tenant_id
+          kind: input.kind
+          subject: input.subject
+          roles: input.roles
+          mandate_ref: input.mandate_ref
+        emits: [agency.auth.PrincipalInvited]
+        payload:
+          agency.auth.PrincipalInvited:
+            principal_id: {generated: true}
+            tenant_id: input.tenant_id
+            kind: input.kind
+            subject: input.subject
+
+  - name: agency.auth.DisablePrincipal
+    naming:
+      display: Disable a principal
+    input:
+      - {name: principal_id, type: agency.auth.PrincipalId}
+    outcomes:
+      - name: no-such-principal
+        unknown_instance: true
+        error: agency.auth.NotFound
+      - name: disabled
+        moves: agency.auth.Principal.disable
+        instance: principal_id
+        emits: [agency.auth.PrincipalDisabled]
+        payload:
+          agency.auth.PrincipalDisabled:
+            principal_id: input.principal_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.auth.StateConflict
+
+  - name: agency.auth.AssignRole
+    naming:
+      display: Assign a role
+    input:
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: role, type: agency.auth.Role}
+    outcomes:
+      - name: no-such-principal
+        unknown_instance: true
+        error: agency.auth.NotFound
+      # Assigning a role appends it to the principal's `roles` (`append:`, ess/31).
+      # UNMAPPED: whether a role the principal already holds is refused or appended twice is not
+      # stated; it is appended. Open question: the refusal.
+      - name: assigned
+        updates: agency.auth.Principal
+        instance: principal_id
+        sets:
+          roles: {append: input.role}
+        emits: [agency.auth.RoleAssigned]
+        payload:
+          agency.auth.RoleAssigned:
+            principal_id: input.principal_id
+            role: input.role
+
+  # §3.4 "value goes to custody, never into the event".
+  # UNMAPPED: how the secret reaches AgencyVault custody is not stated. It is not an input here,
+  # because commands enter the log and "Secrets never enter the log" (§5.3). Open question: the
+  # out-of-band path that writes the value to custody.
+  - name: agency.auth.StoreCredential
+    naming:
+      display: Store a credential
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: kind, type: agency.auth.CredentialKind}
+      - {name: custody, type: agency.auth.Custody}
+      - {name: scope, type: agency.auth.CredentialScope}
+      - {name: owner_principal_id, type: agency.auth.PrincipalId}
+      - {name: expires_at, type: Optional<Timestamp>}
+    outcomes:
+      - name: stored
+        creates: agency.auth.Credential
+        instance: credential_id
+        sets:
+          tenant_id: input.tenant_id
+          kind: input.kind
+          custody: input.custody
+          scope: input.scope
+          owner_principal_id: input.owner_principal_id
+          expires_at: input.expires_at
+          last_refreshed_at: {generated: true}
+        emits: [agency.auth.CredentialStored]
+        payload:
+          agency.auth.CredentialStored:
+            credential_id: {generated: true}
+            kind: input.kind
+            custody: input.custody
+
+  # §4.3 "refresh in one place, serialized". What a refresh changes beyond the refresh instant is
+  # not stated.
+  - name: agency.auth.RefreshCredential
+    naming:
+      display: Refresh a credential
+    input:
+      - {name: credential_id, type: agency.auth.CredentialId}
+    outcomes:
+      - name: no-such-credential
+        unknown_instance: true
+        error: agency.auth.NotFound
+      - name: revoked
+        when_subject:
+          predicate: state == Revoked
+        error: agency.auth.CredentialUnusable
+      - name: refreshed
+        updates: agency.auth.Credential
+        instance: credential_id
+        sets:
+          last_refreshed_at: {generated: true}
+        emits: [agency.auth.CredentialRefreshed]
+        payload:
+          agency.auth.CredentialRefreshed:
+            credential_id: input.credential_id
+
+  - name: agency.auth.RevokeCredential
+    naming:
+      display: Revoke a credential
+    input:
+      - {name: credential_id, type: agency.auth.CredentialId}
+    outcomes:
+      - name: no-such-credential
+        unknown_instance: true
+        error: agency.auth.NotFound
+      - name: revoked
+        moves: agency.auth.Credential.revoke
+        instance: credential_id
+        emits: [agency.auth.CredentialRevoked]
+        payload:
+          agency.auth.CredentialRevoked:
+            credential_id: input.credential_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.auth.StateConflict
+
+  - name: agency.auth.GrantCredential
+    naming:
+      display: Grant a credential
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: credential_id, type: agency.auth.CredentialId}
+      - {name: grantee_agent_id, type: Optional<agency.agents.AgentId>}
+      - {name: grantee_team_id, type: Optional<agency.teams.TeamId>}
+      - {name: grantee_workforce_id, type: Optional<agency.teams.WorkforceId>}
+      - {name: purpose, type: agency.auth.GrantPurpose}
+      - {name: expires_at, type: Optional<Timestamp>}
+    # §2.5 "exactly one grantee": one creating branch per grantee kind, each with the condition that
+    # selects it, and a refusal for every other input (no grantee or more than one).
+    outcomes:
+      - name: granted-to-agent
+        when: {all: [defined(grantee_agent_id), not defined(grantee_team_id), not defined(grantee_workforce_id)]}
+        creates: agency.auth.CredentialGrant
+        instance: grant_id
+        sets:
+          tenant_id: input.tenant_id
+          credential_id: input.credential_id
+          grantee_agent_id: input.grantee_agent_id
+          purpose: input.purpose
+          expires_at: input.expires_at
+        emits: [agency.auth.CredentialGranted]
+        payload:
+          agency.auth.CredentialGranted:
+            grant_id: {generated: true}
+            credential_id: input.credential_id
+            purpose: input.purpose
+      - name: granted-to-team
+        when: {all: [not defined(grantee_agent_id), defined(grantee_team_id), not defined(grantee_workforce_id)]}
+        creates: agency.auth.CredentialGrant
+        instance: grant_id
+        sets:
+          tenant_id: input.tenant_id
+          credential_id: input.credential_id
+          grantee_team_id: input.grantee_team_id
+          purpose: input.purpose
+          expires_at: input.expires_at
+        emits: [agency.auth.CredentialGranted]
+        payload:
+          agency.auth.CredentialGranted:
+            grant_id: {generated: true}
+            credential_id: input.credential_id
+            purpose: input.purpose
+      - name: granted-to-workforce
+        when: {all: [not defined(grantee_agent_id), not defined(grantee_team_id), defined(grantee_workforce_id)]}
+        creates: agency.auth.CredentialGrant
+        instance: grant_id
+        sets:
+          tenant_id: input.tenant_id
+          credential_id: input.credential_id
+          grantee_workforce_id: input.grantee_workforce_id
+          purpose: input.purpose
+          expires_at: input.expires_at
+        emits: [agency.auth.CredentialGranted]
+        payload:
+          agency.auth.CredentialGranted:
+            grant_id: {generated: true}
+            credential_id: input.credential_id
+            purpose: input.purpose
+      - name: grantee-invalid
+        error: agency.auth.GranteeInvalid
+
+  - name: agency.auth.RevokeGrant
+    naming:
+      display: Revoke a grant
+    input:
+      - {name: grant_id, type: agency.auth.GrantId}
+    outcomes:
+      - name: no-such-grant
+        unknown_instance: true
+        error: agency.auth.NotFound
+      - name: revoked
+        moves: agency.auth.CredentialGrant.revoke
+        instance: grant_id
+        emits: [agency.auth.GrantRevoked]
+        payload:
+          agency.auth.GrantRevoked:
+            grant_id: input.grant_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.auth.StateConflict
+
+  - name: agency.auth.CreatePolicy
+    naming:
+      display: Create a policy
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: rules, type: List<agency.auth.Rule>}
+    outcomes:
+      - name: created
+        creates: agency.auth.Policy
+        instance: policy_id
+        sets:
+          tenant_id: input.tenant_id
+          name: input.name
+          rules: input.rules
+          version: {generated: true}
+          digest: {generated: true}
+        emits: [agency.auth.PolicyCreated]
+        payload:
+          agency.auth.PolicyCreated:
+            policy_id: {generated: true}
+            name: input.name
+
+  - name: agency.auth.ActivatePolicy
+    naming:
+      display: Activate a policy
+    input:
+      - {name: policy_id, type: agency.auth.PolicyId}
+    outcomes:
+      - name: no-such-policy
+        unknown_instance: true
+        error: agency.auth.NotFound
+      - name: activated
+        moves: agency.auth.Policy.activate
+        instance: policy_id
+        emits: [agency.auth.PolicyActivated]
+        payload:
+          agency.auth.PolicyActivated:
+            policy_id: input.policy_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.auth.StateConflict
+
+  - name: agency.auth.SupersedePolicy
+    naming:
+      display: Supersede a policy
+    input:
+      - {name: policy_id, type: agency.auth.PolicyId}
+    outcomes:
+      - name: no-such-policy
+        unknown_instance: true
+        error: agency.auth.NotFound
+      - name: superseded
+        moves: agency.auth.Policy.supersede
+        instance: policy_id
+        emits: [agency.auth.PolicySuperseded]
+        payload:
+          agency.auth.PolicySuperseded:
+            policy_id: input.policy_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.auth.StateConflict
+
+actors:
+  # §3 roles and each area's "Who" row (§3.1-§3.5). Answer taken: Q5, a single local operator
+  # until M5; the roles are declared now so the API states who may call what.
+  # UNMAPPED: the scope limits in "Who" are not expressible as actor permissions in ESS 0.67.0
+  # and are not declared: Agent "StopRun on its own run only", "ReturnWorkItem, SettleWorkItem on
+  # its own assignment", "Send, Report within its team", "ToolCatalogue view of its own bindings";
+  # Operator "GrantCredential/RevokeGrant on credentials they own" and "BindTool, RevokeBinding
+  # within policy". Open question for ESS: caller-scoped permissions.
+  # Views per role are given only for §3.1 (Viewer, Application) and §3.4 (Application); the
+  # Operator's and Supervisor's views elsewhere are all views *(inferred)*.
+
+  # "a human who defines and runs" (§3).
+  - name: agency.auth.Operator
+    naming:
+      summary: A human who defines agents and runs them.
+    may:
+      # §3.1 "all but DeprecateAgentDefinition".
+      - agency.agents.CreateAgentDefinition
+      - agency.agents.PublishAgentDefinition
+      - agency.agents.ProvisionAgent
+      - agency.agents.RetireAgent
+      - agency.runs.StartRun
+      - agency.runs.StopRun
+      - agency.runs.SetRunBudget
+      # conductor-on-agency G5: a run's approvals.
+      - agency.runs.GrantRunApproval
+      - agency.runs.DenyRunApproval
+      # §3.2 "all".
+      - agency.work.ConfigureWorkInput
+      - agency.work.PauseWorkInput
+      - agency.work.RemoveWorkInput
+      - agency.work.SubmitWorkItem
+      - agency.work.AssignWorkItem
+      - agency.work.ReturnWorkItem
+      - agency.work.SettleWorkItem
+      - agency.work.AbandonWorkItem
+      # §3.3 "all".
+      - agency.teams.FormTeam
+      - agency.teams.AddMember
+      - agency.teams.RemoveMember
+      - agency.teams.SetLead
+      - agency.teams.DisbandTeam
+      - agency.teams.DeclareSwarm
+      - agency.teams.StopSwarm
+      - agency.teams.DefineWorkforce
+      - agency.teams.StaffWorkforce
+      - agency.teams.AttachQueue
+      - agency.teams.RetireWorkforce
+      - agency.teams.Send
+      - agency.teams.Report
+      # §3.4 "GrantCredential/RevokeGrant on credentials they own".
+      - agency.auth.GrantCredential
+      - agency.auth.RevokeGrant
+      # §3.5 "BindTool, RevokeBinding within policy".
+      - agency.tools.BindTool
+      - agency.tools.RevokeBinding
+      - agency.agents.AgentDefinitionList
+      - agency.agents.AgentList
+      - agency.runs.RunList
+      - agency.runs.RunDetail
+      - agency.runs.UsageByAgent
+      - agency.runs.ApprovalInbox
+      - agency.work.WorkInputList
+      - agency.work.WorkQueue
+      - agency.work.WorkItemDetail
+      - agency.teams.TeamList
+      - agency.teams.TeamDetail
+      - agency.teams.SwarmList
+      - agency.teams.WorkforceBoard
+      - agency.auth.PrincipalList
+      - agency.auth.CredentialList
+      - agency.auth.GrantMatrix
+      - agency.auth.PolicyList
+      - agency.auth.EffectivePolicy
+      - agency.tools.ToolCatalogue
+      - agency.tools.BindingList
+
+  # "a human who may change policy, credentials, tenancy" (§3).
+  # UNMAPPED: §3.2 and §3.3 do not name the Supervisor; no work or team command is granted.
+  - name: agency.auth.Supervisor
+    naming:
+      summary: A human who may change policy, credentials and tenancy.
+    may:
+      # §3.1 "all".
+      - agency.agents.CreateAgentDefinition
+      - agency.agents.PublishAgentDefinition
+      - agency.agents.DeprecateAgentDefinition
+      - agency.agents.ProvisionAgent
+      - agency.agents.RetireAgent
+      - agency.runs.StartRun
+      - agency.runs.StopRun
+      - agency.runs.SetRunBudget
+      # conductor-on-agency G5: a run's approvals.
+      - agency.runs.GrantRunApproval
+      - agency.runs.DenyRunApproval
+      # §3.4 "Supervisor only for tenant, principal, credential, policy commands".
+      - agency.auth.CreateTenant
+      - agency.auth.InvitePrincipal
+      - agency.auth.DisablePrincipal
+      - agency.auth.AssignRole
+      - agency.auth.StoreCredential
+      - agency.auth.RefreshCredential
+      - agency.auth.RevokeCredential
+      - agency.auth.GrantCredential
+      - agency.auth.RevokeGrant
+      - agency.auth.CreatePolicy
+      - agency.auth.ActivatePolicy
+      - agency.auth.SupersedePolicy
+      # G6: a supervisor issues an application its token, which opens its session. Also a
+      # workaround for ess 0.69.2, which synthesizes no scenario for a create only the system
+      # issues (ESS-SYNTH-023).
+      - agency.service.OpenSession
+      - agency.service.CloseSession
+      # §3.5 "RegisterTool, WithdrawTool".
+      - agency.tools.RegisterTool
+      - agency.tools.WithdrawTool
+      - agency.agents.AgentDefinitionList
+      - agency.agents.AgentList
+      - agency.runs.RunList
+      - agency.runs.RunDetail
+      - agency.runs.UsageByAgent
+      - agency.runs.ApprovalInbox
+      - agency.work.WorkInputList
+      - agency.work.WorkQueue
+      - agency.work.WorkItemDetail
+      - agency.teams.TeamList
+      - agency.teams.TeamDetail
+      - agency.teams.SwarmList
+      - agency.teams.WorkforceBoard
+      - agency.auth.PrincipalList
+      - agency.auth.CredentialList
+      - agency.auth.GrantMatrix
+      - agency.auth.PolicyList
+      - agency.auth.EffectivePolicy
+      - agency.tools.ToolCatalogue
+      - agency.tools.BindingList
+      - agency.service.SessionList
+
+  # "read-only human" (§3); §3.1 "Viewer: views".
+  - name: agency.auth.Viewer
+    naming:
+      summary: A human who reads and changes nothing.
+    may:
+      - agency.agents.AgentDefinitionList
+      - agency.agents.AgentList
+      - agency.runs.RunList
+      - agency.runs.RunDetail
+      - agency.runs.UsageByAgent
+      - agency.runs.ApprovalInbox
+      - agency.work.WorkInputList
+      - agency.work.WorkQueue
+      - agency.work.WorkItemDetail
+      - agency.teams.TeamList
+      - agency.teams.TeamDetail
+      - agency.teams.SwarmList
+      - agency.teams.WorkforceBoard
+      - agency.auth.PrincipalList
+      - agency.auth.CredentialList
+      - agency.auth.GrantMatrix
+      - agency.auth.PolicyList
+      - agency.auth.EffectivePolicy
+      - agency.tools.ToolCatalogue
+      - agency.tools.BindingList
+
+  # "a running agent acting through the API, limited to team verbs and work-item state" (§3),
+  # authenticated by the per-run bearer (§4.1).
+  - name: agency.auth.RunningAgent
+    naming:
+      display: Agent
+      summary: A running agent, acting with its per-run bearer.
+    may:
+      # A running agent asks through the API with its per-run bearer (§3, §4.1); for takt, Loom's
+      # readback asks for it (agency.runs.LoomReadback). Also a workaround for ess 0.69.2, which
+      # synthesizes no scenario for a create only the system issues (ESS-SYNTH-023).
+      - agency.runs.RequestRunApproval
+      - agency.runs.StopRun
+      - agency.work.ReturnWorkItem
+      - agency.work.SettleWorkItem
+      - agency.teams.Send
+      - agency.teams.Report
+      - agency.tools.ToolCatalogue
+
+  # "conductor, takt, swarm, a service principal" (§3, §4.1).
+  # UNMAPPED: §3.5 does not name the Application; no tool command or view is granted.
+  - name: agency.auth.Application
+    naming:
+      summary: A service principal such as conductor or swarm.
+    may:
+      # §3.1 "StartRun, StopRun, views".
+      - agency.runs.StartRun
+      - agency.runs.StopRun
+      - agency.agents.AgentDefinitionList
+      - agency.agents.AgentList
+      - agency.runs.RunList
+      - agency.runs.RunDetail
+      - agency.runs.UsageByAgent
+      - agency.runs.ApprovalInbox
+      # §3.2 "all item commands".
+      - agency.work.SubmitWorkItem
+      - agency.work.AssignWorkItem
+      - agency.work.ReturnWorkItem
+      - agency.work.SettleWorkItem
+      - agency.work.AbandonWorkItem
+      # §3.3 "all".
+      - agency.teams.FormTeam
+      - agency.teams.AddMember
+      - agency.teams.RemoveMember
+      - agency.teams.SetLead
+      - agency.teams.DisbandTeam
+      - agency.teams.DeclareSwarm
+      - agency.teams.StopSwarm
+      - agency.teams.DefineWorkforce
+      - agency.teams.StaffWorkforce
+      - agency.teams.AttachQueue
+      - agency.teams.RetireWorkforce
+      - agency.teams.Send
+      - agency.teams.Report
+      - agency.teams.TeamList
+      - agency.teams.TeamDetail
+      - agency.teams.SwarmList
+      - agency.teams.WorkforceBoard
+      # §3.4 "views only".
+      - agency.auth.PrincipalList
+      - agency.auth.CredentialList
+      - agency.auth.GrantMatrix
+      - agency.auth.PolicyList
+      # conductor-on-agency D5: conductor answers a run's approvals by its decision classes.
+      - agency.runs.GrantRunApproval
+      - agency.runs.DenyRunApproval
+      - agency.auth.EffectivePolicy
+
+views:
+  # §3.4 views.
+  - name: agency.auth.PrincipalList
+    source: agency.auth.Principal
+    consistency: read_your_writes
+    fields:
+      - {name: principal_id, type: agency.auth.PrincipalId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: kind, type: agency.auth.PrincipalKind}
+      - {name: subject, type: String}
+      - {name: roles, type: List<agency.auth.Role>}
+      - {name: mandate_ref, type: Optional<String>}
+      - {name: state, type: agency.auth.Principal.State}
+
+  # "kind, custody, scope, expiry; never the value" (§3.4): there is no value to show.
+  - name: agency.auth.CredentialList
+    source: agency.auth.Credential
+    consistency: read_your_writes
+    fields:
+      - {name: credential_id, type: agency.auth.CredentialId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: kind, type: agency.auth.CredentialKind}
+      - {name: custody, type: agency.auth.Custody}
+      - {name: scope, type: agency.auth.CredentialScope}
+      - {name: owner_principal_id, type: agency.auth.PrincipalId}
+      - {name: expires_at, type: Optional<Timestamp>}
+      - {name: last_refreshed_at, type: Timestamp}
+      - {name: state, type: agency.auth.Credential.State}
+
+  # "who holds what for which purpose" (§3.4).
+  - name: agency.auth.GrantMatrix
+    source: agency.auth.CredentialGrant
+    consistency: read_your_writes
+    fields:
+      - {name: grant_id, type: agency.auth.GrantId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: credential_id, type: agency.auth.CredentialId}
+      - {name: grantee_agent_id, type: Optional<agency.agents.AgentId>}
+      - {name: grantee_team_id, type: Optional<agency.teams.TeamId>}
+      - {name: grantee_workforce_id, type: Optional<agency.teams.WorkforceId>}
+      - {name: purpose, type: agency.auth.GrantPurpose}
+      - {name: expires_at, type: Optional<Timestamp>}
+      - {name: state, type: agency.auth.CredentialGrant.State}
+
+  - name: agency.auth.PolicyList
+    source: agency.auth.Policy
+    consistency: read_your_writes
+    fields:
+      - {name: policy_id, type: agency.auth.PolicyId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: rules, type: List<agency.auth.Rule>}
+      - {name: version, type: Integer}
+      - {name: digest, type: agency.shared.Digest}
+      - {name: state, type: agency.auth.Policy.State}
+
+  # §3.4 EffectivePolicy "for one agent definition: the sealed rules Loom will hand to
+  # metaharness" (§4.4 step 1: Policy + ToolBinding resolved, digested).
+  # UNMAPPED: the resolution (which rules apply to the definition, merged with its bindings) and
+  # the effective digest are computations no ESS view states. This view shows the definition's
+  # policy as stored, read through `policy_id`. Open question: where the resolution is specified.
+  - name: agency.auth.EffectivePolicy
+    source: agency.agents.AgentDefinition
+    consistency: read_your_writes
+    params:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+    filter: definition_id == param.definition_id
+    fields:
+      - {name: definition_id, type: agency.agents.DefinitionId}
+      - {name: policy_id, type: agency.auth.PolicyId}
+      - name: policy_version
+        type: Optional<Integer>
+        field: {related: {via: policy_id, field: version}}
+      - name: policy_digest
+        type: Optional<agency.shared.Digest>
+        field: {related: {via: policy_id, field: digest}}
+      - name: rules
+        type: Optional<List<agency.auth.Rule>>
+        field: {related: {via: policy_id, field: rules}}
+      - name: policy_state
+        type: Optional<agency.auth.Policy.State>
+        field: {related: {via: policy_id, field: state}}

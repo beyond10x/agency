@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Session",
+  "description": "One authenticated session of a principal, held by its token's digest.",
+  "x-ess-name": "agency.service.Session",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "$ref": "#/$defs/agency.service.SessionId"
+    },
+    "principal_id": {
+      "$ref": "#/$defs/agency.auth.PrincipalId",
+      "x-ess-relation": {
+        "name": "principal",
+        "kind": "references",
+        "source": "agency.service.Session",
+        "target": "agency.auth.Principal",
+        "cardinality": "one",
+        "via": "principal_id"
+      }
+    },
+    "kind": {
+      "$ref": "#/$defs/agency.service.SessionKind"
+    },
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId",
+      "x-ess-relation": {
+        "name": "run",
+        "kind": "references",
+        "source": "agency.service.Session",
+        "target": "agency.runs.Run",
+        "cardinality": "one",
+        "via": "run_id"
+      }
+    },
+    "token_digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    },
+    "csrf_digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.service.Session.State"
+    }
+  },
+  "required": [
+    "session_id",
+    "principal_id",
+    "kind",
+    "token_digest",
+    "opened_at",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:a98d595e085a290c6ea7b87b0749b0c5d0633246f78e7160e52634b16bd4edf6",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.service.Session.State": {
+      "title": "State",
+      "x-ess-name": "agency.service.Session.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Closed",
+        "Open"
+      ]
+    },
+    "agency.service.SessionId": {
+      "title": "SessionId",
+      "x-ess-name": "agency.service.SessionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.service.SessionKind": {
+      "title": "SessionKind",
+      "x-ess-name": "agency.service.SessionKind",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "OperatorCookie",
+        "ApplicationToken",
+        "RunBearer"
+      ]
+    },
+    "agency.shared.Digest": {
+      "title": "Digest",
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "x-ess-name": "agency.shared.Digest",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

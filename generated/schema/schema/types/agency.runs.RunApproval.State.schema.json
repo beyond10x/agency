@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.runs.RunApproval.State",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:39dab97726e0df33b1664f83e968ffd15acf423c2239b22fef1fae7da57fc7f0",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.RunApproval.State": {
+      "title": "State",
+      "x-ess-name": "agency.runs.RunApproval.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Denied",
+        "Granted",
+        "Pending"
+      ]
+    }
+  }
+}

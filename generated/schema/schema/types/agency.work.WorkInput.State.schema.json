@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.work.WorkInput.State",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:3c3b4f41a09cc489a72fdb5b78c9112309f70baaea7c57fba4fd47595caa5aaa",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.WorkInput.State": {
+      "title": "State",
+      "x-ess-name": "agency.work.WorkInput.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Configured",
+        "Paused",
+        "Removed"
+      ]
+    }
+  }
+}

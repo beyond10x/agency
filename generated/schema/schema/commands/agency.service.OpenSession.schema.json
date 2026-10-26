@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open a session input",
+  "x-ess-name": "agency.service.OpenSession",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "principal_id": {
+      "$ref": "#/$defs/agency.auth.PrincipalId"
+    },
+    "kind": {
+      "$ref": "#/$defs/agency.service.SessionKind"
+    },
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId"
+    },
+    "token_digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    },
+    "csrf_digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "principal_id",
+    "kind",
+    "token_digest"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:4e5828405ccd2dcf617b6803926c0bee95302f3a2d388d4713440b8d5f82f559",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.service.SessionKind": {
+      "title": "SessionKind",
+      "x-ess-name": "agency.service.SessionKind",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "OperatorCookie",
+        "ApplicationToken",
+        "RunBearer"
+      ]
+    },
+    "agency.shared.Digest": {
+      "title": "Digest",
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "x-ess-name": "agency.shared.Digest",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

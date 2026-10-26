@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.work.WorkSource",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:62bf43d5455b65b814b2cbe61257ada0fbe786644e54224fc7e3387616de21b9",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.AepStoreSource": {
+      "title": "AepStoreSource",
+      "x-ess-name": "agency.work.AepStoreSource",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "filter": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repo",
+        "filter"
+      ],
+      "additionalProperties": false
+    },
+    "agency.work.GitHubIssuesSource": {
+      "title": "GitHubIssuesSource",
+      "x-ess-name": "agency.work.GitHubIssuesSource",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repo",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "agency.work.WebhookSource": {
+      "title": "WebhookSource",
+      "x-ess-name": "agency.work.WebhookSource",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "secret_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "secret_ref"
+      ],
+      "additionalProperties": false
+    },
+    "agency.work.WorkSource": {
+      "title": "WorkSource",
+      "x-ess-name": "agency.work.WorkSource",
+      "x-ess-kind": "union",
+      "oneOf": [
+        {
+          "title": "A2aTask",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "A2aTask"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "AepStore",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "AepStore"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.work.AepStoreSource"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "GitHubIssues",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "GitHubIssues"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.work.GitHubIssuesSource"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Manual",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Manual"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Webhook",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Webhook"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.work.WebhookSource"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-ess-union-tag": "kind"
+    }
+  }
+}

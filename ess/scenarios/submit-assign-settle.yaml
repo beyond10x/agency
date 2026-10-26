@@ -1,0 +1,85 @@
+# §2.4 and §3.2: a work item arrives by reference, is assigned to an agent and settled by it. The
+# item's body is never an input (Q3).
+type: ess-scenario/1
+domain: agency.work
+scenario: submit-assign-settle
+summary: A submitted work item is assigned, settled, and cannot be settled twice.
+
+arrange:
+  - instance: tenant
+    entity: agency.auth.Tenant
+  - instance: workforce
+    entity: agency.teams.Workforce
+  - instance: input
+    entity: agency.work.WorkInput
+
+timeline:
+  - at: 2026-10-22T10:00:00Z
+    command: agency.auth.CreateTenant
+    actor: agency.auth.Supervisor
+    input:
+      name: local
+    outcome: created
+    capture: {instance: tenant, event: agency.auth.TenantCreated, field: tenant_id}
+
+  - at: 2026-10-22T10:00:01Z
+    command: agency.teams.DefineWorkforce
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      name: reviews
+      capacity: {max_concurrent_runs: 2}
+    outcome: defined
+    capture: {instance: workforce, event: agency.teams.WorkforceDefined, field: workforce_id}
+
+  - at: 2026-10-22T10:00:02Z
+    command: agency.work.ConfigureWorkInput
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      name: manual
+      source: {kind: Manual}
+      workforce_id: {$instance: workforce}
+    outcome: configured
+    capture: {instance: input, event: agency.work.WorkInputConfigured, field: input_id}
+
+  - at: 2026-10-22T10:00:03Z
+    command: agency.work.SubmitWorkItem
+    actor: agency.auth.Application
+    input:
+      tenant_id: {$instance: tenant}
+      item_ref: manual:item-1
+      input_id: {$instance: input}
+      title: Review the release notes
+      payload_digest: sha256:0000000000000000000000000000000000000000000000000000000000000001
+    outcome: received
+
+  - at: 2026-10-22T10:00:04Z
+    command: agency.work.AssignWorkItem
+    actor: agency.auth.Application
+    input:
+      item_ref: manual:item-1
+      agent_id: 7f1c2a52-3b5e-4f7a-9d1e-2c4b6a8e0f13
+    outcome: assigned
+
+  - at: 2026-10-22T10:00:05Z
+    command: agency.work.SettleWorkItem
+    actor: agency.auth.RunningAgent
+    input:
+      item_ref: manual:item-1
+    outcome: settled
+
+  - at: 2026-10-22T10:00:06Z
+    command: agency.work.SettleWorkItem
+    actor: agency.auth.RunningAgent
+    input:
+      item_ref: manual:item-1
+    outcome: wrong-state
+
+assert:
+  - view: agency.work.WorkQueue
+    params: {}
+    counts: {at_least: 1, at_most: 1}
+  - view: agency.work.WorkItemDetail
+    params: {item_ref: manual:item-1}
+    counts: {at_least: 1, at_most: 1}

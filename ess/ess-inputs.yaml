@@ -1,0 +1,19 @@
+format: ess-inputs/2
+requires: ess 0.69.2
+specification:
+  - system.yaml
+  - components.yaml
+  - domains/shared.yaml
+  - domains/auth.yaml
+  - domains/agents.yaml
+  - domains/runs.yaml
+  - domains/tools.yaml
+  - domains/teams.yaml
+  - domains/work.yaml
+  - domains/service.yaml
+scenarios:
+  - scenarios/publish-and-provision.yaml
+  - scenarios/register-bind-revoke.yaml
+  - scenarios/form-staff-retire.yaml
+  - scenarios/submit-assign-settle.yaml
+  - scenarios/store-grant-revoke.yaml

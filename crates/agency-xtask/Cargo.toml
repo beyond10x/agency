@@ -1,0 +1,12 @@
+[package]
+name = "agency-xtask"
+description = "Repository checks for agency: drift of what ess generates, and the conformance gate."
+publish = false
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+clap = { workspace = true }
+serde_json = { workspace = true }

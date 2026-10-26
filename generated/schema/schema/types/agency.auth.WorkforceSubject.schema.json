@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.WorkforceSubject",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:d166c7b1470a243c2883b7d68b15cdb051a8a122d4be57a883204830f37e8cc6",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.WorkforceSubject": {
+      "title": "WorkforceSubject",
+      "x-ess-name": "agency.auth.WorkforceSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.teams.WorkforceId": {
+      "title": "WorkforceId",
+      "x-ess-name": "agency.teams.WorkforceId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

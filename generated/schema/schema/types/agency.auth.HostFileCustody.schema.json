@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.HostFileCustody",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:58b6b59badd4e1572c10b29dc9a5bd4e87e00ac1a8dc054767df5dcb806c63d0",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.HostFileCustody": {
+      "title": "HostFileCustody",
+      "x-ess-name": "agency.auth.HostFileCustody",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

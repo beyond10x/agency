@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Team",
+  "description": "A lead and members who exchange messages through Agency's broker.",
+  "x-ess-name": "agency.teams.Team",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "team_id": {
+      "$ref": "#/$defs/agency.teams.TeamId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "teams",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.teams.Team",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "name": {
+      "type": "string"
+    },
+    "lead_agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId",
+      "x-ess-relation": {
+        "name": "lead",
+        "kind": "references",
+        "source": "agency.teams.Team",
+        "target": "agency.agents.Agent",
+        "cardinality": "one",
+        "via": "lead_agent_id"
+      }
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.agents.AgentId"
+      },
+      "x-ess-relation": {
+        "name": "member_agents",
+        "kind": "references",
+        "source": "agency.teams.Team",
+        "target": "agency.agents.Agent",
+        "cardinality": "many",
+        "via": "members"
+      }
+    },
+    "broker_ref": {
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.teams.Team.State"
+    }
+  },
+  "required": [
+    "team_id",
+    "tenant_id",
+    "name",
+    "lead_agent_id",
+    "members",
+    "broker_ref",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.Team.State": {
+      "title": "State",
+      "x-ess-name": "agency.teams.Team.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Disbanded",
+        "Formed"
+      ]
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

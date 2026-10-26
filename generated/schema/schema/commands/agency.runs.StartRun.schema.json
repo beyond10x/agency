@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Start a run input",
+  "x-ess-name": "agency.runs.StartRun",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId"
+    },
+    "work_item_ref": {
+      "$ref": "#/$defs/agency.work.WorkItemRef"
+    },
+    "budget": {
+      "$ref": "#/$defs/agency.shared.RunBudget"
+    },
+    "workspace": {
+      "$ref": "#/$defs/agency.runs.RunWorkspace"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "agent_id",
+    "work_item_ref",
+    "budget"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:d5a551592a0ac273dbff5f1223f65893615e40c8912ad038089b5e2624609cdd",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunWorkspace": {
+      "title": "RunWorkspace",
+      "description": "The repository, base branch and volume claim a run works in.",
+      "x-ess-name": "agency.runs.RunWorkspace",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "base_branch": {
+          "type": "string"
+        },
+        "volume_claim": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "base_branch"
+      ],
+      "additionalProperties": false
+    },
+    "agency.shared.RunBudget": {
+      "title": "RunBudget",
+      "description": "The token and deadline limits a run is held to.",
+      "x-ess-name": "agency.shared.RunBudget",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "max_tokens": {
+          "type": "integer"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "agency.work.WorkItemRef": {
+      "title": "WorkItemRef",
+      "description": "A work item's external id together with its source.",
+      "x-ess-name": "agency.work.WorkItemRef",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Assign a work item input",
+  "x-ess-name": "agency.work.AssignWorkItem",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "item_ref": {
+      "$ref": "#/$defs/agency.work.WorkItemRef"
+    },
+    "agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId"
+    }
+  },
+  "required": [
+    "item_ref",
+    "agent_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:9b8542386a3c237a7de9f92032d21e59f9e406bc3f0d928958ebaf5547f1a4ac",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.work.WorkItemRef": {
+      "title": "WorkItemRef",
+      "description": "A work item's external id together with its source.",
+      "x-ess-name": "agency.work.WorkItemRef",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.work.WorkItem.State",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:68ce9abd4819187cc93bd5e6e20642f0981928d6dc4313a87cd35b6bf495f6c9",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.WorkItem.State": {
+      "title": "State",
+      "x-ess-name": "agency.work.WorkItem.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Abandoned",
+        "Assigned",
+        "Done",
+        "Received",
+        "Returned"
+      ]
+    }
+  }
+}

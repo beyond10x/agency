@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.Custody",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:1b8f3b5b7c494a5372be12c3afce92155b0577789174e388e5a5e83743c6e693",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.ConnectorsCustody": {
+      "title": "ConnectorsCustody",
+      "x-ess-name": "agency.auth.ConnectorsCustody",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "instance_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.Custody": {
+      "title": "Custody",
+      "description": "Where a credential's secret is held. Agency stores this pointer, never the value.",
+      "x-ess-name": "agency.auth.Custody",
+      "x-ess-kind": "union",
+      "oneOf": [
+        {
+          "title": "AgencyVault",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "AgencyVault"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "ConnectorsInstance",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ConnectorsInstance"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.ConnectorsCustody"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "HostFile",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "HostFile"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.HostFileCustody"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.HostFileCustody": {
+      "title": "HostFileCustody",
+      "x-ess-name": "agency.auth.HostFileCustody",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

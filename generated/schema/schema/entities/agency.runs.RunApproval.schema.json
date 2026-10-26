@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RunApproval",
+  "description": "A run's request for an approval of one capability, and its answer.",
+  "x-ess-name": "agency.runs.RunApproval",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "approval_id": {
+      "$ref": "#/$defs/agency.runs.ApprovalId"
+    },
+    "run_id": {
+      "$ref": "#/$defs/agency.runs.RunId",
+      "x-ess-relation": {
+        "name": "run",
+        "kind": "references",
+        "source": "agency.runs.RunApproval",
+        "target": "agency.runs.Run",
+        "cardinality": "one",
+        "via": "run_id"
+      }
+    },
+    "subject": {
+      "type": "string"
+    },
+    "capability": {
+      "type": "string"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "answered_by": {
+      "$ref": "#/$defs/agency.auth.PrincipalId",
+      "x-ess-relation": {
+        "name": "answerer",
+        "kind": "references",
+        "source": "agency.runs.RunApproval",
+        "target": "agency.auth.Principal",
+        "cardinality": "one",
+        "via": "answered_by"
+      }
+    },
+    "answered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.runs.RunApproval.State"
+    }
+  },
+  "required": [
+    "approval_id",
+    "run_id",
+    "subject",
+    "capability",
+    "requested_at",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:6604dd1eb625406b1aaa25a5687320fcc8d3e3abbb154235bb14d0bf6bf3146b",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.ApprovalId": {
+      "title": "ApprovalId",
+      "x-ess-name": "agency.runs.ApprovalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.runs.RunApproval.State": {
+      "title": "State",
+      "x-ess-name": "agency.runs.RunApproval.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Denied",
+        "Granted",
+        "Pending"
+      ]
+    },
+    "agency.runs.RunId": {
+      "title": "RunId",
+      "x-ess-name": "agency.runs.RunId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

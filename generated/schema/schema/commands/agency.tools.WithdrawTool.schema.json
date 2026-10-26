@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Withdraw a tool input",
+  "x-ess-name": "agency.tools.WithdrawTool",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tool_id": {
+      "$ref": "#/$defs/agency.tools.ToolId"
+    }
+  },
+  "required": [
+    "tool_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:6378bd3fe65c0024cf96acfe30ec13c2e44fbd370f58f19dede29aa97b16e099",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

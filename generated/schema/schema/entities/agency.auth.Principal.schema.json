@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Principal",
+  "description": "A human, agent or service that acts in Agency, with the roles it holds.",
+  "x-ess-name": "agency.auth.Principal",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "principal_id": {
+      "$ref": "#/$defs/agency.auth.PrincipalId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "principals",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.auth.Principal",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "kind": {
+      "$ref": "#/$defs/agency.auth.PrincipalKind"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.auth.Role"
+      }
+    },
+    "mandate_ref": {
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.auth.Principal.State"
+    }
+  },
+  "required": [
+    "principal_id",
+    "tenant_id",
+    "kind",
+    "subject",
+    "roles",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.Principal.State": {
+      "title": "State",
+      "x-ess-name": "agency.auth.Principal.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Disabled",
+        "Invited"
+      ]
+    },
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.PrincipalKind": {
+      "title": "PrincipalKind",
+      "x-ess-name": "agency.auth.PrincipalKind",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Human",
+        "Agent",
+        "Service"
+      ]
+    },
+    "agency.auth.Role": {
+      "title": "Role",
+      "x-ess-name": "agency.auth.Role",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Operator",
+        "Supervisor",
+        "Viewer",
+        "Agent"
+      ]
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

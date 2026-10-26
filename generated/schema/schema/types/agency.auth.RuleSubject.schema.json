@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.RuleSubject",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:ec42b49990d506812481be4d486b86f342790e11e637832afb724024efaa730d",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.DefinitionSubject": {
+      "title": "DefinitionSubject",
+      "x-ess-name": "agency.auth.DefinitionSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.RuleSubject": {
+      "title": "RuleSubject",
+      "x-ess-name": "agency.auth.RuleSubject",
+      "x-ess-kind": "union",
+      "oneOf": [
+        {
+          "title": "Definition",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Definition"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.DefinitionSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Team",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Team"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TeamSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Tenant",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Tenant"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TenantSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Workforce",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Workforce"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.WorkforceSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.TeamSubject": {
+      "title": "TeamSubject",
+      "x-ess-name": "agency.auth.TeamSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantSubject": {
+      "title": "TenantSubject",
+      "x-ess-name": "agency.auth.TenantSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.WorkforceSubject": {
+      "title": "WorkforceSubject",
+      "x-ess-name": "agency.auth.WorkforceSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.WorkforceId": {
+      "title": "WorkforceId",
+      "x-ess-name": "agency.teams.WorkforceId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

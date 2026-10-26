@@ -1,0 +1,72 @@
+# §2.2 and §3.5: a tool is registered from its contract, bound to a team, the binding revoked and
+# the tool withdrawn. A binding naming no definition and no team is refused.
+type: ess-scenario/1
+domain: agency.tools
+scenario: register-bind-revoke
+summary: A registered tool is bound to a team, the binding revoked and the tool withdrawn.
+
+arrange:
+  - instance: tenant
+    entity: agency.auth.Tenant
+  - instance: tool
+    entity: agency.tools.Tool
+  - instance: binding
+    entity: agency.tools.ToolBinding
+
+timeline:
+  - at: 2026-10-22T13:00:00Z
+    command: agency.auth.CreateTenant
+    actor: agency.auth.Supervisor
+    input:
+      name: local
+    outcome: created
+    capture: {instance: tenant, event: agency.auth.TenantCreated, field: tenant_id}
+
+  - at: 2026-10-22T13:00:01Z
+    command: agency.tools.RegisterTool
+    actor: agency.auth.Supervisor
+    input:
+      tenant_id: {$instance: tenant}
+      contract_ref: {toolset: git, version: 1.0.0}
+      verbs: [status, diff]
+      risk: {effects: [read], risk: Low, idempotency: idempotent}
+    outcome: registered
+    capture: {instance: tool, event: agency.tools.ToolRegistered, field: tool_id}
+
+  - at: 2026-10-22T13:00:02Z
+    command: agency.tools.BindTool
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      tool_id: {$instance: tool}
+      verbs: [status]
+      scope: {repositories: [agency], paths: [], subjects: []}
+      max_output_bytes: 65536
+    outcome: target-invalid
+
+  - at: 2026-10-22T13:00:03Z
+    command: agency.tools.BindTool
+    actor: agency.auth.Operator
+    input:
+      tenant_id: {$instance: tenant}
+      team_id: 2d0b9c1e-6a4f-4e8b-8c3d-5f7a9b1c3e57
+      tool_id: {$instance: tool}
+      verbs: [status]
+      scope: {repositories: [agency], paths: [], subjects: []}
+      max_output_bytes: 65536
+    outcome: bound-to-team
+    capture: {instance: binding, event: agency.tools.ToolBound, field: binding_id}
+
+  - at: 2026-10-22T13:00:04Z
+    command: agency.tools.RevokeBinding
+    actor: agency.auth.Operator
+    input:
+      binding_id: {$instance: binding}
+    outcome: revoked
+
+  - at: 2026-10-22T13:00:05Z
+    command: agency.tools.WithdrawTool
+    actor: agency.auth.Supervisor
+    input:
+      tool_id: {$instance: tool}
+    outcome: withdrawn

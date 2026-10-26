@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Create a policy input",
+  "x-ess-name": "agency.auth.CreatePolicy",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "name": {
+      "type": "string"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.auth.Rule"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name",
+    "rules"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:3792958f59802ba9796a46ebbcb0ae7fcb1d6355c45947f946f577888fed3840",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.DecisionMode": {
+      "title": "DecisionMode",
+      "x-ess-name": "agency.auth.DecisionMode",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Frame",
+        "Ask",
+        "Observe"
+      ]
+    },
+    "agency.auth.DefinitionSubject": {
+      "title": "DefinitionSubject",
+      "x-ess-name": "agency.auth.DefinitionSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.RiskCeiling": {
+      "title": "RiskCeiling",
+      "x-ess-name": "agency.auth.RiskCeiling",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "agency.auth.Rule": {
+      "title": "Rule",
+      "x-ess-name": "agency.auth.Rule",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/agency.auth.RuleSubject"
+        },
+        "tool_id": {
+          "$ref": "#/$defs/agency.tools.ToolId"
+        },
+        "verbs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agency.shared.Verb"
+          }
+        },
+        "risk_ceiling": {
+          "$ref": "#/$defs/agency.auth.RiskCeiling"
+        },
+        "decision_mode": {
+          "$ref": "#/$defs/agency.auth.DecisionMode"
+        },
+        "budget_ceiling": {
+          "$ref": "#/$defs/agency.shared.RunBudget"
+        },
+        "hermetic": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "subject",
+        "risk_ceiling",
+        "decision_mode",
+        "budget_ceiling",
+        "hermetic"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.RuleSubject": {
+      "title": "RuleSubject",
+      "x-ess-name": "agency.auth.RuleSubject",
+      "x-ess-kind": "union",
+      "oneOf": [
+        {
+          "title": "Definition",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Definition"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.DefinitionSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Team",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Team"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TeamSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Tenant",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Tenant"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.TenantSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Workforce",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "Workforce"
+            },
+            "value": {
+              "$ref": "#/$defs/agency.auth.WorkforceSubject"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-ess-union-tag": "kind"
+    },
+    "agency.auth.TeamSubject": {
+      "title": "TeamSubject",
+      "x-ess-name": "agency.auth.TeamSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "$ref": "#/$defs/agency.teams.TeamId"
+        }
+      },
+      "required": [
+        "team_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantSubject": {
+      "title": "TenantSubject",
+      "x-ess-name": "agency.auth.TenantSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.auth.WorkforceSubject": {
+      "title": "WorkforceSubject",
+      "x-ess-name": "agency.auth.WorkforceSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "workforce_id": {
+          "$ref": "#/$defs/agency.teams.WorkforceId"
+        }
+      },
+      "required": [
+        "workforce_id"
+      ],
+      "additionalProperties": false
+    },
+    "agency.shared.RunBudget": {
+      "title": "RunBudget",
+      "description": "The token and deadline limits a run is held to.",
+      "x-ess-name": "agency.shared.RunBudget",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "max_tokens": {
+          "type": "integer"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "agency.shared.Verb": {
+      "title": "Verb",
+      "x-ess-name": "agency.shared.Verb",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.WorkforceId": {
+      "title": "WorkforceId",
+      "x-ess-name": "agency.teams.WorkforceId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

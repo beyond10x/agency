@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Workforce",
+  "description": "The teams and solo agents on duty for a set of work queues, with their capacity.",
+  "x-ess-name": "agency.teams.Workforce",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "workforce_id": {
+      "$ref": "#/$defs/agency.teams.WorkforceId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "workforces",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.teams.Workforce",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "name": {
+      "type": "string"
+    },
+    "teams": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.teams.TeamId"
+      },
+      "x-ess-relation": {
+        "name": "staffed_teams",
+        "kind": "references",
+        "source": "agency.teams.Workforce",
+        "target": "agency.teams.Team",
+        "cardinality": "many",
+        "via": "teams"
+      }
+    },
+    "solo_agents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.agents.AgentId"
+      },
+      "x-ess-relation": {
+        "name": "agents",
+        "kind": "references",
+        "source": "agency.teams.Workforce",
+        "target": "agency.agents.Agent",
+        "cardinality": "many",
+        "via": "solo_agents"
+      }
+    },
+    "capacity": {
+      "$ref": "#/$defs/agency.teams.Capacity"
+    },
+    "state": {
+      "$ref": "#/$defs/agency.teams.Workforce.State"
+    }
+  },
+  "required": [
+    "workforce_id",
+    "tenant_id",
+    "name",
+    "teams",
+    "solo_agents",
+    "capacity",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.Capacity": {
+      "title": "Capacity",
+      "x-ess-name": "agency.teams.Capacity",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "max_concurrent_runs": {
+          "type": "integer"
+        },
+        "max_tokens_per_hour": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_concurrent_runs"
+      ],
+      "additionalProperties": false
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.teams.Workforce.State": {
+      "title": "State",
+      "x-ess-name": "agency.teams.Workforce.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Defined",
+        "Retired",
+        "Staffed"
+      ]
+    },
+    "agency.teams.WorkforceId": {
+      "title": "WorkforceId",
+      "x-ess-name": "agency.teams.WorkforceId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

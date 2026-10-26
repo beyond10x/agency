@@ -1,0 +1,35 @@
+# Value types more than one Agency sub-domain uses. No entity lives here.
+domain: agency.shared
+
+summary: Value types shared by the Agency sub-domains.
+
+naming:
+  wire: agency
+  display: Shared
+
+types:
+  # §2: "Field types below use ESS newtypes (Id, Timestamp, Digest)". The digest's spelling
+  # (algorithm prefix, hex or base64) is not stated in the design.
+  - name: agency.shared.Digest
+    kind: newtype
+    of: String
+    naming:
+      summary: A content digest, as a sealed definition, policy or frame carries it.
+
+  # §2.1 `default_budget: RunBudget{max_tokens, deadline}` (loom CHANGELOG 0.32.0). Both limits
+  # are optional, as in Loom's own commission.responsibility.RunBudget
+  # (loom/ess/commission/domains/responsibility.yaml:628-646); Agency carries these two only.
+  - name: agency.shared.RunBudget
+    kind: struct
+    naming:
+      summary: The token and deadline limits a run is held to.
+    fields:
+      - name: max_tokens
+        type: Optional<Integer>
+      - name: deadline
+        type: Optional<Timestamp>
+
+  # §2.2 `verbs: List<Verb>`: a verb of a tool-contract/1 contract (ADR 0095).
+  - name: agency.shared.Verb
+    kind: newtype
+    of: String

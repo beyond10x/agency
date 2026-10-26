@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForeignInstance payload",
+  "description": "The recipient is registered under another instance.",
+  "x-ess-name": "agency.teams.ForeignInstance",
+  "x-ess-kind": "error-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:c728b81730f4d0e7633065540a8e54a9ed6d1573e2aba30bf13bbacc65c6080c",
+    "regenerate": "ess generate"
+  }
+}

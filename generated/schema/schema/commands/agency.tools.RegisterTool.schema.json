@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Register a tool input",
+  "x-ess-name": "agency.tools.RegisterTool",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "contract_ref": {
+      "$ref": "#/$defs/agency.tools.ContractRef"
+    },
+    "verbs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.shared.Verb"
+      }
+    },
+    "risk": {
+      "$ref": "#/$defs/agency.tools.RiskEnvelope"
+    },
+    "implementation_ref": {
+      "type": "string"
+    },
+    "connector_instance_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "contract_ref",
+    "verbs",
+    "risk"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:0648ce1275f2f00f4d49ee0023ab0403c289a3bd60b356cca19106bbb42683d0",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.shared.Verb": {
+      "title": "Verb",
+      "x-ess-name": "agency.shared.Verb",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.tools.ContractRef": {
+      "title": "ContractRef",
+      "description": "The tool-contract/1 contract a tool was registered from.",
+      "x-ess-name": "agency.tools.ContractRef",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "toolset": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolset",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.RiskEnvelope": {
+      "title": "RiskEnvelope",
+      "x-ess-name": "agency.tools.RiskEnvelope",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "effects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "risk": {
+          "$ref": "#/$defs/agency.tools.ToolRisk"
+        },
+        "idempotency": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "effects",
+        "risk",
+        "idempotency"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.ToolRisk": {
+      "title": "ToolRisk",
+      "x-ess-name": "agency.tools.ToolRisk",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "None",
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ]
+    }
+  }
+}

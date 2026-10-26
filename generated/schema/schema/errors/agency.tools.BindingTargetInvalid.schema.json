@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BindingTargetInvalid payload",
+  "description": "A binding names neither or both of a definition and a team, and nothing changed.",
+  "x-ess-name": "agency.tools.BindingTargetInvalid",
+  "x-ess-kind": "error-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:24ad8c47673efab2e5eaa2702de55e4784fa478c475ebfe9b9b83b00fc98ac14",
+    "regenerate": "ess generate"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.teams.Swarm.State",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:29d5cb894a587ee107051fa10974dc075b6b2d82dbb496b1b39b6537451f5a45",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.teams.Swarm.State": {
+      "title": "State",
+      "x-ess-name": "agency.teams.Swarm.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Declared",
+        "Stopped"
+      ]
+    }
+  }
+}

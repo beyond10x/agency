@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.RiskCeiling",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:dafef8c224e8dc77657f7af1c718574dd5b4c33d4723a37f16981800704c2e1b",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.RiskCeiling": {
+      "title": "RiskCeiling",
+      "x-ess-name": "agency.auth.RiskCeiling",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.TenantSubject",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:894eb967f1f7cbd48df7297a83dd3fa77c41926f0b7f77054827a84189ea04f2",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantSubject": {
+      "title": "TenantSubject",
+      "x-ess-name": "agency.auth.TenantSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/agency.auth.TenantId"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

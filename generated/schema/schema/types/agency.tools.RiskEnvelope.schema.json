@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.tools.RiskEnvelope",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:3bb762fc2e8aa21d1c2fe9838f736f41e3a4161fc079be59cea34d4fbbe48d29",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.RiskEnvelope": {
+      "title": "RiskEnvelope",
+      "x-ess-name": "agency.tools.RiskEnvelope",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "effects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "risk": {
+          "$ref": "#/$defs/agency.tools.ToolRisk"
+        },
+        "idempotency": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "effects",
+        "risk",
+        "idempotency"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.ToolRisk": {
+      "title": "ToolRisk",
+      "x-ess-name": "agency.tools.ToolRisk",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "None",
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.DefinitionSubject",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:85f00e478ea1df8e385731da564401b9038a0c64da0b5999ecb4b4854a5cd840",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.DefinitionSubject": {
+      "title": "DefinitionSubject",
+      "x-ess-name": "agency.auth.DefinitionSubject",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/agency.agents.DefinitionId"
+        }
+      },
+      "required": [
+        "definition_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

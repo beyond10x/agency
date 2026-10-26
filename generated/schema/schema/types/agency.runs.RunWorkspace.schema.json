@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.runs.RunWorkspace",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:438fc939dafc83a57a39568e322a4e0b46e1d116228098ad9f0367139eaaf84c",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.RunWorkspace": {
+      "title": "RunWorkspace",
+      "description": "The repository, base branch and volume claim a run works in.",
+      "x-ess-name": "agency.runs.RunWorkspace",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "base_branch": {
+          "type": "string"
+        },
+        "volume_claim": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "base_branch"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

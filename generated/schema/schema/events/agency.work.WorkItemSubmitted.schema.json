@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkItemSubmitted payload",
+  "x-ess-name": "agency.work.WorkItemSubmitted",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "item_ref": {
+      "$ref": "#/$defs/agency.work.WorkItemRef"
+    },
+    "input_id": {
+      "$ref": "#/$defs/agency.work.InputId"
+    },
+    "payload_digest": {
+      "$ref": "#/$defs/agency.shared.Digest"
+    }
+  },
+  "required": [
+    "item_ref",
+    "input_id",
+    "payload_digest"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:29c29e8cf79863a5fc38410677ba79565727b1499d81e8dd5363c67b3ea0f58c",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.shared.Digest": {
+      "title": "Digest",
+      "description": "A content digest, as a sealed definition, policy or frame carries it.",
+      "x-ess-name": "agency.shared.Digest",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.work.InputId": {
+      "title": "InputId",
+      "x-ess-name": "agency.work.InputId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.work.WorkItemRef": {
+      "title": "WorkItemRef",
+      "description": "A work item's external id together with its source.",
+      "x-ess-name": "agency.work.WorkItemRef",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    }
+  }
+}

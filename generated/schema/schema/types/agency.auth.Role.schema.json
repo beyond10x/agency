@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.Role",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:308bbf10eaf7e5336b0a33c7494f473424a98b8f3b6f8585b99269e5c9abe61b",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.Role": {
+      "title": "Role",
+      "x-ess-name": "agency.auth.Role",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Operator",
+        "Supervisor",
+        "Viewer",
+        "Agent"
+      ]
+    }
+  }
+}

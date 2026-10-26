@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bind a tool input",
+  "x-ess-name": "agency.tools.BindTool",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "definition_id": {
+      "$ref": "#/$defs/agency.agents.DefinitionId"
+    },
+    "team_id": {
+      "$ref": "#/$defs/agency.teams.TeamId"
+    },
+    "tool_id": {
+      "$ref": "#/$defs/agency.tools.ToolId"
+    },
+    "verbs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.shared.Verb"
+      }
+    },
+    "scope": {
+      "$ref": "#/$defs/agency.tools.BindingScope"
+    },
+    "max_output_bytes": {
+      "type": "integer"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "credential_id": {
+      "$ref": "#/$defs/agency.auth.CredentialId"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "tool_id",
+    "verbs",
+    "scope",
+    "max_output_bytes"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:a450a6080d9c0c746085fdb31ae34f028ee00300e18cbd85548f598909ba78f6",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.CredentialId": {
+      "title": "CredentialId",
+      "x-ess-name": "agency.auth.CredentialId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.shared.Verb": {
+      "title": "Verb",
+      "x-ess-name": "agency.shared.Verb",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.tools.BindingScope": {
+      "title": "BindingScope",
+      "x-ess-name": "agency.tools.BindingScope",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "repositories",
+        "paths",
+        "subjects"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

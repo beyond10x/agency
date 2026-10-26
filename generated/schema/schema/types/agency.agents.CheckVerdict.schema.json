@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.agents.CheckVerdict",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:eed0d31d87445472ee85274860b7dfafe1c2ba391e0d87092d1b225a937b5194",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.CheckVerdict": {
+      "title": "CheckVerdict",
+      "x-ess-name": "agency.agents.CheckVerdict",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Accepted",
+        "Refused"
+      ]
+    }
+  }
+}

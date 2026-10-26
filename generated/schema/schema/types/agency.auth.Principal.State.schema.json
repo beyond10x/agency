@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.Principal.State",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:45c377c8b4730525899dd054f728308c540ac097660ef9168b1ddb2514877a3a",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.Principal.State": {
+      "title": "State",
+      "x-ess-name": "agency.auth.Principal.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Disabled",
+        "Invited"
+      ]
+    }
+  }
+}

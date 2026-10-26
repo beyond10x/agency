@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Close a session input",
+  "x-ess-name": "agency.service.CloseSession",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "$ref": "#/$defs/agency.service.SessionId"
+    }
+  },
+  "required": [
+    "session_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:3aaf0e5098cbdde691f927ec3313f4091f41d1c21f2c97045489816164e714c4",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.service.SessionId": {
+      "title": "SessionId",
+      "x-ess-name": "agency.service.SessionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

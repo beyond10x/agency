@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Form a team input",
+  "x-ess-name": "agency.teams.FormTeam",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "name": {
+      "type": "string"
+    },
+    "lead_agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.agents.AgentId"
+      }
+    },
+    "broker_ref": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name",
+    "lead_agent_id",
+    "members",
+    "broker_ref"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:cbf7fec49a96ddbea583800908f9035ba20c890f65972d666c8eba2e7983c2e4",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

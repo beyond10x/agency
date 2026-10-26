@@ -8,9 +8,50 @@ tasks:
     cmds: [{task: check}]
 
   check:
-    desc: The gate.
+    desc: The gate. Validate ess/ and the plan, hold everything generated to ess/, run the conformance suite, then format, lint, test and build.
     cmds:
+      - task: spec
       - task: plan
+      - task: projections-drift
+      - task: drift
+      - task: conformance
+      - cargo fmt --all --check
+      - cargo clippy --workspace --all-targets --locked -- -D warnings
+      - cargo test --workspace --locked
+      - cargo build --locked --manifest-path generated/rust/agency/Cargo.toml
+
+  spec:
+    desc: Validate the ESS specification.
+    cmds:
+      - ess specify validate --path ess --strict-requires
+
+  generate:
+    desc: Rewrite everything under generated/ from ess/.
+    cmds:
+      - task: projections
+      - cargo run -q --locked -p agency-xtask -- generate
+
+  projections:
+    desc: Rewrite generated/openapi, generated/asyncapi and generated/schema from ess/.
+    cmds:
+      - for: [openapi, asyncapi, schema]
+        cmd: ess generate --path ess --kind {{.ITEM}} --out generated/{{.ITEM}}
+
+  projections-drift:
+    desc: Fail when generated/openapi, generated/asyncapi or generated/schema differs from ess/.
+    cmds:
+      - for: [openapi, asyncapi, schema]
+        cmd: ess generate --path ess --kind {{.ITEM}} --out generated/{{.ITEM}} --check
+
+  drift:
+    desc: Fail when the synthesized crate, the TypeScript types or the conformance suite differ from ess/.
+    cmds:
+      - cargo run -q --locked -p agency-xtask -- drift
+
+  conformance:
+    desc: Run generated/conformance/suite.json against the interpreted target and hold the report to conformance/interpreted.baseline.json.
+    cmds:
+      - cargo run -q --locked -p agency-xtask -- conformance --target interpreted
 
   plan:
     desc: Validate the AEP planning store.

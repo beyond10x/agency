@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-26T14:54:08Z",
+  "actor": "human:timo",
+  "artifact": "epic:agency-spec",
+  "kind": "epic",
+  "revision": 3,
+  "change": {
+    "change": "evidence",
+    "kind": "test_result",
+    "source": "task check (ess specify validate: valid, 0 refusals; conformance interpreted: 360 total, 351 passed, 9 failed quarantined by name, 0 skipped, 0 unsupported)",
+    "reference": "conformance/interpreted.baseline.json"
+  }
+}

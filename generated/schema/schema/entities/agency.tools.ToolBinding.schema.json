@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolBinding",
+  "description": "A grant of some of a tool's verbs, within a scope, to a definition or a team.",
+  "x-ess-name": "agency.tools.ToolBinding",
+  "x-ess-kind": "entity",
+  "type": "object",
+  "properties": {
+    "binding_id": {
+      "$ref": "#/$defs/agency.tools.BindingId"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId",
+      "x-ess-relation": {
+        "name": "tool_bindings",
+        "kind": "owns",
+        "source": "agency.auth.Tenant",
+        "target": "agency.tools.ToolBinding",
+        "cardinality": "many",
+        "via": "tenant_id"
+      }
+    },
+    "definition_id": {
+      "$ref": "#/$defs/agency.agents.DefinitionId",
+      "x-ess-relation": {
+        "name": "definition",
+        "kind": "references",
+        "source": "agency.tools.ToolBinding",
+        "target": "agency.agents.AgentDefinition",
+        "cardinality": "one",
+        "via": "definition_id"
+      }
+    },
+    "team_id": {
+      "$ref": "#/$defs/agency.teams.TeamId",
+      "x-ess-relation": {
+        "name": "team",
+        "kind": "references",
+        "source": "agency.tools.ToolBinding",
+        "target": "agency.teams.Team",
+        "cardinality": "one",
+        "via": "team_id"
+      }
+    },
+    "tool_id": {
+      "$ref": "#/$defs/agency.tools.ToolId",
+      "x-ess-relation": {
+        "name": "tool",
+        "kind": "references",
+        "source": "agency.tools.ToolBinding",
+        "target": "agency.tools.Tool",
+        "cardinality": "one",
+        "via": "tool_id"
+      }
+    },
+    "verbs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.shared.Verb"
+      }
+    },
+    "scope": {
+      "$ref": "#/$defs/agency.tools.BindingScope"
+    },
+    "max_output_bytes": {
+      "type": "integer"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "credential_id": {
+      "$ref": "#/$defs/agency.auth.CredentialId",
+      "x-ess-relation": {
+        "name": "credential",
+        "kind": "references",
+        "source": "agency.tools.ToolBinding",
+        "target": "agency.auth.Credential",
+        "cardinality": "one",
+        "via": "credential_id"
+      }
+    },
+    "state": {
+      "$ref": "#/$defs/agency.tools.ToolBinding.State"
+    }
+  },
+  "required": [
+    "binding_id",
+    "tenant_id",
+    "tool_id",
+    "verbs",
+    "scope",
+    "max_output_bytes",
+    "state"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:75b2b2d7f0ed39631634a47f6cf66838ec13ce599869c28798b42f79c4feb9e1",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.CredentialId": {
+      "title": "CredentialId",
+      "x-ess-name": "agency.auth.CredentialId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.shared.Verb": {
+      "title": "Verb",
+      "x-ess-name": "agency.shared.Verb",
+      "x-ess-kind": "newtype",
+      "type": "string"
+    },
+    "agency.teams.TeamId": {
+      "title": "TeamId",
+      "x-ess-name": "agency.teams.TeamId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.tools.BindingId": {
+      "title": "BindingId",
+      "x-ess-name": "agency.tools.BindingId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.tools.BindingScope": {
+      "title": "BindingScope",
+      "x-ess-name": "agency.tools.BindingScope",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "repositories",
+        "paths",
+        "subjects"
+      ],
+      "additionalProperties": false
+    },
+    "agency.tools.ToolBinding.State": {
+      "title": "State",
+      "x-ess-name": "agency.tools.ToolBinding.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Granted",
+        "Revoked"
+      ]
+    },
+    "agency.tools.ToolId": {
+      "title": "ToolId",
+      "x-ess-name": "agency.tools.ToolId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

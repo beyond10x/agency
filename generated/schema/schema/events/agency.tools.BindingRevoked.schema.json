@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BindingRevoked payload",
+  "x-ess-name": "agency.tools.BindingRevoked",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "binding_id": {
+      "$ref": "#/$defs/agency.tools.BindingId"
+    }
+  },
+  "required": [
+    "binding_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:2e96eed001a40363db8915c0654f366d15c451ad3481d41a7b526b005899e493",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.BindingId": {
+      "title": "BindingId",
+      "x-ess-name": "agency.tools.BindingId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

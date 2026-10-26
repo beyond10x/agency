@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentProvisioned payload",
+  "x-ess-name": "agency.agents.AgentProvisioned",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "$ref": "#/$defs/agency.agents.AgentId"
+    },
+    "definition_id": {
+      "$ref": "#/$defs/agency.agents.DefinitionId"
+    },
+    "definition_version": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "agent_id",
+    "definition_id",
+    "definition_version"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:5865cc2cd7d9d071d394e98637f53224ca26f1ce087190c2d3b7a7f7c9073192",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentId": {
+      "title": "AgentId",
+      "x-ess-name": "agency.agents.AgentId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.agents.DefinitionId": {
+      "title": "DefinitionId",
+      "x-ess-name": "agency.agents.DefinitionId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

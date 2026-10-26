@@ -1,0 +1,648 @@
+# Teams: teams with their broker verbs, swarms and workforces. Sources: §2.3 (nouns), §3.3
+# (commands, views, who), Q4 answer A (Agency owns Team, Send and Report; conductor's broker
+# becomes a client). Answer taken: swarm is a record plus a stop lever (§8); the loop is the
+# swarm product's.
+domain: agency.teams
+
+summary: >-
+  Teams of agents and the messages they exchange, the swarm records Agency holds a stop lever
+  for, and workforces that say who is on duty for which queue.
+
+naming:
+  wire: agency
+  display: Teams
+
+types:
+  - name: agency.teams.TeamId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.teams.SwarmId
+    kind: newtype
+    of: Uuid
+
+  - name: agency.teams.WorkforceId
+    kind: newtype
+    of: Uuid
+
+  # §2.3 Workforce `capacity: {max_concurrent_runs, max_tokens_per_hour?}`.
+  - name: agency.teams.Capacity
+    kind: struct
+    fields:
+      - name: max_concurrent_runs
+        type: Integer
+      - name: max_tokens_per_hour
+        type: Optional<Integer>
+
+entities:
+  # §2.3 Team (conductor `conductor.tool.Team{instance, lead; relations broker, led_by}`,
+  # tool.yaml:277-329).
+  - name: agency.teams.Team
+    naming:
+      summary: A lead and members who exchange messages through Agency's broker.
+    identity:
+      name: team_id
+      type: agency.teams.TeamId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: name
+        type: String
+      - name: lead_agent_id
+        type: agency.agents.AgentId
+      - name: members
+        type: List<agency.agents.AgentId>
+      - name: broker_ref
+        type: String
+    # §2.3 `shared_bindings` and relation `bindings[]` are agency.tools.ToolBinding's `team` read
+    # backwards; relation `workforce_id?` is agency.teams.Workforce's `teams` read backwards.
+    # Neither is stored twice.
+    relations:
+      - name: lead
+        kind: references
+        target: agency.agents.Agent
+        cardinality: one
+        via: lead_agent_id
+      - name: member_agents
+        kind: references
+        target: agency.agents.Agent
+        cardinality: many
+        via: members
+    # UNMAPPED: §2.3 and §3.3 give `formed -> active -> disbanded`; no §3.3 command makes a formed
+    # team active. Active is left out. Open question: what makes a team active.
+    lifecycle:
+      initial: Formed
+      states: [Formed, Disbanded]
+      terminal: [Disbanded]
+      transitions:
+        - name: disband
+          from: [Formed]
+          to: Disbanded
+
+  # §2.3 Swarm: Agency holds the record and the stop lever; the loop is the swarm product's
+  # (ADR 0106 lines 36-41, §8 answer).
+  - name: agency.teams.Swarm
+    naming:
+      summary: Agency's record of a swarm, and the lever that stops it.
+    identity:
+      name: swarm_id
+      type: agency.teams.SwarmId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      # The swarm product's goal. A cross-system reference, carried as a string.
+      - name: goal_ref
+        type: String
+      - name: coordinator_agent_id
+        type: agency.agents.AgentId
+      # The sealed metaharness frame the swarm uses (swarm/README.md:42-80). A cross-system digest.
+      - name: frame_digest
+        type: agency.shared.Digest
+      - name: max_workers
+        type: Integer
+      - name: team_id
+        type: agency.teams.TeamId
+      - name: work_input_id
+        type: agency.work.InputId
+    relations:
+      - name: coordinator
+        kind: references
+        target: agency.agents.Agent
+        cardinality: one
+        via: coordinator_agent_id
+      - name: team
+        kind: references
+        target: agency.teams.Team
+        cardinality: one
+        via: team_id
+      - name: work_input
+        kind: references
+        target: agency.work.WorkInput
+        cardinality: one
+        via: work_input_id
+    # UNMAPPED: §2.3 and §3.3 give `declared -> running -> {converged, stopped}`; the loop is the
+    # swarm product's and no §3.3 command records it running or converged. Running and Converged
+    # are left out, so StopSwarm acts on a declared swarm. Open question: how the swarm product
+    # reports running and converged.
+    lifecycle:
+      initial: Declared
+      states: [Declared, Stopped]
+      terminal: [Stopped]
+      transitions:
+        - name: stop
+          from: [Declared]
+          to: Stopped
+
+  # §2.3 Workforce: "who is on duty for which queue".
+  - name: agency.teams.Workforce
+    naming:
+      summary: The teams and solo agents on duty for a set of work queues, with their capacity.
+    identity:
+      name: workforce_id
+      type: agency.teams.WorkforceId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: name
+        type: String
+      - name: teams
+        type: List<agency.teams.TeamId>
+      - name: solo_agents
+        type: List<agency.agents.AgentId>
+      - name: capacity
+        type: agency.teams.Capacity
+    # §2.3 field `queues` and relation `work_inputs[]` are agency.work.WorkInput's `workforce`
+    # read backwards, so the queue list is not stored twice.
+    relations:
+      - name: staffed_teams
+        kind: references
+        target: agency.teams.Team
+        cardinality: many
+        via: teams
+      - name: agents
+        kind: references
+        target: agency.agents.Agent
+        cardinality: many
+        via: solo_agents
+    # UNMAPPED: §2.3 and §3.3 give `defined -> staffed -> draining -> retired`; no §3.3 command
+    # starts draining. Draining is left out, so RetireWorkforce acts on a staffed workforce. Open
+    # question: the command that drains a workforce.
+    lifecycle:
+      initial: Defined
+      states: [Defined, Staffed, Retired]
+      terminal: [Retired]
+      transitions:
+        - name: staff
+          from: [Defined]
+          to: Staffed
+        - name: retire
+          from: [Staffed]
+          to: Retired
+
+errors:
+  - name: agency.teams.NotFound
+    summary: The addressed record does not exist, and nothing changed.
+  - name: agency.teams.StateConflict
+    summary: The addressed record is not in a state this command acts from, and nothing changed.
+  # conductor-broker team.rs:1-13 refusals.
+  - name: agency.teams.ForeignInstance
+    summary: The recipient is registered under another instance.
+  - name: agency.teams.OutsideTeam
+    summary: The recipient is outside the sender's team, or the sender has no team.
+  - name: agency.teams.NotOneLevelUp
+    summary: The report names a recipient other than the one one level above the sender.
+
+events:
+  - name: agency.teams.TeamFormed
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: name, type: String}
+      - {name: lead_agent_id, type: agency.agents.AgentId}
+
+  - name: agency.teams.MemberAdded
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: agent_id, type: agency.agents.AgentId}
+
+  - name: agency.teams.MemberRemoved
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: agent_id, type: agency.agents.AgentId}
+
+  - name: agency.teams.LeadSet
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: lead_agent_id, type: agency.agents.AgentId}
+
+  - name: agency.teams.TeamDisbanded
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+
+  - name: agency.teams.SwarmDeclared
+    fields:
+      - {name: swarm_id, type: agency.teams.SwarmId}
+      - {name: goal_ref, type: String}
+      - {name: team_id, type: agency.teams.TeamId}
+
+  - name: agency.teams.SwarmStopped
+    fields:
+      - {name: swarm_id, type: agency.teams.SwarmId}
+
+  - name: agency.teams.WorkforceDefined
+    fields:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: name, type: String}
+
+  - name: agency.teams.WorkforceStaffed
+    fields:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: teams, type: List<agency.teams.TeamId>}
+      - {name: solo_agents, type: List<agency.agents.AgentId>}
+
+  - name: agency.teams.WorkforceRetired
+    fields:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+
+  - name: agency.teams.QueueAttached
+    fields:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: input_id, type: agency.work.InputId}
+
+  # conductor-broker team.rs:1-13: `send <role-or-name> <text>`.
+  - name: agency.teams.MessageSent
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: from_agent_id, type: agency.agents.AgentId}
+      - {name: to, type: String}
+      - {name: text, type: String}
+
+  # conductor-broker team.rs:1-13: `report <status> <line> [--to <session>]`.
+  - name: agency.teams.ReportSent
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: from_agent_id, type: agency.agents.AgentId}
+      - {name: status, type: String}
+      - {name: line, type: String}
+
+commands:
+  # §3.3 commands, in the order the design lists them.
+  - name: agency.teams.FormTeam
+    naming:
+      display: Form a team
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: lead_agent_id, type: agency.agents.AgentId}
+      - {name: members, type: List<agency.agents.AgentId>}
+      - {name: broker_ref, type: String}
+    outcomes:
+      - name: formed
+        creates: agency.teams.Team
+        instance: team_id
+        sets:
+          tenant_id: input.tenant_id
+          name: input.name
+          lead_agent_id: input.lead_agent_id
+          members: input.members
+          broker_ref: input.broker_ref
+        emits: [agency.teams.TeamFormed]
+        payload:
+          agency.teams.TeamFormed:
+            team_id: {generated: true}
+            name: input.name
+            lead_agent_id: input.lead_agent_id
+
+  # UNMAPPED: AddMember and RemoveMember add an agent to and remove one from `members`. ESS
+  # 0.67.0 has no list append or removal in `sets:`, so these outcomes record the event and leave
+  # `members` unchanged. Open question for ESS: list element effects.
+  - name: agency.teams.AddMember
+    naming:
+      display: Add a team member
+    input:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: agent_id, type: agency.agents.AgentId}
+    outcomes:
+      - name: no-such-team
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: added
+        updates: agency.teams.Team
+        instance: team_id
+        emits: [agency.teams.MemberAdded]
+        payload:
+          agency.teams.MemberAdded:
+            team_id: input.team_id
+            agent_id: input.agent_id
+
+  - name: agency.teams.RemoveMember
+    naming:
+      display: Remove a team member
+    input:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: agent_id, type: agency.agents.AgentId}
+    outcomes:
+      - name: no-such-team
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: removed
+        updates: agency.teams.Team
+        instance: team_id
+        emits: [agency.teams.MemberRemoved]
+        payload:
+          agency.teams.MemberRemoved:
+            team_id: input.team_id
+            agent_id: input.agent_id
+
+  - name: agency.teams.SetLead
+    naming:
+      display: Set a team's lead
+    input:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: lead_agent_id, type: agency.agents.AgentId}
+    outcomes:
+      - name: no-such-team
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: set
+        updates: agency.teams.Team
+        instance: team_id
+        sets:
+          lead_agent_id: input.lead_agent_id
+        emits: [agency.teams.LeadSet]
+        payload:
+          agency.teams.LeadSet:
+            team_id: input.team_id
+            lead_agent_id: input.lead_agent_id
+
+  - name: agency.teams.DisbandTeam
+    naming:
+      display: Disband a team
+    input:
+      - {name: team_id, type: agency.teams.TeamId}
+    outcomes:
+      - name: no-such-team
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: disbanded
+        moves: agency.teams.Team.disband
+        instance: team_id
+        emits: [agency.teams.TeamDisbanded]
+        payload:
+          agency.teams.TeamDisbanded:
+            team_id: input.team_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.teams.StateConflict
+
+  - name: agency.teams.DeclareSwarm
+    naming:
+      display: Declare a swarm
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: goal_ref, type: String}
+      - {name: coordinator_agent_id, type: agency.agents.AgentId}
+      - {name: frame_digest, type: agency.shared.Digest}
+      - {name: max_workers, type: Integer}
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: work_input_id, type: agency.work.InputId}
+    outcomes:
+      - name: declared
+        creates: agency.teams.Swarm
+        instance: swarm_id
+        sets:
+          tenant_id: input.tenant_id
+          goal_ref: input.goal_ref
+          coordinator_agent_id: input.coordinator_agent_id
+          frame_digest: input.frame_digest
+          max_workers: input.max_workers
+          team_id: input.team_id
+          work_input_id: input.work_input_id
+        emits: [agency.teams.SwarmDeclared]
+        payload:
+          agency.teams.SwarmDeclared:
+            swarm_id: {generated: true}
+            goal_ref: input.goal_ref
+            team_id: input.team_id
+
+  - name: agency.teams.StopSwarm
+    naming:
+      display: Stop a swarm
+    input:
+      - {name: swarm_id, type: agency.teams.SwarmId}
+    outcomes:
+      - name: no-such-swarm
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: stopped
+        moves: agency.teams.Swarm.stop
+        instance: swarm_id
+        emits: [agency.teams.SwarmStopped]
+        payload:
+          agency.teams.SwarmStopped:
+            swarm_id: input.swarm_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.teams.StateConflict
+
+  - name: agency.teams.DefineWorkforce
+    naming:
+      display: Define a workforce
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: capacity, type: agency.teams.Capacity}
+    outcomes:
+      - name: defined
+        creates: agency.teams.Workforce
+        instance: workforce_id
+        sets:
+          tenant_id: input.tenant_id
+          name: input.name
+          teams: []
+          solo_agents: []
+          capacity: input.capacity
+        emits: [agency.teams.WorkforceDefined]
+        payload:
+          agency.teams.WorkforceDefined:
+            workforce_id: {generated: true}
+            name: input.name
+
+  # Staffing names the teams and solo agents on duty *(inferred: §3.3 names the command only)*.
+  - name: agency.teams.StaffWorkforce
+    naming:
+      display: Staff a workforce
+    input:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: teams, type: List<agency.teams.TeamId>}
+      - {name: solo_agents, type: List<agency.agents.AgentId>}
+    outcomes:
+      - name: no-such-workforce
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: staffed
+        moves: agency.teams.Workforce.staff
+        instance: workforce_id
+        sets:
+          teams: input.teams
+          solo_agents: input.solo_agents
+        emits: [agency.teams.WorkforceStaffed]
+        payload:
+          agency.teams.WorkforceStaffed:
+            workforce_id: input.workforce_id
+            teams: input.teams
+            solo_agents: input.solo_agents
+      - name: wrong-state
+        wrong_state: true
+        error: agency.teams.StateConflict
+
+  # A workforce's queues are the work inputs naming it (§2.3 `queues`), so attaching a queue
+  # points the work input at the workforce.
+  # UNMAPPED: whether attaching a queue refuses a retired workforce or a removed input is not
+  # stated; no refusal is declared for either.
+  - name: agency.teams.AttachQueue
+    naming:
+      display: Attach a queue to a workforce
+    input:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: input_id, type: agency.work.InputId}
+    outcomes:
+      - name: no-such-input
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: attached
+        updates: agency.work.WorkInput
+        instance: input_id
+        sets:
+          workforce_id: input.workforce_id
+        emits: [agency.teams.QueueAttached]
+        payload:
+          agency.teams.QueueAttached:
+            workforce_id: input.workforce_id
+            input_id: input.input_id
+
+  - name: agency.teams.RetireWorkforce
+    naming:
+      display: Retire a workforce
+    input:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+    outcomes:
+      - name: no-such-workforce
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: retired
+        moves: agency.teams.Workforce.retire
+        instance: workforce_id
+        emits: [agency.teams.WorkforceRetired]
+        payload:
+          agency.teams.WorkforceRetired:
+            workforce_id: input.workforce_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.teams.StateConflict
+
+  # conductor-broker team.rs:1-13. The message is recorded; the team record does not change.
+  # UNMAPPED: `from_agent_id` is the calling agent (§4.1 per-run bearer). ESS 0.67.0 has no caller
+  # identity as a value source, so it is an input. The recipient checks are answered outside the
+  # specification (`external:`).
+  - name: agency.teams.Send
+    naming:
+      display: Send a team message
+    input:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: from_agent_id, type: agency.agents.AgentId}
+      # A member's name or its role (team.rs:3-4).
+      - {name: to, type: String}
+      - {name: text, type: String}
+    outcomes:
+      - name: no-such-team
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: foreign-instance
+        external: the recipient is registered under another instance
+        error: agency.teams.ForeignInstance
+      - name: outside-team
+        external: the recipient is outside the sender's team, or the sender has no team
+        error: agency.teams.OutsideTeam
+      - name: sent
+        updates: agency.teams.Team
+        instance: team_id
+        emits: [agency.teams.MessageSent]
+        payload:
+          agency.teams.MessageSent:
+            team_id: input.team_id
+            from_agent_id: input.from_agent_id
+            to: input.to
+            text: input.text
+
+  # conductor-broker team.rs:7-9. The status words are conductor's STATUSES list, carried as a
+  # string.
+  # UNMAPPED: "a lead's report asks the store to move its team's open dispatch" (team.rs:8-9) has
+  # no Agency counterpart named in §3.3; not declared.
+  - name: agency.teams.Report
+    naming:
+      display: Report up one level
+    input:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: from_agent_id, type: agency.agents.AgentId}
+      - {name: status, type: String}
+      - {name: line, type: String}
+      - {name: to, type: Optional<String>}
+    outcomes:
+      - name: no-such-team
+        unknown_instance: true
+        error: agency.teams.NotFound
+      - name: not-one-level-up
+        external: the report names a recipient other than the one above the sender, or nothing is above it
+        error: agency.teams.NotOneLevelUp
+      - name: reported
+        updates: agency.teams.Team
+        instance: team_id
+        emits: [agency.teams.ReportSent]
+        payload:
+          agency.teams.ReportSent:
+            team_id: input.team_id
+            from_agent_id: input.from_agent_id
+            status: input.status
+            line: input.line
+
+views:
+  # §3.3 views.
+  - name: agency.teams.TeamList
+    source: agency.teams.Team
+    consistency: read_your_writes
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: lead_agent_id, type: agency.agents.AgentId}
+      - {name: members, type: List<agency.agents.AgentId>}
+      - {name: state, type: agency.teams.Team.State}
+
+  # §3.3 TeamDetail "members, lead, shared bindings, open messages".
+  # UNMAPPED: shared bindings are rows of agency.tools.ToolBinding and messages are events; a view
+  # reads one source entity and one reference hop, so neither is shown. BindingList lists the
+  # bindings. Open question: whether messages become records with an open/closed state.
+  - name: agency.teams.TeamDetail
+    source: agency.teams.Team
+    consistency: read_your_writes
+    params:
+      - {name: team_id, type: agency.teams.TeamId}
+    filter: team_id == param.team_id
+    fields:
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: lead_agent_id, type: agency.agents.AgentId}
+      - {name: members, type: List<agency.agents.AgentId>}
+      - {name: broker_ref, type: String}
+      - {name: state, type: agency.teams.Team.State}
+
+  - name: agency.teams.SwarmList
+    source: agency.teams.Swarm
+    consistency: read_your_writes
+    fields:
+      - {name: swarm_id, type: agency.teams.SwarmId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: goal_ref, type: String}
+      - {name: coordinator_agent_id, type: agency.agents.AgentId}
+      - {name: frame_digest, type: agency.shared.Digest}
+      - {name: max_workers, type: Integer}
+      - {name: team_id, type: agency.teams.TeamId}
+      - {name: work_input_id, type: agency.work.InputId}
+      - {name: state, type: agency.teams.Swarm.State}
+
+  # §3.3 WorkforceBoard "capacity vs running, queues".
+  # UNMAPPED: "running" counts runs of the workforce's agents, and "queues" are agency.work rows;
+  # a view reads one source entity, so the board shows capacity and staffing only. Open question:
+  # a running count per workforce.
+  - name: agency.teams.WorkforceBoard
+    source: agency.teams.Workforce
+    consistency: read_your_writes
+    fields:
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: teams, type: List<agency.teams.TeamId>}
+      - {name: solo_agents, type: List<agency.agents.AgentId>}
+      - {name: capacity, type: agency.teams.Capacity}
+      - {name: state, type: agency.teams.Workforce.State}

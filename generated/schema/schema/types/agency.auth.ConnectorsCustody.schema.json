@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.ConnectorsCustody",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:3bc0f302681d5f7454c6b120c9cdce336cc086dcf39c6cac69a5a23e0f28d315",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.ConnectorsCustody": {
+      "title": "ConnectorsCustody",
+      "x-ess-name": "agency.auth.ConnectorsCustody",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "instance_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "instance_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

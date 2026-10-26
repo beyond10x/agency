@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.auth.Tenant.State",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:047b5dca5d75334390031ae011e093dba7803beeaae1b8cb386a2c8f833ef3da",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.Tenant.State": {
+      "title": "State",
+      "x-ess-name": "agency.auth.Tenant.State",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Created"
+      ]
+    }
+  }
+}

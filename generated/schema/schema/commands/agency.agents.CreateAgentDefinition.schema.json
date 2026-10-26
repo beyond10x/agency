@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Create an agent definition input",
+  "x-ess-name": "agency.agents.CreateAgentDefinition",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "agent_spec": {
+      "$ref": "#/$defs/agency.agents.AgentSpecDocument"
+    },
+    "policy_id": {
+      "$ref": "#/$defs/agency.auth.PolicyId"
+    },
+    "created_by": {
+      "$ref": "#/$defs/agency.auth.PrincipalId"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name",
+    "description",
+    "agent_spec",
+    "policy_id",
+    "created_by"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:0e5121e23fde549cb2145f20096f0a019b3c7188a093d7e224fd97e53d7cf59f",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.agents.AgentSpecDocument": {
+      "title": "AgentSpecDocument",
+      "description": "One loom.agent/1 document, held by value; its schema is Loom's.",
+      "x-ess-name": "agency.agents.AgentSpecDocument",
+      "x-ess-kind": "newtype"
+    },
+    "agency.auth.PolicyId": {
+      "title": "PolicyId",
+      "x-ess-name": "agency.auth.PolicyId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.PrincipalId": {
+      "title": "PrincipalId",
+      "x-ess-name": "agency.auth.PrincipalId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

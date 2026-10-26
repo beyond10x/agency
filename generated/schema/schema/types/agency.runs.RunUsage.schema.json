@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.runs.RunUsage",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:415bb4ad2387609f226caf86056ddd8844e4476b3a4f341db7f298915ba076d7",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.RunUsage": {
+      "title": "RunUsage",
+      "description": "The totals of Loom's RunUsageReport for one run.",
+      "x-ess-name": "agency.runs.RunUsage",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "model_calls": {
+          "type": "integer"
+        },
+        "input_tokens": {
+          "type": "integer"
+        },
+        "output_tokens": {
+          "type": "integer"
+        },
+        "cached_input_tokens": {
+          "type": "integer"
+        },
+        "cost_micro_usd": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model_calls",
+        "input_tokens",
+        "output_tokens",
+        "cached_input_tokens"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

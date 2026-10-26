@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PolicyActivated payload",
+  "x-ess-name": "agency.auth.PolicyActivated",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "policy_id": {
+      "$ref": "#/$defs/agency.auth.PolicyId"
+    }
+  },
+  "required": [
+    "policy_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:8bdea43ea17f9375122b6cb3f5cc70d935f6721d426dd6f3ca5c2ed5d620b336",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PolicyId": {
+      "title": "PolicyId",
+      "x-ess-name": "agency.auth.PolicyId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

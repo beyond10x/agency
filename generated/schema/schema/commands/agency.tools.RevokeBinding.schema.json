@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Revoke a binding input",
+  "x-ess-name": "agency.tools.RevokeBinding",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "binding_id": {
+      "$ref": "#/$defs/agency.tools.BindingId"
+    }
+  },
+  "required": [
+    "binding_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:7b846583ad1fa5a4498fc648af2887976f190098b6079855589fc48870621499",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.tools.BindingId": {
+      "title": "BindingId",
+      "x-ess-name": "agency.tools.BindingId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

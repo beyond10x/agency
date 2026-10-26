@@ -1,0 +1,132 @@
+# The one deployable service (§5.1): every Agency command and view on one HTTP API,
+# `POST /agency/commands/<Command>` and `GET /agency/views/<View>` (§5.2; each domain's
+# `naming.wire: agency` gives the prefix), and every event on `GET /agency/events` (§5.2).
+components:
+  - component: agency
+    summary: The Agency service and cockpit API (docs/design/agency.md §5.1-§5.2).
+    owns:
+      domains:
+        - agency.shared
+        - agency.agents
+        - agency.runs
+        - agency.tools
+        - agency.teams
+        - agency.work
+        - agency.auth
+        - agency.service
+    accepts:
+      commands:
+        - agency.agents.CreateAgentDefinition
+        - agency.agents.RecordSpecCheck
+        - agency.agents.PublishAgentDefinition
+        - agency.agents.DeprecateAgentDefinition
+        - agency.agents.ProvisionAgent
+        - agency.agents.RetireAgent
+        - agency.runs.StartRun
+        - agency.runs.StopRun
+        - agency.runs.SetRunBudget
+        - agency.runs.AdmitRun
+        - agency.runs.RecordRunStarted
+        - agency.runs.RecordRunProposal
+        - agency.runs.RecordRunFailure
+        - agency.runs.RequestRunApproval
+        - agency.runs.GrantRunApproval
+        - agency.runs.DenyRunApproval
+        - agency.tools.RegisterTool
+        - agency.tools.WithdrawTool
+        - agency.tools.BindTool
+        - agency.tools.RevokeBinding
+        - agency.teams.FormTeam
+        - agency.teams.AddMember
+        - agency.teams.RemoveMember
+        - agency.teams.SetLead
+        - agency.teams.DisbandTeam
+        - agency.teams.DeclareSwarm
+        - agency.teams.StopSwarm
+        - agency.teams.DefineWorkforce
+        - agency.teams.StaffWorkforce
+        - agency.teams.AttachQueue
+        - agency.teams.RetireWorkforce
+        - agency.teams.Send
+        - agency.teams.Report
+        - agency.work.ConfigureWorkInput
+        - agency.work.PauseWorkInput
+        - agency.work.RemoveWorkInput
+        - agency.work.SubmitWorkItem
+        - agency.work.AssignWorkItem
+        - agency.work.ReturnWorkItem
+        - agency.work.SettleWorkItem
+        - agency.work.AbandonWorkItem
+        - agency.auth.CreateTenant
+        - agency.auth.InvitePrincipal
+        - agency.auth.DisablePrincipal
+        - agency.auth.AssignRole
+        - agency.auth.StoreCredential
+        - agency.auth.RefreshCredential
+        - agency.auth.RevokeCredential
+        - agency.auth.GrantCredential
+        - agency.auth.RevokeGrant
+        - agency.auth.CreatePolicy
+        - agency.auth.ActivatePolicy
+        - agency.auth.SupersedePolicy
+        - agency.service.OpenSession
+        - agency.service.CloseSession
+    publishes:
+      events:
+        - agency.agents.AgentDefinitionCreated
+        - agency.agents.AgentSpecChecked
+        - agency.agents.AgentSpecRefused
+        - agency.agents.AgentDefinitionPublished
+        - agency.agents.AgentDefinitionDeprecated
+        - agency.agents.AgentProvisioned
+        - agency.agents.AgentRetired
+        - agency.runs.RunRequested
+        - agency.runs.RunAdmitted
+        - agency.runs.RunStarted
+        - agency.runs.RunProposed
+        - agency.runs.RunStopped
+        - agency.runs.RunFailed
+        - agency.runs.RunBudgetSet
+        - agency.runs.RunApprovalRequested
+        - agency.runs.RunApprovalGranted
+        - agency.runs.RunApprovalDenied
+        - agency.tools.ToolRegistered
+        - agency.tools.ToolWithdrawn
+        - agency.tools.ToolBound
+        - agency.tools.BindingRevoked
+        - agency.teams.TeamFormed
+        - agency.teams.MemberAdded
+        - agency.teams.MemberRemoved
+        - agency.teams.LeadSet
+        - agency.teams.TeamDisbanded
+        - agency.teams.SwarmDeclared
+        - agency.teams.SwarmStopped
+        - agency.teams.WorkforceDefined
+        - agency.teams.WorkforceStaffed
+        - agency.teams.WorkforceRetired
+        - agency.teams.QueueAttached
+        - agency.teams.MessageSent
+        - agency.teams.ReportSent
+        - agency.work.WorkInputConfigured
+        - agency.work.WorkInputPaused
+        - agency.work.WorkInputRemoved
+        - agency.work.WorkItemSubmitted
+        - agency.work.WorkItemAssigned
+        - agency.work.WorkItemReturned
+        - agency.work.WorkItemSettled
+        - agency.work.WorkItemAbandoned
+        - agency.auth.TenantCreated
+        - agency.auth.PrincipalInvited
+        - agency.auth.PrincipalDisabled
+        - agency.auth.RoleAssigned
+        - agency.auth.CredentialStored
+        - agency.auth.CredentialRefreshed
+        - agency.auth.CredentialRevoked
+        - agency.auth.CredentialGranted
+        - agency.auth.GrantRevoked
+        - agency.auth.PolicyCreated
+        - agency.auth.PolicyActivated
+        - agency.auth.PolicySuperseded
+        - agency.service.SessionOpened
+        - agency.service.SessionClosed
+    reached_by: network

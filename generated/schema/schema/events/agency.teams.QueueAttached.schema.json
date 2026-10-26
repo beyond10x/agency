@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QueueAttached payload",
+  "x-ess-name": "agency.teams.QueueAttached",
+  "x-ess-kind": "event-payload",
+  "type": "object",
+  "properties": {
+    "workforce_id": {
+      "$ref": "#/$defs/agency.teams.WorkforceId"
+    },
+    "input_id": {
+      "$ref": "#/$defs/agency.work.InputId"
+    }
+  },
+  "required": [
+    "workforce_id",
+    "input_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:b16ad851de7a1a968e52dee8f7be0498d655eb2b9dea6b8e34973f371751b334",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.teams.WorkforceId": {
+      "title": "WorkforceId",
+      "x-ess-name": "agency.teams.WorkforceId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "agency.work.InputId": {
+      "title": "InputId",
+      "x-ess-name": "agency.work.InputId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

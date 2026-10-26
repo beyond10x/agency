@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pause a work input input",
+  "x-ess-name": "agency.work.PauseWorkInput",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "input_id": {
+      "$ref": "#/$defs/agency.work.InputId"
+    }
+  },
+  "required": [
+    "input_id"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:c1e4a00efe54eabac568d2ca0154bf9a71d96866221ddbe3d227138860aeaf6d",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.work.InputId": {
+      "title": "InputId",
+      "x-ess-name": "agency.work.InputId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

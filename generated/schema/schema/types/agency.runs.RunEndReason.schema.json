@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/agency.runs.RunEndReason",
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:719270d2c2924de255c0ae204672fa42c713c39c0e1863bc09f4c028a44129f4",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.runs.RunEndReason": {
+      "title": "RunEndReason",
+      "x-ess-name": "agency.runs.RunEndReason",
+      "x-ess-kind": "struct",
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,446 @@
+# Work: the inputs work arrives from and the work items Agency routes, assigns and settles.
+# Sources: §2.4 (nouns), §3.2 (commands, views, who). Answer taken: Q3, a work item holds its
+# reference, digest, state and timestamps only; the body is read from the source on demand and
+# never stored. No field of a work item, an event or a command input carries the body.
+domain: agency.work
+
+summary: >-
+  The inputs work arrives from, and the work items Agency handles by reference: routed,
+  assigned, run and settled without copying their bodies.
+
+naming:
+  wire: agency
+  display: Work
+
+types:
+  - name: agency.work.InputId
+    kind: newtype
+    of: Uuid
+
+  # §2.4 WorkItem identity `item_ref` "(external id + source)".
+  # UNMAPPED: how the external id and the source are spelled together in one reference is not
+  # stated; it is carried as one string. Open question: the reference's spelling.
+  - name: agency.work.WorkItemRef
+    kind: newtype
+    of: String
+    naming:
+      summary: A work item's external id together with its source.
+
+  # §2.4 `source: {Manual, AepStore{repo, filter}, GitHubIssues{repo, label}, Webhook{secret_ref},
+  # A2aTask}` (A2A v1.0.1, a2a/README.md:3-11).
+  - name: agency.work.WorkSource
+    kind: union
+    tag: kind
+    variants:
+      Manual:
+      AepStore: agency.work.AepStoreSource
+      GitHubIssues: agency.work.GitHubIssuesSource
+      Webhook: agency.work.WebhookSource
+      A2aTask:
+
+  - name: agency.work.AepStoreSource
+    kind: struct
+    fields:
+      - name: repo
+        type: String
+      - name: filter
+        type: String
+
+  - name: agency.work.GitHubIssuesSource
+    kind: struct
+    fields:
+      - name: repo
+        type: String
+      - name: label
+        type: String
+
+  # `secret_ref` names where the webhook secret is held; the secret is never a field.
+  - name: agency.work.WebhookSource
+    kind: struct
+    fields:
+      - name: secret_ref
+        type: String
+
+entities:
+  # §2.4 WorkInput.
+  - name: agency.work.WorkInput
+    naming:
+      summary: A source work arrives from, and the workforce whose queue it feeds.
+    identity:
+      name: input_id
+      type: agency.work.InputId
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: name
+        type: String
+      - name: source
+        type: agency.work.WorkSource
+      - name: poll_interval
+        type: Optional<Duration>
+      - name: workforce_id
+        type: agency.teams.WorkforceId
+      - name: transform_ref
+        type: Optional<String>
+    relations:
+      - name: workforce
+        kind: references
+        target: agency.teams.Workforce
+        cardinality: one
+        via: workforce_id
+    # UNMAPPED: §2.4 gives `configured -> polling -> paused -> removed`; no §3.2 command starts
+    # polling. Polling is left out, so PauseWorkInput acts on a configured input. Open question:
+    # the command (or the poller) that starts polling.
+    lifecycle:
+      initial: Configured
+      states: [Configured, Paused, Removed]
+      terminal: [Removed]
+      transitions:
+        - name: pause
+          from: [Configured]
+          to: Paused
+        - name: remove
+          from: [Paused]
+          to: Removed
+
+  # §2.4 WorkItem: "Handled, not necessarily stored" (Q3).
+  - name: agency.work.WorkItem
+    naming:
+      summary: >-
+        A unit of work handled by reference: its digest, assignment, state and timestamps. The
+        body stays in its source.
+    identity:
+      name: item_ref
+      type: agency.work.WorkItemRef
+    fields:
+      - name: tenant_id
+        type: agency.auth.TenantId
+      - name: input_id
+        type: agency.work.InputId
+      - name: title
+        type: String
+      - name: payload_digest
+        type: agency.shared.Digest
+      - name: assigned_agent_id
+        type: Optional<agency.agents.AgentId>
+      - name: received_at
+        type: Timestamp
+      - name: settled_at
+        type: Optional<Timestamp>
+    # §2.4 field `run_ids[]` and relation `runs[]` are agency.runs.Run's `work_item` read
+    # backwards, so the run list is not stored twice.
+    relations:
+      - name: work_input
+        kind: references
+        target: agency.work.WorkInput
+        cardinality: one
+        via: input_id
+      - name: agent
+        kind: references
+        target: agency.agents.Agent
+        cardinality: one
+        via: assigned_agent_id
+    # UNMAPPED: §2.4 and §3.2 give `received -> queued -> assigned -> running -> {done, returned,
+    # abandoned}`; no §3.2 command queues an item or records it running. Queued and Running are
+    # left out, so Assign acts on a received item and Return, Settle and Abandon on an assigned one.
+    # Open question: what queues an item, and whether StartRun marks it running.
+    lifecycle:
+      initial: Received
+      states: [Received, Assigned, Done, Returned, Abandoned]
+      terminal: [Done, Returned, Abandoned]
+      transitions:
+        - name: assign
+          from: [Received]
+          to: Assigned
+        - name: return
+          from: [Assigned]
+          to: Returned
+        - name: settle
+          from: [Assigned]
+          to: Done
+        - name: abandon
+          from: [Assigned]
+          to: Abandoned
+
+errors:
+  - name: agency.work.NotFound
+    summary: The addressed record does not exist, and nothing changed.
+  - name: agency.work.StateConflict
+    summary: The addressed record is not in a state this command acts from, and nothing changed.
+
+events:
+  - name: agency.work.WorkInputConfigured
+    fields:
+      - {name: input_id, type: agency.work.InputId}
+      - {name: name, type: String}
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+
+  - name: agency.work.WorkInputPaused
+    fields:
+      - {name: input_id, type: agency.work.InputId}
+
+  - name: agency.work.WorkInputRemoved
+    fields:
+      - {name: input_id, type: agency.work.InputId}
+
+  - name: agency.work.WorkItemSubmitted
+    fields:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+      - {name: input_id, type: agency.work.InputId}
+      - {name: payload_digest, type: agency.shared.Digest}
+
+  - name: agency.work.WorkItemAssigned
+    fields:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+      - {name: agent_id, type: agency.agents.AgentId}
+
+  - name: agency.work.WorkItemReturned
+    fields:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+
+  - name: agency.work.WorkItemSettled
+    fields:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+
+  - name: agency.work.WorkItemAbandoned
+    fields:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+
+commands:
+  # §3.2 commands, in the order the design lists them.
+  - name: agency.work.ConfigureWorkInput
+    naming:
+      display: Configure a work input
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: source, type: agency.work.WorkSource}
+      - {name: poll_interval, type: Optional<Duration>}
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: transform_ref, type: Optional<String>}
+    outcomes:
+      - name: configured
+        creates: agency.work.WorkInput
+        instance: input_id
+        sets:
+          tenant_id: input.tenant_id
+          name: input.name
+          source: input.source
+          poll_interval: input.poll_interval
+          workforce_id: input.workforce_id
+          transform_ref: input.transform_ref
+        emits: [agency.work.WorkInputConfigured]
+        payload:
+          agency.work.WorkInputConfigured:
+            input_id: {generated: true}
+            name: input.name
+            workforce_id: input.workforce_id
+
+  - name: agency.work.PauseWorkInput
+    naming:
+      display: Pause a work input
+    input:
+      - {name: input_id, type: agency.work.InputId}
+    outcomes:
+      - name: no-such-input
+        unknown_instance: true
+        error: agency.work.NotFound
+      - name: paused
+        moves: agency.work.WorkInput.pause
+        instance: input_id
+        emits: [agency.work.WorkInputPaused]
+        payload:
+          agency.work.WorkInputPaused:
+            input_id: input.input_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.work.StateConflict
+
+  - name: agency.work.RemoveWorkInput
+    naming:
+      display: Remove a work input
+    input:
+      - {name: input_id, type: agency.work.InputId}
+    outcomes:
+      - name: no-such-input
+        unknown_instance: true
+        error: agency.work.NotFound
+      - name: removed
+        moves: agency.work.WorkInput.remove
+        instance: input_id
+        emits: [agency.work.WorkInputRemoved]
+        payload:
+          agency.work.WorkInputRemoved:
+            input_id: input.input_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.work.StateConflict
+
+  # §3.2 "manual or webhook". The input carries the item's reference, title and digest; the body
+  # is not an input (Q3).
+  - name: agency.work.SubmitWorkItem
+    naming:
+      display: Submit a work item
+    input:
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: item_ref, type: agency.work.WorkItemRef}
+      - {name: input_id, type: agency.work.InputId}
+      - {name: title, type: String}
+      - {name: payload_digest, type: agency.shared.Digest}
+    outcomes:
+      - name: received
+        creates: agency.work.WorkItem
+        instance: item_ref
+        sets:
+          tenant_id: input.tenant_id
+          input_id: input.input_id
+          title: input.title
+          payload_digest: input.payload_digest
+          received_at: {generated: true}
+        emits: [agency.work.WorkItemSubmitted]
+        payload:
+          agency.work.WorkItemSubmitted:
+            item_ref: input.item_ref
+            input_id: input.input_id
+            payload_digest: input.payload_digest
+
+  - name: agency.work.AssignWorkItem
+    naming:
+      display: Assign a work item
+    input:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+      - {name: agent_id, type: agency.agents.AgentId}
+    outcomes:
+      - name: no-such-item
+        unknown_instance: true
+        error: agency.work.NotFound
+      - name: assigned
+        moves: agency.work.WorkItem.assign
+        instance: item_ref
+        sets:
+          assigned_agent_id: input.agent_id
+        emits: [agency.work.WorkItemAssigned]
+        payload:
+          agency.work.WorkItemAssigned:
+            item_ref: input.item_ref
+            agent_id: input.agent_id
+      - name: wrong-state
+        wrong_state: true
+        error: agency.work.StateConflict
+
+  - name: agency.work.ReturnWorkItem
+    naming:
+      display: Return a work item
+    input:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+    outcomes:
+      - name: no-such-item
+        unknown_instance: true
+        error: agency.work.NotFound
+      - name: returned
+        moves: agency.work.WorkItem.return
+        instance: item_ref
+        emits: [agency.work.WorkItemReturned]
+        payload:
+          agency.work.WorkItemReturned:
+            item_ref: input.item_ref
+      - name: wrong-state
+        wrong_state: true
+        error: agency.work.StateConflict
+
+  - name: agency.work.SettleWorkItem
+    naming:
+      display: Settle a work item
+    input:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+    outcomes:
+      - name: no-such-item
+        unknown_instance: true
+        error: agency.work.NotFound
+      - name: settled
+        moves: agency.work.WorkItem.settle
+        instance: item_ref
+        sets:
+          settled_at: {generated: true}
+        emits: [agency.work.WorkItemSettled]
+        payload:
+          agency.work.WorkItemSettled:
+            item_ref: input.item_ref
+      - name: wrong-state
+        wrong_state: true
+        error: agency.work.StateConflict
+
+  - name: agency.work.AbandonWorkItem
+    naming:
+      display: Abandon a work item
+    input:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+    outcomes:
+      - name: no-such-item
+        unknown_instance: true
+        error: agency.work.NotFound
+      - name: abandoned
+        moves: agency.work.WorkItem.abandon
+        instance: item_ref
+        emits: [agency.work.WorkItemAbandoned]
+        payload:
+          agency.work.WorkItemAbandoned:
+            item_ref: input.item_ref
+      - name: wrong-state
+        wrong_state: true
+        error: agency.work.StateConflict
+
+views:
+  # §3.2 views. UNMAPPED: Throughput ("settled per hour, tokens per settled item") groups by an
+  # hour of `settled_at` and joins run usage; a view groups by a stored field and reads one source,
+  # so it is not declared. Open question: a stored hour bucket, or a computed report outside ESS.
+  - name: agency.work.WorkInputList
+    source: agency.work.WorkInput
+    consistency: read_your_writes
+    fields:
+      - {name: input_id, type: agency.work.InputId}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: name, type: String}
+      - {name: source, type: agency.work.WorkSource}
+      - {name: poll_interval, type: Optional<Duration>}
+      - {name: workforce_id, type: agency.teams.WorkforceId}
+      - {name: transform_ref, type: Optional<String>}
+      - {name: state, type: agency.work.WorkInput.State}
+
+  # §3.2 WorkQueue "per workforce: received/queued/assigned/running": every item with the workforce
+  # its input feeds and its state. Each row carries workforce_id; the view takes no workforce
+  # parameter because conformance synthesis reads only parameterless views of an entity, and with
+  # none for WorkItem its 16 wrong-state refusals have no witness (ESS-SYNTH-001).
+  - name: agency.work.WorkQueue
+    source: agency.work.WorkItem
+    consistency: read_your_writes
+    fields:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+      - {name: input_id, type: agency.work.InputId}
+      - name: workforce_id
+        type: Optional<agency.teams.WorkforceId>
+        field: {related: {via: input_id, field: workforce_id}}
+      - {name: title, type: String}
+      - {name: assigned_agent_id, type: Optional<agency.agents.AgentId>}
+      - {name: received_at, type: Timestamp}
+      - {name: state, type: agency.work.WorkItem.State}
+
+  # §3.2 WorkItemDetail "refs, runs, timeline".
+  # UNMAPPED: the runs are agency.runs.Run rows (RunList) and the timeline is the item's events;
+  # a view reads one source row, so neither is shown here.
+  - name: agency.work.WorkItemDetail
+    source: agency.work.WorkItem
+    consistency: read_your_writes
+    params:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+    filter: item_ref == param.item_ref
+    fields:
+      - {name: item_ref, type: agency.work.WorkItemRef}
+      - {name: tenant_id, type: agency.auth.TenantId}
+      - {name: input_id, type: agency.work.InputId}
+      - {name: title, type: String}
+      - {name: payload_digest, type: agency.shared.Digest}
+      - {name: assigned_agent_id, type: Optional<agency.agents.AgentId>}
+      - {name: received_at, type: Timestamp}
+      - {name: settled_at, type: Optional<Timestamp>}
+      - {name: state, type: agency.work.WorkItem.State}

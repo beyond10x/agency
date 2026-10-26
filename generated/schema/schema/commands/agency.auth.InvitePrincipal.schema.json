@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Invite a principal input",
+  "x-ess-name": "agency.auth.InvitePrincipal",
+  "x-ess-kind": "command-input",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "$ref": "#/$defs/agency.auth.TenantId"
+    },
+    "kind": {
+      "$ref": "#/$defs/agency.auth.PrincipalKind"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agency.auth.Role"
+      }
+    },
+    "mandate_ref": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "kind",
+    "subject",
+    "roles"
+  ],
+  "additionalProperties": false,
+  "x-ess-provenance": {
+    "system": "agency",
+    "specification_version": "v1",
+    "source_digest": "71132e90bde806415603d08bb97a71629b2c2f6cda30e1f22e76f407abd9a3eb",
+    "contract_digest": "slice-sha256/2:ce847f7798f328d6aadcebc7c4b89cd86fe82954e42f3a3b5b27ddb4d847713a",
+    "regenerate": "ess generate"
+  },
+  "$defs": {
+    "agency.auth.PrincipalKind": {
+      "title": "PrincipalKind",
+      "x-ess-name": "agency.auth.PrincipalKind",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Human",
+        "Agent",
+        "Service"
+      ]
+    },
+    "agency.auth.Role": {
+      "title": "Role",
+      "x-ess-name": "agency.auth.Role",
+      "x-ess-kind": "enum",
+      "type": "string",
+      "enum": [
+        "Operator",
+        "Supervisor",
+        "Viewer",
+        "Agent"
+      ]
+    },
+    "agency.auth.TenantId": {
+      "title": "TenantId",
+      "x-ess-name": "agency.auth.TenantId",
+      "x-ess-kind": "newtype",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  }
+}
