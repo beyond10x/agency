@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-26T15:16:37Z",
+  "actor": "human:timo",
+  "artifact": "epic:agency-spec",
+  "kind": "epic",
+  "revision": 5,
+  "change": {
+    "change": "evidence",
+    "kind": "test_result",
+    "source": "CI check on main 0c841012: task check green (validate, drift, conformance interpreted 351/9q/0, generated 297/7q/56u)",
+    "reference": "https://github.com/beyond10x/agency/actions/runs/40347312578"
+  }
+}

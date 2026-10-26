@@ -2,13 +2,14 @@
 format: aep.planning-md/3
 id: epic:agency-spec
 kind: epic
-status: active
+status: implemented
 title: 'M0 Spec: the ESS domain agency'
 summary: The ESS system agency (shared, auth, agents, runs, tools, teams, work, service) validated, compiled and projected, with a synthesized Rust crate, TypeScript types and a conformance suite held in task check.
-revision: 5
+revision: 6
 transitions:
 - {from: "draft", to: "proposed", at: "2026-10-26T14:54:20Z", actor: "human:timo", revision: 4, decided_on: {"recorded":{"test_result":1,"verification":1}}}
 - {from: "proposed", to: "active", at: "2026-10-26T14:54:20Z", actor: "human:timo", revision: 5, decided_on: {"recorded":{"test_result":1,"verification":1}}}
+- {from: "active", to: "implemented", at: "2026-10-26T15:16:37Z", actor: "human:timo", revision: 6, decided_on: {"recorded":{"test_result":2,"verification":1}}}
 ---
 ## Outcome
 
