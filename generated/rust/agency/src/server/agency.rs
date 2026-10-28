@@ -221,6 +221,33 @@ pub fn dispatch<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehavi
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    dispatch_with_events(system, caller, request).0
+}
+
+/// Answers one request as [`dispatch`] does, and hands back every event published while it
+/// ran, in log order: what the command published, what the bindings that reacted to it
+/// published in turn, and what a held-back delivery retried during the call published. An
+/// event already on the system's log when the call started is not the call's and is never
+/// in the list. The list is empty where no command ran — a refusal before the port, a view,
+/// a document or a path no route matches — and holds what was published where delivering
+/// it failed after the command took effect. An event a component's port published through a
+/// direct call is in that component's outbox until a pump collects it, so one no pump has
+/// collected yet is listed as this call's: call `pump` after calling a port directly.
+pub fn dispatch_with_events<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, caller: Option<&crate::actor::Caller>, request: &http::Request) -> (http::Response, Vec<crate::system::SystemEvent>)
+where
+    AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
+{
+    let mut taken = Vec::new();
+    let answer = route_request(system, caller, request, &mut taken);
+    (answer, taken)
+}
+
+/// The route match behind [`dispatch_with_events`]: each command pushes what it took off the
+/// log onto `taken`.
+fn route_request<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, caller: Option<&crate::actor::Caller>, request: &http::Request, taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
+where
+    AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
+{
     match request.path.as_str() {
         "/agency/commands/AbandonWorkItem" => {
             if request.method != "POST" {
@@ -229,7 +256,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.AbandonWorkItem") {
                 return not_granted(actor);
             }
-            serve_agency_work_abandon_work_item(system, &request.body)
+            serve_agency_work_abandon_work_item(system, &request.body, taken)
         }
         "/agency/commands/ActivatePolicy" => {
             if request.method != "POST" {
@@ -238,7 +265,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.ActivatePolicy") {
                 return not_granted(actor);
             }
-            serve_agency_auth_activate_policy(system, &request.body)
+            serve_agency_auth_activate_policy(system, &request.body, taken)
         }
         "/agency/commands/AddMember" => {
             if request.method != "POST" {
@@ -247,7 +274,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.AddMember") {
                 return not_granted(actor);
             }
-            serve_agency_teams_add_member(system, &request.body)
+            serve_agency_teams_add_member(system, &request.body, taken)
         }
         "/agency/commands/AdmitRun" => {
             if request.method != "POST" {
@@ -256,7 +283,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.AdmitRun") {
                 return not_granted(actor);
             }
-            serve_agency_runs_admit_run(system, &request.body)
+            serve_agency_runs_admit_run(system, &request.body, taken)
         }
         "/agency/commands/AssignRole" => {
             if request.method != "POST" {
@@ -265,7 +292,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.AssignRole") {
                 return not_granted(actor);
             }
-            serve_agency_auth_assign_role(system, &request.body)
+            serve_agency_auth_assign_role(system, &request.body, taken)
         }
         "/agency/commands/AssignWorkItem" => {
             if request.method != "POST" {
@@ -274,7 +301,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.AssignWorkItem") {
                 return not_granted(actor);
             }
-            serve_agency_work_assign_work_item(system, &request.body)
+            serve_agency_work_assign_work_item(system, &request.body, taken)
         }
         "/agency/commands/AttachQueue" => {
             if request.method != "POST" {
@@ -283,7 +310,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.AttachQueue") {
                 return not_granted(actor);
             }
-            serve_agency_teams_attach_queue(system, &request.body)
+            serve_agency_teams_attach_queue(system, &request.body, taken)
         }
         "/agency/commands/BindTool" => {
             if request.method != "POST" {
@@ -292,7 +319,7 @@ where
             if let Err(actor) = admit(caller, "agency.tools.BindTool") {
                 return not_granted(actor);
             }
-            serve_agency_tools_bind_tool(system, &request.body)
+            serve_agency_tools_bind_tool(system, &request.body, taken)
         }
         "/agency/commands/CloseSession" => {
             if request.method != "POST" {
@@ -301,7 +328,7 @@ where
             if let Err(actor) = admit(caller, "agency.service.CloseSession") {
                 return not_granted(actor);
             }
-            serve_agency_service_close_session(system, &request.body)
+            serve_agency_service_close_session(system, &request.body, taken)
         }
         "/agency/commands/ConfigureWorkInput" => {
             if request.method != "POST" {
@@ -310,7 +337,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.ConfigureWorkInput") {
                 return not_granted(actor);
             }
-            serve_agency_work_configure_work_input(system, &request.body)
+            serve_agency_work_configure_work_input(system, &request.body, taken)
         }
         "/agency/commands/CreateAgentDefinition" => {
             if request.method != "POST" {
@@ -319,7 +346,7 @@ where
             if let Err(actor) = admit(caller, "agency.agents.CreateAgentDefinition") {
                 return not_granted(actor);
             }
-            serve_agency_agents_create_agent_definition(system, &request.body)
+            serve_agency_agents_create_agent_definition(system, &request.body, taken)
         }
         "/agency/commands/CreatePolicy" => {
             if request.method != "POST" {
@@ -328,7 +355,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.CreatePolicy") {
                 return not_granted(actor);
             }
-            serve_agency_auth_create_policy(system, &request.body)
+            serve_agency_auth_create_policy(system, &request.body, taken)
         }
         "/agency/commands/CreateTenant" => {
             if request.method != "POST" {
@@ -337,7 +364,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.CreateTenant") {
                 return not_granted(actor);
             }
-            serve_agency_auth_create_tenant(system, &request.body)
+            serve_agency_auth_create_tenant(system, &request.body, taken)
         }
         "/agency/commands/DeclareSwarm" => {
             if request.method != "POST" {
@@ -346,7 +373,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.DeclareSwarm") {
                 return not_granted(actor);
             }
-            serve_agency_teams_declare_swarm(system, &request.body)
+            serve_agency_teams_declare_swarm(system, &request.body, taken)
         }
         "/agency/commands/DefineWorkforce" => {
             if request.method != "POST" {
@@ -355,7 +382,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.DefineWorkforce") {
                 return not_granted(actor);
             }
-            serve_agency_teams_define_workforce(system, &request.body)
+            serve_agency_teams_define_workforce(system, &request.body, taken)
         }
         "/agency/commands/DenyRunApproval" => {
             if request.method != "POST" {
@@ -364,7 +391,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.DenyRunApproval") {
                 return not_granted(actor);
             }
-            serve_agency_runs_deny_run_approval(system, &request.body)
+            serve_agency_runs_deny_run_approval(system, &request.body, taken)
         }
         "/agency/commands/DeprecateAgentDefinition" => {
             if request.method != "POST" {
@@ -373,7 +400,7 @@ where
             if let Err(actor) = admit(caller, "agency.agents.DeprecateAgentDefinition") {
                 return not_granted(actor);
             }
-            serve_agency_agents_deprecate_agent_definition(system, &request.body)
+            serve_agency_agents_deprecate_agent_definition(system, &request.body, taken)
         }
         "/agency/commands/DisablePrincipal" => {
             if request.method != "POST" {
@@ -382,7 +409,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.DisablePrincipal") {
                 return not_granted(actor);
             }
-            serve_agency_auth_disable_principal(system, &request.body)
+            serve_agency_auth_disable_principal(system, &request.body, taken)
         }
         "/agency/commands/DisbandTeam" => {
             if request.method != "POST" {
@@ -391,7 +418,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.DisbandTeam") {
                 return not_granted(actor);
             }
-            serve_agency_teams_disband_team(system, &request.body)
+            serve_agency_teams_disband_team(system, &request.body, taken)
         }
         "/agency/commands/FormTeam" => {
             if request.method != "POST" {
@@ -400,7 +427,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.FormTeam") {
                 return not_granted(actor);
             }
-            serve_agency_teams_form_team(system, &request.body)
+            serve_agency_teams_form_team(system, &request.body, taken)
         }
         "/agency/commands/GrantCredential" => {
             if request.method != "POST" {
@@ -409,7 +436,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.GrantCredential") {
                 return not_granted(actor);
             }
-            serve_agency_auth_grant_credential(system, &request.body)
+            serve_agency_auth_grant_credential(system, &request.body, taken)
         }
         "/agency/commands/GrantRunApproval" => {
             if request.method != "POST" {
@@ -418,7 +445,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.GrantRunApproval") {
                 return not_granted(actor);
             }
-            serve_agency_runs_grant_run_approval(system, &request.body)
+            serve_agency_runs_grant_run_approval(system, &request.body, taken)
         }
         "/agency/commands/InvitePrincipal" => {
             if request.method != "POST" {
@@ -427,7 +454,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.InvitePrincipal") {
                 return not_granted(actor);
             }
-            serve_agency_auth_invite_principal(system, &request.body)
+            serve_agency_auth_invite_principal(system, &request.body, taken)
         }
         "/agency/commands/OpenSession" => {
             if request.method != "POST" {
@@ -436,7 +463,7 @@ where
             if let Err(actor) = admit(caller, "agency.service.OpenSession") {
                 return not_granted(actor);
             }
-            serve_agency_service_open_session(system, &request.body)
+            serve_agency_service_open_session(system, &request.body, taken)
         }
         "/agency/commands/PauseWorkInput" => {
             if request.method != "POST" {
@@ -445,7 +472,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.PauseWorkInput") {
                 return not_granted(actor);
             }
-            serve_agency_work_pause_work_input(system, &request.body)
+            serve_agency_work_pause_work_input(system, &request.body, taken)
         }
         "/agency/commands/ProvisionAgent" => {
             if request.method != "POST" {
@@ -454,7 +481,7 @@ where
             if let Err(actor) = admit(caller, "agency.agents.ProvisionAgent") {
                 return not_granted(actor);
             }
-            serve_agency_agents_provision_agent(system, &request.body)
+            serve_agency_agents_provision_agent(system, &request.body, taken)
         }
         "/agency/commands/PublishAgentDefinition" => {
             if request.method != "POST" {
@@ -463,7 +490,7 @@ where
             if let Err(actor) = admit(caller, "agency.agents.PublishAgentDefinition") {
                 return not_granted(actor);
             }
-            serve_agency_agents_publish_agent_definition(system, &request.body)
+            serve_agency_agents_publish_agent_definition(system, &request.body, taken)
         }
         "/agency/commands/RecordRunFailure" => {
             if request.method != "POST" {
@@ -472,7 +499,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.RecordRunFailure") {
                 return not_granted(actor);
             }
-            serve_agency_runs_record_run_failure(system, &request.body)
+            serve_agency_runs_record_run_failure(system, &request.body, taken)
         }
         "/agency/commands/RecordRunProposal" => {
             if request.method != "POST" {
@@ -481,7 +508,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.RecordRunProposal") {
                 return not_granted(actor);
             }
-            serve_agency_runs_record_run_proposal(system, &request.body)
+            serve_agency_runs_record_run_proposal(system, &request.body, taken)
         }
         "/agency/commands/RecordRunStarted" => {
             if request.method != "POST" {
@@ -490,7 +517,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.RecordRunStarted") {
                 return not_granted(actor);
             }
-            serve_agency_runs_record_run_started(system, &request.body)
+            serve_agency_runs_record_run_started(system, &request.body, taken)
         }
         "/agency/commands/RecordSpecCheck" => {
             if request.method != "POST" {
@@ -499,7 +526,7 @@ where
             if let Err(actor) = admit(caller, "agency.agents.RecordSpecCheck") {
                 return not_granted(actor);
             }
-            serve_agency_agents_record_spec_check(system, &request.body)
+            serve_agency_agents_record_spec_check(system, &request.body, taken)
         }
         "/agency/commands/RefreshCredential" => {
             if request.method != "POST" {
@@ -508,7 +535,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.RefreshCredential") {
                 return not_granted(actor);
             }
-            serve_agency_auth_refresh_credential(system, &request.body)
+            serve_agency_auth_refresh_credential(system, &request.body, taken)
         }
         "/agency/commands/RegisterTool" => {
             if request.method != "POST" {
@@ -517,7 +544,7 @@ where
             if let Err(actor) = admit(caller, "agency.tools.RegisterTool") {
                 return not_granted(actor);
             }
-            serve_agency_tools_register_tool(system, &request.body)
+            serve_agency_tools_register_tool(system, &request.body, taken)
         }
         "/agency/commands/RemoveMember" => {
             if request.method != "POST" {
@@ -526,7 +553,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.RemoveMember") {
                 return not_granted(actor);
             }
-            serve_agency_teams_remove_member(system, &request.body)
+            serve_agency_teams_remove_member(system, &request.body, taken)
         }
         "/agency/commands/RemoveWorkInput" => {
             if request.method != "POST" {
@@ -535,7 +562,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.RemoveWorkInput") {
                 return not_granted(actor);
             }
-            serve_agency_work_remove_work_input(system, &request.body)
+            serve_agency_work_remove_work_input(system, &request.body, taken)
         }
         "/agency/commands/Report" => {
             if request.method != "POST" {
@@ -544,7 +571,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.Report") {
                 return not_granted(actor);
             }
-            serve_agency_teams_report(system, &request.body)
+            serve_agency_teams_report(system, &request.body, taken)
         }
         "/agency/commands/RequestRunApproval" => {
             if request.method != "POST" {
@@ -553,7 +580,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.RequestRunApproval") {
                 return not_granted(actor);
             }
-            serve_agency_runs_request_run_approval(system, &request.body)
+            serve_agency_runs_request_run_approval(system, &request.body, taken)
         }
         "/agency/commands/RetireAgent" => {
             if request.method != "POST" {
@@ -562,7 +589,7 @@ where
             if let Err(actor) = admit(caller, "agency.agents.RetireAgent") {
                 return not_granted(actor);
             }
-            serve_agency_agents_retire_agent(system, &request.body)
+            serve_agency_agents_retire_agent(system, &request.body, taken)
         }
         "/agency/commands/RetireWorkforce" => {
             if request.method != "POST" {
@@ -571,7 +598,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.RetireWorkforce") {
                 return not_granted(actor);
             }
-            serve_agency_teams_retire_workforce(system, &request.body)
+            serve_agency_teams_retire_workforce(system, &request.body, taken)
         }
         "/agency/commands/ReturnWorkItem" => {
             if request.method != "POST" {
@@ -580,7 +607,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.ReturnWorkItem") {
                 return not_granted(actor);
             }
-            serve_agency_work_return_work_item(system, &request.body)
+            serve_agency_work_return_work_item(system, &request.body, taken)
         }
         "/agency/commands/RevokeBinding" => {
             if request.method != "POST" {
@@ -589,7 +616,7 @@ where
             if let Err(actor) = admit(caller, "agency.tools.RevokeBinding") {
                 return not_granted(actor);
             }
-            serve_agency_tools_revoke_binding(system, &request.body)
+            serve_agency_tools_revoke_binding(system, &request.body, taken)
         }
         "/agency/commands/RevokeCredential" => {
             if request.method != "POST" {
@@ -598,7 +625,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.RevokeCredential") {
                 return not_granted(actor);
             }
-            serve_agency_auth_revoke_credential(system, &request.body)
+            serve_agency_auth_revoke_credential(system, &request.body, taken)
         }
         "/agency/commands/RevokeGrant" => {
             if request.method != "POST" {
@@ -607,7 +634,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.RevokeGrant") {
                 return not_granted(actor);
             }
-            serve_agency_auth_revoke_grant(system, &request.body)
+            serve_agency_auth_revoke_grant(system, &request.body, taken)
         }
         "/agency/commands/Send" => {
             if request.method != "POST" {
@@ -616,7 +643,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.Send") {
                 return not_granted(actor);
             }
-            serve_agency_teams_send(system, &request.body)
+            serve_agency_teams_send(system, &request.body, taken)
         }
         "/agency/commands/SetLead" => {
             if request.method != "POST" {
@@ -625,7 +652,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.SetLead") {
                 return not_granted(actor);
             }
-            serve_agency_teams_set_lead(system, &request.body)
+            serve_agency_teams_set_lead(system, &request.body, taken)
         }
         "/agency/commands/SetRunBudget" => {
             if request.method != "POST" {
@@ -634,7 +661,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.SetRunBudget") {
                 return not_granted(actor);
             }
-            serve_agency_runs_set_run_budget(system, &request.body)
+            serve_agency_runs_set_run_budget(system, &request.body, taken)
         }
         "/agency/commands/SettleWorkItem" => {
             if request.method != "POST" {
@@ -643,7 +670,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.SettleWorkItem") {
                 return not_granted(actor);
             }
-            serve_agency_work_settle_work_item(system, &request.body)
+            serve_agency_work_settle_work_item(system, &request.body, taken)
         }
         "/agency/commands/StaffWorkforce" => {
             if request.method != "POST" {
@@ -652,7 +679,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.StaffWorkforce") {
                 return not_granted(actor);
             }
-            serve_agency_teams_staff_workforce(system, &request.body)
+            serve_agency_teams_staff_workforce(system, &request.body, taken)
         }
         "/agency/commands/StartRun" => {
             if request.method != "POST" {
@@ -661,7 +688,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.StartRun") {
                 return not_granted(actor);
             }
-            serve_agency_runs_start_run(system, &request.body)
+            serve_agency_runs_start_run(system, &request.body, taken)
         }
         "/agency/commands/StopRun" => {
             if request.method != "POST" {
@@ -670,7 +697,7 @@ where
             if let Err(actor) = admit(caller, "agency.runs.StopRun") {
                 return not_granted(actor);
             }
-            serve_agency_runs_stop_run(system, &request.body)
+            serve_agency_runs_stop_run(system, &request.body, taken)
         }
         "/agency/commands/StopSwarm" => {
             if request.method != "POST" {
@@ -679,7 +706,7 @@ where
             if let Err(actor) = admit(caller, "agency.teams.StopSwarm") {
                 return not_granted(actor);
             }
-            serve_agency_teams_stop_swarm(system, &request.body)
+            serve_agency_teams_stop_swarm(system, &request.body, taken)
         }
         "/agency/commands/StoreCredential" => {
             if request.method != "POST" {
@@ -688,7 +715,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.StoreCredential") {
                 return not_granted(actor);
             }
-            serve_agency_auth_store_credential(system, &request.body)
+            serve_agency_auth_store_credential(system, &request.body, taken)
         }
         "/agency/commands/SubmitWorkItem" => {
             if request.method != "POST" {
@@ -697,7 +724,7 @@ where
             if let Err(actor) = admit(caller, "agency.work.SubmitWorkItem") {
                 return not_granted(actor);
             }
-            serve_agency_work_submit_work_item(system, &request.body)
+            serve_agency_work_submit_work_item(system, &request.body, taken)
         }
         "/agency/commands/SupersedePolicy" => {
             if request.method != "POST" {
@@ -706,7 +733,7 @@ where
             if let Err(actor) = admit(caller, "agency.auth.SupersedePolicy") {
                 return not_granted(actor);
             }
-            serve_agency_auth_supersede_policy(system, &request.body)
+            serve_agency_auth_supersede_policy(system, &request.body, taken)
         }
         "/agency/commands/WithdrawTool" => {
             if request.method != "POST" {
@@ -715,7 +742,7 @@ where
             if let Err(actor) = admit(caller, "agency.tools.WithdrawTool") {
                 return not_granted(actor);
             }
-            serve_agency_tools_withdraw_tool(system, &request.body)
+            serve_agency_tools_withdraw_tool(system, &request.body, taken)
         }
         "/agency/views/AgentDefinitionList" => {
             if request.method != "GET" {
@@ -955,6 +982,23 @@ pub fn handle<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehavior
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    handle_with_events(system, caller, name, input).0
+}
+
+/// Runs one command or view as [`handle`] does, and hands back every event published while it
+/// ran, in log order: what the command published, what the bindings that reacted to it
+/// published in turn, and what a held-back delivery retried during the call published. An
+/// event already on the system's log when the call started is not the call's and is never
+/// in the list. The list is empty where no command ran — an unknown name, a refusal before
+/// the port, a view — and holds what was published where delivering it failed after the
+/// command took effect. An event a component's port published through a direct call is in
+/// that component's outbox until a pump collects it, so one no pump has collected yet is
+/// listed as this call's: call `pump` after calling a port directly.
+pub fn handle_with_events<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, caller: Option<&crate::actor::Caller>, name: &str, input: json::Value) -> (Result<json::Value, entry::Refused>, Vec<crate::system::SystemEvent>)
+where
+    AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
+{
+    let mut taken = Vec::new();
     let checked = |input: &json::Value| {
         json::admitted(input).map_err(|expected| {
             entry::Refused::Input(format!("the input is not JSON: expected {expected}"))
@@ -970,43 +1014,43 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.agents.CreateAgentDefinition" => match admit(caller, "agency.agents.CreateAgentDefinition") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_agents_create_agent_definition(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_agents_create_agent_definition(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.agents.DeprecateAgentDefinition" => match admit(caller, "agency.agents.DeprecateAgentDefinition") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_agents_deprecate_agent_definition(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_agents_deprecate_agent_definition(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.agents.ProvisionAgent" => match admit(caller, "agency.agents.ProvisionAgent") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_agents_provision_agent(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_agents_provision_agent(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.agents.PublishAgentDefinition" => match admit(caller, "agency.agents.PublishAgentDefinition") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_agents_publish_agent_definition(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_agents_publish_agent_definition(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.agents.RecordSpecCheck" => match admit(caller, "agency.agents.RecordSpecCheck") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_agents_record_spec_check(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_agents_record_spec_check(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.agents.RetireAgent" => match admit(caller, "agency.agents.RetireAgent") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_agents_retire_agent(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_agents_retire_agent(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.ActivatePolicy" => match admit(caller, "agency.auth.ActivatePolicy") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_activate_policy(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_activate_policy(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.AssignRole" => match admit(caller, "agency.auth.AssignRole") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_assign_role(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_assign_role(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.CreatePolicy" => match admit(caller, "agency.auth.CreatePolicy") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_create_policy(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_create_policy(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.CreateTenant" => match admit(caller, "agency.auth.CreateTenant") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_create_tenant(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_create_tenant(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.CredentialList" => match admit_read(caller, "agency.auth.CredentialList") {
@@ -1014,7 +1058,7 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.DisablePrincipal" => match admit(caller, "agency.auth.DisablePrincipal") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_disable_principal(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_disable_principal(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.EffectivePolicy" => match admit_read(caller, "agency.auth.EffectivePolicy") {
@@ -1022,7 +1066,7 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.GrantCredential" => match admit(caller, "agency.auth.GrantCredential") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_grant_credential(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_grant_credential(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.GrantMatrix" => match admit_read(caller, "agency.auth.GrantMatrix") {
@@ -1030,7 +1074,7 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.InvitePrincipal" => match admit(caller, "agency.auth.InvitePrincipal") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_invite_principal(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_invite_principal(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.PolicyList" => match admit_read(caller, "agency.auth.PolicyList") {
@@ -1042,27 +1086,27 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.RefreshCredential" => match admit(caller, "agency.auth.RefreshCredential") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_refresh_credential(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_refresh_credential(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.RevokeCredential" => match admit(caller, "agency.auth.RevokeCredential") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_revoke_credential(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_revoke_credential(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.RevokeGrant" => match admit(caller, "agency.auth.RevokeGrant") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_revoke_grant(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_revoke_grant(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.StoreCredential" => match admit(caller, "agency.auth.StoreCredential") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_store_credential(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_store_credential(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.auth.SupersedePolicy" => match admit(caller, "agency.auth.SupersedePolicy") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_auth_supersede_policy(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_auth_supersede_policy(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.AdmitRun" => match admit(caller, "agency.runs.AdmitRun") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_admit_run(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_admit_run(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.ApprovalInbox" => match admit_read(caller, "agency.runs.ApprovalInbox") {
@@ -1070,27 +1114,27 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.DenyRunApproval" => match admit(caller, "agency.runs.DenyRunApproval") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_deny_run_approval(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_deny_run_approval(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.GrantRunApproval" => match admit(caller, "agency.runs.GrantRunApproval") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_grant_run_approval(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_grant_run_approval(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.RecordRunFailure" => match admit(caller, "agency.runs.RecordRunFailure") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_record_run_failure(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_record_run_failure(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.RecordRunProposal" => match admit(caller, "agency.runs.RecordRunProposal") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_record_run_proposal(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_record_run_proposal(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.RecordRunStarted" => match admit(caller, "agency.runs.RecordRunStarted") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_record_run_started(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_record_run_started(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.RequestRunApproval" => match admit(caller, "agency.runs.RequestRunApproval") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_request_run_approval(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_request_run_approval(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.RunDetail" => match admit_read(caller, "agency.runs.RunDetail") {
@@ -1102,15 +1146,15 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.SetRunBudget" => match admit(caller, "agency.runs.SetRunBudget") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_set_run_budget(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_set_run_budget(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.StartRun" => match admit(caller, "agency.runs.StartRun") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_start_run(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_start_run(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.StopRun" => match admit(caller, "agency.runs.StopRun") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_runs_stop_run(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_runs_stop_run(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.runs.UsageByAgent" => match admit_read(caller, "agency.runs.UsageByAgent") {
@@ -1118,11 +1162,11 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.service.CloseSession" => match admit(caller, "agency.service.CloseSession") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_service_close_session(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_service_close_session(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.service.OpenSession" => match admit(caller, "agency.service.OpenSession") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_service_open_session(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_service_open_session(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.service.SessionList" => match admit_read(caller, "agency.service.SessionList") {
@@ -1130,55 +1174,55 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.AddMember" => match admit(caller, "agency.teams.AddMember") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_add_member(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_add_member(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.AttachQueue" => match admit(caller, "agency.teams.AttachQueue") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_attach_queue(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_attach_queue(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.DeclareSwarm" => match admit(caller, "agency.teams.DeclareSwarm") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_declare_swarm(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_declare_swarm(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.DefineWorkforce" => match admit(caller, "agency.teams.DefineWorkforce") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_define_workforce(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_define_workforce(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.DisbandTeam" => match admit(caller, "agency.teams.DisbandTeam") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_disband_team(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_disband_team(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.FormTeam" => match admit(caller, "agency.teams.FormTeam") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_form_team(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_form_team(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.RemoveMember" => match admit(caller, "agency.teams.RemoveMember") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_remove_member(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_remove_member(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.Report" => match admit(caller, "agency.teams.Report") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_report(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_report(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.RetireWorkforce" => match admit(caller, "agency.teams.RetireWorkforce") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_retire_workforce(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_retire_workforce(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.Send" => match admit(caller, "agency.teams.Send") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_send(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_send(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.SetLead" => match admit(caller, "agency.teams.SetLead") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_set_lead(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_set_lead(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.StaffWorkforce" => match admit(caller, "agency.teams.StaffWorkforce") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_staff_workforce(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_staff_workforce(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.StopSwarm" => match admit(caller, "agency.teams.StopSwarm") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_teams_stop_swarm(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_teams_stop_swarm(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.teams.SwarmList" => match admit_read(caller, "agency.teams.SwarmList") {
@@ -1198,7 +1242,7 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.tools.BindTool" => match admit(caller, "agency.tools.BindTool") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_tools_bind_tool(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_tools_bind_tool(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.tools.BindingList" => match admit_read(caller, "agency.tools.BindingList") {
@@ -1206,11 +1250,11 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.tools.RegisterTool" => match admit(caller, "agency.tools.RegisterTool") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_tools_register_tool(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_tools_register_tool(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.tools.RevokeBinding" => match admit(caller, "agency.tools.RevokeBinding") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_tools_revoke_binding(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_tools_revoke_binding(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.tools.ToolCatalogue" => match admit_read(caller, "agency.tools.ToolCatalogue") {
@@ -1218,39 +1262,39 @@ where
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.tools.WithdrawTool" => match admit(caller, "agency.tools.WithdrawTool") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_tools_withdraw_tool(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_tools_withdraw_tool(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.AbandonWorkItem" => match admit(caller, "agency.work.AbandonWorkItem") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_abandon_work_item(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_abandon_work_item(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.AssignWorkItem" => match admit(caller, "agency.work.AssignWorkItem") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_assign_work_item(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_assign_work_item(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.ConfigureWorkInput" => match admit(caller, "agency.work.ConfigureWorkInput") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_configure_work_input(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_configure_work_input(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.PauseWorkInput" => match admit(caller, "agency.work.PauseWorkInput") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_pause_work_input(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_pause_work_input(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.RemoveWorkInput" => match admit(caller, "agency.work.RemoveWorkInput") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_remove_work_input(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_remove_work_input(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.ReturnWorkItem" => match admit(caller, "agency.work.ReturnWorkItem") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_return_work_item(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_return_work_item(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.SettleWorkItem" => match admit(caller, "agency.work.SettleWorkItem") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_settle_work_item(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_settle_work_item(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.SubmitWorkItem" => match admit(caller, "agency.work.SubmitWorkItem") {
-            Ok(()) => checked(&input).and_then(|()| run_agency_work_submit_work_item(system, &input)),
+            Ok(()) => checked(&input).and_then(|()| run_agency_work_submit_work_item(system, &input, &mut taken)),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
         "agency.work.WorkInputList" => match admit_read(caller, "agency.work.WorkInputList") {
@@ -1265,10 +1309,13 @@ where
             Ok(()) => run_agency_work_work_queue(system),
             Err(actor) => Err(entry::Refused::NotGranted(actor.map(str::to_owned))),
         },
-        other => return Err(entry::Refused::Unknown(other.to_owned())),
+        other => return (Err(entry::Refused::Unknown(other.to_owned())), taken),
     };
-    let (_, body) = answered?;
-    entry::read(&body).map_err(|error| {
+    let body = match answered {
+        Ok((_, body)) => body,
+        Err(refused) => return (Err(refused), taken),
+    };
+    let read = entry::read(&body).map_err(|error| {
         if matches!(name, "agency.agents.CreateAgentDefinition" | "agency.agents.DeprecateAgentDefinition" | "agency.agents.ProvisionAgent" | "agency.agents.PublishAgentDefinition" | "agency.agents.RecordSpecCheck" | "agency.agents.RetireAgent" | "agency.auth.ActivatePolicy" | "agency.auth.AssignRole" | "agency.auth.CreatePolicy" | "agency.auth.CreateTenant" | "agency.auth.DisablePrincipal" | "agency.auth.GrantCredential" | "agency.auth.InvitePrincipal" | "agency.auth.RefreshCredential" | "agency.auth.RevokeCredential" | "agency.auth.RevokeGrant" | "agency.auth.StoreCredential" | "agency.auth.SupersedePolicy" | "agency.runs.AdmitRun" | "agency.runs.DenyRunApproval" | "agency.runs.GrantRunApproval" | "agency.runs.RecordRunFailure" | "agency.runs.RecordRunProposal" | "agency.runs.RecordRunStarted" | "agency.runs.RequestRunApproval" | "agency.runs.SetRunBudget" | "agency.runs.StartRun" | "agency.runs.StopRun" | "agency.service.CloseSession" | "agency.service.OpenSession" | "agency.teams.AddMember" | "agency.teams.AttachQueue" | "agency.teams.DeclareSwarm" | "agency.teams.DefineWorkforce" | "agency.teams.DisbandTeam" | "agency.teams.FormTeam" | "agency.teams.RemoveMember" | "agency.teams.Report" | "agency.teams.RetireWorkforce" | "agency.teams.Send" | "agency.teams.SetLead" | "agency.teams.StaffWorkforce" | "agency.teams.StopSwarm" | "agency.tools.BindTool" | "agency.tools.RegisterTool" | "agency.tools.RevokeBinding" | "agency.tools.WithdrawTool" | "agency.work.AbandonWorkItem" | "agency.work.AssignWorkItem" | "agency.work.ConfigureWorkInput" | "agency.work.PauseWorkInput" | "agency.work.RemoveWorkInput" | "agency.work.ReturnWorkItem" | "agency.work.SettleWorkItem" | "agency.work.SubmitWorkItem") {
             entry::Refused::Undelivered(format!(
                 "delivering what the command published: its answer is not JSON this surface reads back: {error}"
@@ -1278,7 +1325,8 @@ where
                 "unmet obligation: view_query `{name}` answered rows this surface cannot read back: {error}"
             ))
         }
-    })
+    });
+    (read, taken)
 }
 
 /// Nothing, where `caller` may invoke `command`; otherwise the actor the standard refusal names,
@@ -1324,7 +1372,7 @@ pub fn admit_read(caller: Option<&crate::actor::Caller>, view: &str) -> Result<(
 }
 
 /// `POST` `agency.work.AbandonWorkItem`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_abandon_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_abandon_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1340,17 +1388,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_abandon_work_item(system, &value))
+    http::answer(run_agency_work_abandon_work_item(system, &value, taken))
 }
 
 /// `agency.work.AbandonWorkItem` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_abandon_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_abandon_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_abandon_work_item(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -1366,7 +1419,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -1419,7 +1472,7 @@ fn answer_agency_work_abandon_work_item(outcome: &crate::work::AbandonWorkItemOu
 }
 
 /// `POST` `agency.auth.ActivatePolicy`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_activate_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_activate_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1435,17 +1488,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_activate_policy(system, &value))
+    http::answer(run_agency_auth_activate_policy(system, &value, taken))
 }
 
 /// `agency.auth.ActivatePolicy` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_activate_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_activate_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_activate_policy(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -1461,7 +1519,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -1514,7 +1572,7 @@ fn answer_agency_auth_activate_policy(outcome: &crate::auth::ActivatePolicyOutco
 }
 
 /// `POST` `agency.teams.AddMember`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_add_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_add_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1530,17 +1588,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_add_member(system, &value))
+    http::answer(run_agency_teams_add_member(system, &value, taken))
 }
 
 /// `agency.teams.AddMember` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_add_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_add_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_add_member(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -1556,7 +1619,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -1599,7 +1662,7 @@ fn answer_agency_teams_add_member(outcome: &crate::teams::AddMemberOutcome) -> (
 }
 
 /// `POST` `agency.runs.AdmitRun`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_admit_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_admit_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1615,17 +1678,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_admit_run(system, &value))
+    http::answer(run_agency_runs_admit_run(system, &value, taken))
 }
 
 /// `agency.runs.AdmitRun` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_admit_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_admit_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_admit_run(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -1641,7 +1709,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -1694,7 +1762,7 @@ fn answer_agency_runs_admit_run(outcome: &crate::runs::AdmitRunOutcome) -> (u16,
 }
 
 /// `POST` `agency.auth.AssignRole`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_assign_role<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_assign_role<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1710,17 +1778,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_assign_role(system, &value))
+    http::answer(run_agency_auth_assign_role(system, &value, taken))
 }
 
 /// `agency.auth.AssignRole` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_assign_role<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_assign_role<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_assign_role(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -1736,7 +1809,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -1779,7 +1852,7 @@ fn answer_agency_auth_assign_role(outcome: &crate::auth::AssignRoleOutcome) -> (
 }
 
 /// `POST` `agency.work.AssignWorkItem`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_assign_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_assign_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1795,17 +1868,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_assign_work_item(system, &value))
+    http::answer(run_agency_work_assign_work_item(system, &value, taken))
 }
 
 /// `agency.work.AssignWorkItem` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_assign_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_assign_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_assign_work_item(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -1821,7 +1899,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -1874,7 +1952,7 @@ fn answer_agency_work_assign_work_item(outcome: &crate::work::AssignWorkItemOutc
 }
 
 /// `POST` `agency.teams.AttachQueue`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_attach_queue<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_attach_queue<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1890,17 +1968,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_attach_queue(system, &value))
+    http::answer(run_agency_teams_attach_queue(system, &value, taken))
 }
 
 /// `agency.teams.AttachQueue` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_attach_queue<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_attach_queue<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_attach_queue(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -1916,7 +1999,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -1959,7 +2042,7 @@ fn answer_agency_teams_attach_queue(outcome: &crate::teams::AttachQueueOutcome) 
 }
 
 /// `POST` `agency.tools.BindTool`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_tools_bind_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_tools_bind_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -1975,17 +2058,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_tools_bind_tool(system, &value))
+    http::answer(run_agency_tools_bind_tool(system, &value, taken))
 }
 
 /// `agency.tools.BindTool` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_tools_bind_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_tools_bind_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_tools_bind_tool(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2001,7 +2089,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2058,7 +2146,7 @@ fn answer_agency_tools_bind_tool(outcome: &crate::tools::BindToolOutcome) -> (u1
 }
 
 /// `POST` `agency.service.CloseSession`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_service_close_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_service_close_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2074,17 +2162,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_service_close_session(system, &value))
+    http::answer(run_agency_service_close_session(system, &value, taken))
 }
 
 /// `agency.service.CloseSession` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_service_close_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_service_close_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_service_close_session(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2100,7 +2193,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2153,7 +2246,7 @@ fn answer_agency_service_close_session(outcome: &crate::service::CloseSessionOut
 }
 
 /// `POST` `agency.work.ConfigureWorkInput`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_configure_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_configure_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2169,17 +2262,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_configure_work_input(system, &value))
+    http::answer(run_agency_work_configure_work_input(system, &value, taken))
 }
 
 /// `agency.work.ConfigureWorkInput` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_configure_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_configure_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_configure_work_input(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2195,7 +2293,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2228,7 +2326,7 @@ fn answer_agency_work_configure_work_input(outcome: &crate::work::ConfigureWorkI
 }
 
 /// `POST` `agency.agents.CreateAgentDefinition`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_agents_create_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_agents_create_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2244,17 +2342,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_agents_create_agent_definition(system, &value))
+    http::answer(run_agency_agents_create_agent_definition(system, &value, taken))
 }
 
 /// `agency.agents.CreateAgentDefinition` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_agents_create_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_agents_create_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_agents_create_agent_definition(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2270,7 +2373,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2303,7 +2406,7 @@ fn answer_agency_agents_create_agent_definition(outcome: &crate::agents::CreateA
 }
 
 /// `POST` `agency.auth.CreatePolicy`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_create_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_create_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2319,17 +2422,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_create_policy(system, &value))
+    http::answer(run_agency_auth_create_policy(system, &value, taken))
 }
 
 /// `agency.auth.CreatePolicy` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_create_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_create_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_create_policy(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2345,7 +2453,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2378,7 +2486,7 @@ fn answer_agency_auth_create_policy(outcome: &crate::auth::CreatePolicyOutcome) 
 }
 
 /// `POST` `agency.auth.CreateTenant`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_create_tenant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_create_tenant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2394,17 +2502,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_create_tenant(system, &value))
+    http::answer(run_agency_auth_create_tenant(system, &value, taken))
 }
 
 /// `agency.auth.CreateTenant` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_create_tenant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_create_tenant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_create_tenant(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2420,7 +2533,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2453,7 +2566,7 @@ fn answer_agency_auth_create_tenant(outcome: &crate::auth::CreateTenantOutcome) 
 }
 
 /// `POST` `agency.teams.DeclareSwarm`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_declare_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_declare_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2469,17 +2582,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_declare_swarm(system, &value))
+    http::answer(run_agency_teams_declare_swarm(system, &value, taken))
 }
 
 /// `agency.teams.DeclareSwarm` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_declare_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_declare_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_declare_swarm(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2495,7 +2613,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2528,7 +2646,7 @@ fn answer_agency_teams_declare_swarm(outcome: &crate::teams::DeclareSwarmOutcome
 }
 
 /// `POST` `agency.teams.DefineWorkforce`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_define_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_define_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2544,17 +2662,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_define_workforce(system, &value))
+    http::answer(run_agency_teams_define_workforce(system, &value, taken))
 }
 
 /// `agency.teams.DefineWorkforce` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_define_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_define_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_define_workforce(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2570,7 +2693,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2603,7 +2726,7 @@ fn answer_agency_teams_define_workforce(outcome: &crate::teams::DefineWorkforceO
 }
 
 /// `POST` `agency.runs.DenyRunApproval`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_deny_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_deny_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2619,17 +2742,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_deny_run_approval(system, &value))
+    http::answer(run_agency_runs_deny_run_approval(system, &value, taken))
 }
 
 /// `agency.runs.DenyRunApproval` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_deny_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_deny_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_deny_run_approval(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2645,7 +2773,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2698,7 +2826,7 @@ fn answer_agency_runs_deny_run_approval(outcome: &crate::runs::DenyRunApprovalOu
 }
 
 /// `POST` `agency.agents.DeprecateAgentDefinition`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_agents_deprecate_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_agents_deprecate_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2714,17 +2842,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_agents_deprecate_agent_definition(system, &value))
+    http::answer(run_agency_agents_deprecate_agent_definition(system, &value, taken))
 }
 
 /// `agency.agents.DeprecateAgentDefinition` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_agents_deprecate_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_agents_deprecate_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_agents_deprecate_agent_definition(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2740,7 +2873,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2793,7 +2926,7 @@ fn answer_agency_agents_deprecate_agent_definition(outcome: &crate::agents::Depr
 }
 
 /// `POST` `agency.auth.DisablePrincipal`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_disable_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_disable_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2809,17 +2942,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_disable_principal(system, &value))
+    http::answer(run_agency_auth_disable_principal(system, &value, taken))
 }
 
 /// `agency.auth.DisablePrincipal` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_disable_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_disable_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_disable_principal(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2835,7 +2973,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2888,7 +3026,7 @@ fn answer_agency_auth_disable_principal(outcome: &crate::auth::DisablePrincipalO
 }
 
 /// `POST` `agency.teams.DisbandTeam`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_disband_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_disband_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2904,17 +3042,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_disband_team(system, &value))
+    http::answer(run_agency_teams_disband_team(system, &value, taken))
 }
 
 /// `agency.teams.DisbandTeam` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_disband_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_disband_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_disband_team(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -2930,7 +3073,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -2983,7 +3126,7 @@ fn answer_agency_teams_disband_team(outcome: &crate::teams::DisbandTeamOutcome) 
 }
 
 /// `POST` `agency.teams.FormTeam`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_form_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_form_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -2999,17 +3142,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_form_team(system, &value))
+    http::answer(run_agency_teams_form_team(system, &value, taken))
 }
 
 /// `agency.teams.FormTeam` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_form_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_form_team<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_form_team(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3025,7 +3173,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3058,7 +3206,7 @@ fn answer_agency_teams_form_team(outcome: &crate::teams::FormTeamOutcome) -> (u1
 }
 
 /// `POST` `agency.auth.GrantCredential`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_grant_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_grant_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3074,17 +3222,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_grant_credential(system, &value))
+    http::answer(run_agency_auth_grant_credential(system, &value, taken))
 }
 
 /// `agency.auth.GrantCredential` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_grant_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_grant_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_grant_credential(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3100,7 +3253,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3171,7 +3324,7 @@ fn answer_agency_auth_grant_credential(outcome: &crate::auth::GrantCredentialOut
 }
 
 /// `POST` `agency.runs.GrantRunApproval`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_grant_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_grant_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3187,17 +3340,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_grant_run_approval(system, &value))
+    http::answer(run_agency_runs_grant_run_approval(system, &value, taken))
 }
 
 /// `agency.runs.GrantRunApproval` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_grant_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_grant_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_grant_run_approval(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3213,7 +3371,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3266,7 +3424,7 @@ fn answer_agency_runs_grant_run_approval(outcome: &crate::runs::GrantRunApproval
 }
 
 /// `POST` `agency.auth.InvitePrincipal`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_invite_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_invite_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3282,17 +3440,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_invite_principal(system, &value))
+    http::answer(run_agency_auth_invite_principal(system, &value, taken))
 }
 
 /// `agency.auth.InvitePrincipal` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_invite_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_invite_principal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_invite_principal(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3308,7 +3471,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3341,7 +3504,7 @@ fn answer_agency_auth_invite_principal(outcome: &crate::auth::InvitePrincipalOut
 }
 
 /// `POST` `agency.service.OpenSession`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_service_open_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_service_open_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3357,17 +3520,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_service_open_session(system, &value))
+    http::answer(run_agency_service_open_session(system, &value, taken))
 }
 
 /// `agency.service.OpenSession` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_service_open_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_service_open_session<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_service_open_session(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3383,7 +3551,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3416,7 +3584,7 @@ fn answer_agency_service_open_session(outcome: &crate::service::OpenSessionOutco
 }
 
 /// `POST` `agency.work.PauseWorkInput`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_pause_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_pause_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3432,17 +3600,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_pause_work_input(system, &value))
+    http::answer(run_agency_work_pause_work_input(system, &value, taken))
 }
 
 /// `agency.work.PauseWorkInput` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_pause_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_pause_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_pause_work_input(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3458,7 +3631,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3511,7 +3684,7 @@ fn answer_agency_work_pause_work_input(outcome: &crate::work::PauseWorkInputOutc
 }
 
 /// `POST` `agency.agents.ProvisionAgent`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_agents_provision_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_agents_provision_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3527,17 +3700,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_agents_provision_agent(system, &value))
+    http::answer(run_agency_agents_provision_agent(system, &value, taken))
 }
 
 /// `agency.agents.ProvisionAgent` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_agents_provision_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_agents_provision_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_agents_provision_agent(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3553,7 +3731,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3586,7 +3764,7 @@ fn answer_agency_agents_provision_agent(outcome: &crate::agents::ProvisionAgentO
 }
 
 /// `POST` `agency.agents.PublishAgentDefinition`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_agents_publish_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_agents_publish_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3602,17 +3780,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_agents_publish_agent_definition(system, &value))
+    http::answer(run_agency_agents_publish_agent_definition(system, &value, taken))
 }
 
 /// `agency.agents.PublishAgentDefinition` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_agents_publish_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_agents_publish_agent_definition<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_agents_publish_agent_definition(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3628,7 +3811,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3681,7 +3864,7 @@ fn answer_agency_agents_publish_agent_definition(outcome: &crate::agents::Publis
 }
 
 /// `POST` `agency.runs.RecordRunFailure`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_record_run_failure<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_record_run_failure<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3697,17 +3880,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_record_run_failure(system, &value))
+    http::answer(run_agency_runs_record_run_failure(system, &value, taken))
 }
 
 /// `agency.runs.RecordRunFailure` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_record_run_failure<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_record_run_failure<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_record_run_failure(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3723,7 +3911,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3776,7 +3964,7 @@ fn answer_agency_runs_record_run_failure(outcome: &crate::runs::RecordRunFailure
 }
 
 /// `POST` `agency.runs.RecordRunProposal`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_record_run_proposal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_record_run_proposal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3792,17 +3980,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_record_run_proposal(system, &value))
+    http::answer(run_agency_runs_record_run_proposal(system, &value, taken))
 }
 
 /// `agency.runs.RecordRunProposal` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_record_run_proposal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_record_run_proposal<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_record_run_proposal(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3818,7 +4011,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3871,7 +4064,7 @@ fn answer_agency_runs_record_run_proposal(outcome: &crate::runs::RecordRunPropos
 }
 
 /// `POST` `agency.runs.RecordRunStarted`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_record_run_started<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_record_run_started<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3887,17 +4080,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_record_run_started(system, &value))
+    http::answer(run_agency_runs_record_run_started(system, &value, taken))
 }
 
 /// `agency.runs.RecordRunStarted` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_record_run_started<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_record_run_started<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_record_run_started(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -3913,7 +4111,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -3966,7 +4164,7 @@ fn answer_agency_runs_record_run_started(outcome: &crate::runs::RecordRunStarted
 }
 
 /// `POST` `agency.agents.RecordSpecCheck`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_agents_record_spec_check<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_agents_record_spec_check<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -3982,17 +4180,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_agents_record_spec_check(system, &value))
+    http::answer(run_agency_agents_record_spec_check(system, &value, taken))
 }
 
 /// `agency.agents.RecordSpecCheck` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_agents_record_spec_check<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_agents_record_spec_check<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_agents_record_spec_check(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4008,7 +4211,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4075,7 +4278,7 @@ fn answer_agency_agents_record_spec_check(outcome: &crate::agents::RecordSpecChe
 }
 
 /// `POST` `agency.auth.RefreshCredential`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_refresh_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_refresh_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4091,17 +4294,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_refresh_credential(system, &value))
+    http::answer(run_agency_auth_refresh_credential(system, &value, taken))
 }
 
 /// `agency.auth.RefreshCredential` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_refresh_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_refresh_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_refresh_credential(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4117,7 +4325,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4170,7 +4378,7 @@ fn answer_agency_auth_refresh_credential(outcome: &crate::auth::RefreshCredentia
 }
 
 /// `POST` `agency.tools.RegisterTool`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_tools_register_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_tools_register_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4186,17 +4394,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_tools_register_tool(system, &value))
+    http::answer(run_agency_tools_register_tool(system, &value, taken))
 }
 
 /// `agency.tools.RegisterTool` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_tools_register_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_tools_register_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_tools_register_tool(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4212,7 +4425,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4245,7 +4458,7 @@ fn answer_agency_tools_register_tool(outcome: &crate::tools::RegisterToolOutcome
 }
 
 /// `POST` `agency.teams.RemoveMember`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_remove_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_remove_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4261,17 +4474,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_remove_member(system, &value))
+    http::answer(run_agency_teams_remove_member(system, &value, taken))
 }
 
 /// `agency.teams.RemoveMember` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_remove_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_remove_member<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_remove_member(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4287,7 +4505,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4330,7 +4548,7 @@ fn answer_agency_teams_remove_member(outcome: &crate::teams::RemoveMemberOutcome
 }
 
 /// `POST` `agency.work.RemoveWorkInput`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_remove_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_remove_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4346,17 +4564,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_remove_work_input(system, &value))
+    http::answer(run_agency_work_remove_work_input(system, &value, taken))
 }
 
 /// `agency.work.RemoveWorkInput` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_remove_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_remove_work_input<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_remove_work_input(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4372,7 +4595,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4425,7 +4648,7 @@ fn answer_agency_work_remove_work_input(outcome: &crate::work::RemoveWorkInputOu
 }
 
 /// `POST` `agency.teams.Report`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_report<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_report<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4441,17 +4664,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_report(system, &value))
+    http::answer(run_agency_teams_report(system, &value, taken))
 }
 
 /// `agency.teams.Report` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_report<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_report<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_report(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4467,7 +4695,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4520,7 +4748,7 @@ fn answer_agency_teams_report(outcome: &crate::teams::ReportOutcome) -> (u16, St
 }
 
 /// `POST` `agency.runs.RequestRunApproval`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_request_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_request_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4536,17 +4764,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_request_run_approval(system, &value))
+    http::answer(run_agency_runs_request_run_approval(system, &value, taken))
 }
 
 /// `agency.runs.RequestRunApproval` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_request_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_request_run_approval<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_request_run_approval(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4562,7 +4795,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4595,7 +4828,7 @@ fn answer_agency_runs_request_run_approval(outcome: &crate::runs::RequestRunAppr
 }
 
 /// `POST` `agency.agents.RetireAgent`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_agents_retire_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_agents_retire_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4611,17 +4844,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_agents_retire_agent(system, &value))
+    http::answer(run_agency_agents_retire_agent(system, &value, taken))
 }
 
 /// `agency.agents.RetireAgent` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_agents_retire_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_agents_retire_agent<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_agents_retire_agent(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4637,7 +4875,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4690,7 +4928,7 @@ fn answer_agency_agents_retire_agent(outcome: &crate::agents::RetireAgentOutcome
 }
 
 /// `POST` `agency.teams.RetireWorkforce`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_retire_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_retire_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4706,17 +4944,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_retire_workforce(system, &value))
+    http::answer(run_agency_teams_retire_workforce(system, &value, taken))
 }
 
 /// `agency.teams.RetireWorkforce` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_retire_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_retire_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_retire_workforce(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4732,7 +4975,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4785,7 +5028,7 @@ fn answer_agency_teams_retire_workforce(outcome: &crate::teams::RetireWorkforceO
 }
 
 /// `POST` `agency.work.ReturnWorkItem`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_return_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_return_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4801,17 +5044,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_return_work_item(system, &value))
+    http::answer(run_agency_work_return_work_item(system, &value, taken))
 }
 
 /// `agency.work.ReturnWorkItem` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_return_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_return_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_return_work_item(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4827,7 +5075,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4880,7 +5128,7 @@ fn answer_agency_work_return_work_item(outcome: &crate::work::ReturnWorkItemOutc
 }
 
 /// `POST` `agency.tools.RevokeBinding`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_tools_revoke_binding<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_tools_revoke_binding<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4896,17 +5144,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_tools_revoke_binding(system, &value))
+    http::answer(run_agency_tools_revoke_binding(system, &value, taken))
 }
 
 /// `agency.tools.RevokeBinding` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_tools_revoke_binding<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_tools_revoke_binding<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_tools_revoke_binding(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -4922,7 +5175,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -4975,7 +5228,7 @@ fn answer_agency_tools_revoke_binding(outcome: &crate::tools::RevokeBindingOutco
 }
 
 /// `POST` `agency.auth.RevokeCredential`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_revoke_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_revoke_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -4991,17 +5244,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_revoke_credential(system, &value))
+    http::answer(run_agency_auth_revoke_credential(system, &value, taken))
 }
 
 /// `agency.auth.RevokeCredential` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_revoke_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_revoke_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_revoke_credential(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5017,7 +5275,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5070,7 +5328,7 @@ fn answer_agency_auth_revoke_credential(outcome: &crate::auth::RevokeCredentialO
 }
 
 /// `POST` `agency.auth.RevokeGrant`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_revoke_grant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_revoke_grant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5086,17 +5344,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_revoke_grant(system, &value))
+    http::answer(run_agency_auth_revoke_grant(system, &value, taken))
 }
 
 /// `agency.auth.RevokeGrant` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_revoke_grant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_revoke_grant<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_revoke_grant(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5112,7 +5375,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5165,7 +5428,7 @@ fn answer_agency_auth_revoke_grant(outcome: &crate::auth::RevokeGrantOutcome) ->
 }
 
 /// `POST` `agency.teams.Send`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_send<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_send<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5181,17 +5444,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_send(system, &value))
+    http::answer(run_agency_teams_send(system, &value, taken))
 }
 
 /// `agency.teams.Send` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_send<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_send<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_send(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5207,7 +5475,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5270,7 +5538,7 @@ fn answer_agency_teams_send(outcome: &crate::teams::SendOutcome) -> (u16, String
 }
 
 /// `POST` `agency.teams.SetLead`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_set_lead<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_set_lead<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5286,17 +5554,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_set_lead(system, &value))
+    http::answer(run_agency_teams_set_lead(system, &value, taken))
 }
 
 /// `agency.teams.SetLead` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_set_lead<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_set_lead<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_set_lead(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5312,7 +5585,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5355,7 +5628,7 @@ fn answer_agency_teams_set_lead(outcome: &crate::teams::SetLeadOutcome) -> (u16,
 }
 
 /// `POST` `agency.runs.SetRunBudget`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_set_run_budget<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_set_run_budget<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5371,17 +5644,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_set_run_budget(system, &value))
+    http::answer(run_agency_runs_set_run_budget(system, &value, taken))
 }
 
 /// `agency.runs.SetRunBudget` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_set_run_budget<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_set_run_budget<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_set_run_budget(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5397,7 +5675,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5450,7 +5728,7 @@ fn answer_agency_runs_set_run_budget(outcome: &crate::runs::SetRunBudgetOutcome)
 }
 
 /// `POST` `agency.work.SettleWorkItem`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_settle_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_settle_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5466,17 +5744,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_settle_work_item(system, &value))
+    http::answer(run_agency_work_settle_work_item(system, &value, taken))
 }
 
 /// `agency.work.SettleWorkItem` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_settle_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_settle_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_settle_work_item(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5492,7 +5775,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5545,7 +5828,7 @@ fn answer_agency_work_settle_work_item(outcome: &crate::work::SettleWorkItemOutc
 }
 
 /// `POST` `agency.teams.StaffWorkforce`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_staff_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_staff_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5561,17 +5844,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_staff_workforce(system, &value))
+    http::answer(run_agency_teams_staff_workforce(system, &value, taken))
 }
 
 /// `agency.teams.StaffWorkforce` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_staff_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_staff_workforce<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_staff_workforce(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5587,7 +5875,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5640,7 +5928,7 @@ fn answer_agency_teams_staff_workforce(outcome: &crate::teams::StaffWorkforceOut
 }
 
 /// `POST` `agency.runs.StartRun`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_start_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_start_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5656,17 +5944,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_start_run(system, &value))
+    http::answer(run_agency_runs_start_run(system, &value, taken))
 }
 
 /// `agency.runs.StartRun` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_start_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_start_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_start_run(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5682,7 +5975,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5715,7 +6008,7 @@ fn answer_agency_runs_start_run(outcome: &crate::runs::StartRunOutcome) -> (u16,
 }
 
 /// `POST` `agency.runs.StopRun`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_runs_stop_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_runs_stop_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5731,17 +6024,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_runs_stop_run(system, &value))
+    http::answer(run_agency_runs_stop_run(system, &value, taken))
 }
 
 /// `agency.runs.StopRun` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_runs_stop_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_runs_stop_run<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_runs_stop_run(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5757,7 +6055,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5810,7 +6108,7 @@ fn answer_agency_runs_stop_run(outcome: &crate::runs::StopRunOutcome) -> (u16, S
 }
 
 /// `POST` `agency.teams.StopSwarm`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_teams_stop_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_teams_stop_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5826,17 +6124,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_teams_stop_swarm(system, &value))
+    http::answer(run_agency_teams_stop_swarm(system, &value, taken))
 }
 
 /// `agency.teams.StopSwarm` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_teams_stop_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_teams_stop_swarm<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_teams_stop_swarm(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5852,7 +6155,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5905,7 +6208,7 @@ fn answer_agency_teams_stop_swarm(outcome: &crate::teams::StopSwarmOutcome) -> (
 }
 
 /// `POST` `agency.auth.StoreCredential`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_store_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_store_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5921,17 +6224,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_store_credential(system, &value))
+    http::answer(run_agency_auth_store_credential(system, &value, taken))
 }
 
 /// `agency.auth.StoreCredential` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_store_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_store_credential<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_store_credential(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -5947,7 +6255,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -5980,7 +6288,7 @@ fn answer_agency_auth_store_credential(outcome: &crate::auth::StoreCredentialOut
 }
 
 /// `POST` `agency.work.SubmitWorkItem`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_work_submit_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_work_submit_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -5996,17 +6304,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_work_submit_work_item(system, &value))
+    http::answer(run_agency_work_submit_work_item(system, &value, taken))
 }
 
 /// `agency.work.SubmitWorkItem` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_work_submit_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_work_submit_work_item<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_work_submit_work_item(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -6022,7 +6335,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -6055,7 +6368,7 @@ fn answer_agency_work_submit_work_item(outcome: &crate::work::SubmitWorkItemOutc
 }
 
 /// `POST` `agency.auth.SupersedePolicy`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_auth_supersede_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_auth_supersede_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -6071,17 +6384,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_auth_supersede_policy(system, &value))
+    http::answer(run_agency_auth_supersede_policy(system, &value, taken))
 }
 
 /// `agency.auth.SupersedePolicy` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_auth_supersede_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_auth_supersede_policy<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_auth_supersede_policy(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -6097,7 +6415,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
@@ -6150,7 +6468,7 @@ fn answer_agency_auth_supersede_policy(outcome: &crate::auth::SupersedePolicyOut
 }
 
 /// `POST` `agency.tools.WithdrawTool`: reads the declared input, runs the port, answers the declared outcome.
-fn serve_agency_tools_withdraw_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8]) -> http::Response
+fn serve_agency_tools_withdraw_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, body: &[u8], taken: &mut Vec<crate::system::SystemEvent>) -> http::Response
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
@@ -6166,17 +6484,22 @@ where
             return http::Response::refusal(400, &format!("the body is not JSON: {error}"));
         }
     };
-    http::answer(run_agency_tools_withdraw_tool(system, &value))
+    http::answer(run_agency_tools_withdraw_tool(system, &value, taken))
 }
 
 /// `agency.tools.WithdrawTool` from its input as a JSON value: decode, run the port, render the declared outcome.
 ///
 /// The one path the `POST` route and [`handle`] share. A decoding failure is located under
-/// `body`, as the route reports it.
-fn run_agency_tools_withdraw_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value) -> Result<(u16, String), entry::Refused>
+/// `body`, as the route reports it. Every event published while the call runs is pushed onto
+/// `taken`, in log order, whatever it answers; what was on the log before it is taken off
+/// the log but not pushed.
+fn run_agency_tools_withdraw_tool<AgencyBehaviors>(system: &mut crate::system::System<AgencyBehaviors>, value: &json::Value, taken: &mut Vec<crate::system::SystemEvent>) -> Result<(u16, String), entry::Refused>
 where
     AgencyBehaviors: crate::agents::obligations::CreateAgentDefinitionBehavior + crate::agents::obligations::DeprecateAgentDefinitionBehavior + crate::agents::obligations::ProvisionAgentBehavior + crate::agents::obligations::PublishAgentDefinitionBehavior + crate::agents::obligations::RecordSpecCheckBehavior + crate::agents::obligations::RetireAgentBehavior + crate::auth::obligations::ActivatePolicyBehavior + crate::auth::obligations::AssignRoleBehavior + crate::auth::obligations::CreatePolicyBehavior + crate::auth::obligations::CreateTenantBehavior + crate::auth::obligations::DisablePrincipalBehavior + crate::auth::obligations::GrantCredentialBehavior + crate::auth::obligations::InvitePrincipalBehavior + crate::auth::obligations::RefreshCredentialBehavior + crate::auth::obligations::RevokeCredentialBehavior + crate::auth::obligations::RevokeGrantBehavior + crate::auth::obligations::StoreCredentialBehavior + crate::auth::obligations::SupersedePolicyBehavior + crate::runs::obligations::AdmitRunBehavior + crate::runs::obligations::DenyRunApprovalBehavior + crate::runs::obligations::GrantRunApprovalBehavior + crate::runs::obligations::RecordRunFailureBehavior + crate::runs::obligations::RecordRunProposalBehavior + crate::runs::obligations::RecordRunStartedBehavior + crate::runs::obligations::RequestRunApprovalBehavior + crate::runs::obligations::SetRunBudgetBehavior + crate::runs::obligations::StartRunBehavior + crate::runs::obligations::StopRunBehavior + crate::service::obligations::CloseSessionBehavior + crate::service::obligations::OpenSessionBehavior + crate::teams::obligations::AddMemberBehavior + crate::teams::obligations::AttachQueueBehavior + crate::teams::obligations::DeclareSwarmBehavior + crate::teams::obligations::DefineWorkforceBehavior + crate::teams::obligations::DisbandTeamBehavior + crate::teams::obligations::FormTeamBehavior + crate::teams::obligations::RemoveMemberBehavior + crate::teams::obligations::ReportBehavior + crate::teams::obligations::RetireWorkforceBehavior + crate::teams::obligations::SendBehavior + crate::teams::obligations::SetLeadBehavior + crate::teams::obligations::StaffWorkforceBehavior + crate::teams::obligations::StopSwarmBehavior + crate::tools::obligations::BindToolBehavior + crate::tools::obligations::RegisterToolBehavior + crate::tools::obligations::RevokeBindingBehavior + crate::tools::obligations::WithdrawToolBehavior + crate::work::obligations::AbandonWorkItemBehavior + crate::work::obligations::AssignWorkItemBehavior + crate::work::obligations::ConfigureWorkInputBehavior + crate::work::obligations::PauseWorkInputBehavior + crate::work::obligations::RemoveWorkInputBehavior + crate::work::obligations::ReturnWorkItemBehavior + crate::work::obligations::SettleWorkItemBehavior + crate::work::obligations::SubmitWorkItemBehavior + crate::agents::obligations::AgentDefinitionListQuery + crate::agents::obligations::AgentListQuery + crate::auth::obligations::CredentialListQuery + crate::auth::obligations::EffectivePolicyQuery + crate::auth::obligations::GrantMatrixQuery + crate::auth::obligations::PolicyListQuery + crate::auth::obligations::PrincipalListQuery + crate::runs::obligations::ApprovalInboxQuery + crate::runs::obligations::RunDetailQuery + crate::runs::obligations::RunListQuery + crate::runs::obligations::UsageByAgentQuery + crate::service::obligations::SessionListQuery + crate::teams::obligations::SwarmListQuery + crate::teams::obligations::TeamDetailQuery + crate::teams::obligations::TeamListQuery + crate::teams::obligations::WorkforceBoardQuery + crate::tools::obligations::BindingListQuery + crate::tools::obligations::ToolCatalogueQuery + crate::work::obligations::WorkInputListQuery + crate::work::obligations::WorkItemDetailQuery + crate::work::obligations::WorkQueueQuery,
 {
+    // What is on the log before this call is not what this call published: it is delivered
+    // and taken with the rest, and never pushed onto `taken`.
+    let before = system.published().len();
     let input = match wire::decode_command_agency_tools_withdraw_tool(value, "body") {
         Ok(input) => input,
         Err(error) => {
@@ -6192,7 +6515,7 @@ where
     // Deliver what this command published to every binding that reacts to it, then take it
     // off the log: a long-running server keeps nothing from one request to the next.
     let delivered = system.pump();
-    let _ = system.take_published();
+    taken.extend(system.take_published().into_iter().skip(before));
     if let Err(failure) = delivered {
         return Err(entry::Refused::Undelivered(format!("delivering what the command published: {failure}")));
     }
