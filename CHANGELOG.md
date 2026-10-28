@@ -24,7 +24,7 @@ All notable changes to this repository are recorded here, in the format of
 
 ### Changed
 
-- ESS pinned to 0.72.0 (`ess/ess-inputs.yaml`, the `ess-*` crates, the `check` workflow), and
+- ESS pinned to 0.74.0 (`ess/ess-inputs.yaml`, the `ess-*` crates, the `check` workflow), and
   `generated/` regenerated: the synthesized crate's server gains `dispatch_with_events`,
   `handle_with_events` and per-event wire decoders; the suite and projections are unchanged.
 
