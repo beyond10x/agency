@@ -6,7 +6,7 @@ and credentials, forms them into teams, feeds them work, and watches the runs th
 event stream and a browser cockpit; applications such as conductor drive it through that API.
 
 Status: specification first. The ESS system `agency` (domains shared, auth, agents, runs, tools,
-teams, work and service; ess 0.74.0) is the contract; the service, the Loom driver and the cockpit
+teams, work and service; ess 0.75.0) is the contract; the service, the Loom driver and the cockpit
 follow. An agent definition holds its `loom.agent/1` document by value; Loom owns that format.
 
 | Path | Contents |
