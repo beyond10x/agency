@@ -1982,6 +1982,26 @@ pub fn encode_event_agency_agents_agent_definition_created(value: &crate::agents
     out.push('}');
 }
 
+/// Reads the event `agency.agents.AgentDefinitionCreated` from JSON, the payload [`encode_event_agency_agents_agent_definition_created`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_agents_agent_definition_created(value: &json::Value, at: &str) -> Result<crate::agents::AgentDefinitionCreated, json::DecodeError> {
+    Ok(crate::agents::AgentDefinitionCreated {
+        definition_id: {
+            let at0 = json::nested(at, "definition_id");
+            let member0 = json::member_at(value, at, "definition_id")?;
+            decode_agency_agents_definition_id(member0, &at0)?
+        },
+        name: {
+            let at1 = json::nested(at, "name");
+            let member1 = json::member_at(value, at, "name")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.agents.AgentDefinitionDeprecated` as JSON.
 pub fn encode_event_agency_agents_agent_definition_deprecated(value: &crate::agents::AgentDefinitionDeprecated, out: &mut String) {
     out.push('{');
@@ -1990,12 +2010,42 @@ pub fn encode_event_agency_agents_agent_definition_deprecated(value: &crate::age
     out.push('}');
 }
 
+/// Reads the event `agency.agents.AgentDefinitionDeprecated` from JSON, the payload [`encode_event_agency_agents_agent_definition_deprecated`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_agents_agent_definition_deprecated(value: &json::Value, at: &str) -> Result<crate::agents::AgentDefinitionDeprecated, json::DecodeError> {
+    Ok(crate::agents::AgentDefinitionDeprecated {
+        definition_id: {
+            let at0 = json::nested(at, "definition_id");
+            let member0 = json::member_at(value, at, "definition_id")?;
+            decode_agency_agents_definition_id(member0, &at0)?
+        },
+    })
+}
+
 /// Writes the event `agency.agents.AgentDefinitionPublished` as JSON.
 pub fn encode_event_agency_agents_agent_definition_published(value: &crate::agents::AgentDefinitionPublished, out: &mut String) {
     out.push('{');
     json::member(out, "definition_id");
     encode_agency_agents_definition_id(&value.definition_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.agents.AgentDefinitionPublished` from JSON, the payload [`encode_event_agency_agents_agent_definition_published`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_agents_agent_definition_published(value: &json::Value, at: &str) -> Result<crate::agents::AgentDefinitionPublished, json::DecodeError> {
+    Ok(crate::agents::AgentDefinitionPublished {
+        definition_id: {
+            let at0 = json::nested(at, "definition_id");
+            let member0 = json::member_at(value, at, "definition_id")?;
+            decode_agency_agents_definition_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.agents.AgentProvisioned` as JSON.
@@ -2010,12 +2060,52 @@ pub fn encode_event_agency_agents_agent_provisioned(value: &crate::agents::Agent
     out.push('}');
 }
 
+/// Reads the event `agency.agents.AgentProvisioned` from JSON, the payload [`encode_event_agency_agents_agent_provisioned`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_agents_agent_provisioned(value: &json::Value, at: &str) -> Result<crate::agents::AgentProvisioned, json::DecodeError> {
+    Ok(crate::agents::AgentProvisioned {
+        agent_id: {
+            let at0 = json::nested(at, "agent_id");
+            let member0 = json::member_at(value, at, "agent_id")?;
+            decode_agency_agents_agent_id(member0, &at0)?
+        },
+        definition_id: {
+            let at1 = json::nested(at, "definition_id");
+            let member1 = json::member_at(value, at, "definition_id")?;
+            decode_agency_agents_definition_id(member1, &at1)?
+        },
+        definition_version: {
+            let at2 = json::nested(at, "definition_version");
+            let member2 = json::member_at(value, at, "definition_version")?;
+            json::integer_at(member2, &at2, "an integer")?
+        },
+    })
+}
+
 /// Writes the event `agency.agents.AgentRetired` as JSON.
 pub fn encode_event_agency_agents_agent_retired(value: &crate::agents::AgentRetired, out: &mut String) {
     out.push('{');
     json::member(out, "agent_id");
     encode_agency_agents_agent_id(&value.agent_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.agents.AgentRetired` from JSON, the payload [`encode_event_agency_agents_agent_retired`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_agents_agent_retired(value: &json::Value, at: &str) -> Result<crate::agents::AgentRetired, json::DecodeError> {
+    Ok(crate::agents::AgentRetired {
+        agent_id: {
+            let at0 = json::nested(at, "agent_id");
+            let member0 = json::member_at(value, at, "agent_id")?;
+            decode_agency_agents_agent_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.agents.AgentSpecChecked` as JSON.
@@ -2026,6 +2116,26 @@ pub fn encode_event_agency_agents_agent_spec_checked(value: &crate::agents::Agen
     json::member(out, "message");
     json::push_text(out, &value.message);
     out.push('}');
+}
+
+/// Reads the event `agency.agents.AgentSpecChecked` from JSON, the payload [`encode_event_agency_agents_agent_spec_checked`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_agents_agent_spec_checked(value: &json::Value, at: &str) -> Result<crate::agents::AgentSpecChecked, json::DecodeError> {
+    Ok(crate::agents::AgentSpecChecked {
+        definition_id: {
+            let at0 = json::nested(at, "definition_id");
+            let member0 = json::member_at(value, at, "definition_id")?;
+            decode_agency_agents_definition_id(member0, &at0)?
+        },
+        message: {
+            let at1 = json::nested(at, "message");
+            let member1 = json::member_at(value, at, "message")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+    })
 }
 
 /// Writes the event `agency.agents.AgentSpecRefused` as JSON.
@@ -2040,6 +2150,31 @@ pub fn encode_event_agency_agents_agent_spec_refused(value: &crate::agents::Agen
     out.push('}');
 }
 
+/// Reads the event `agency.agents.AgentSpecRefused` from JSON, the payload [`encode_event_agency_agents_agent_spec_refused`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_agents_agent_spec_refused(value: &json::Value, at: &str) -> Result<crate::agents::AgentSpecRefused, json::DecodeError> {
+    Ok(crate::agents::AgentSpecRefused {
+        definition_id: {
+            let at0 = json::nested(at, "definition_id");
+            let member0 = json::member_at(value, at, "definition_id")?;
+            decode_agency_agents_definition_id(member0, &at0)?
+        },
+        exit_code: {
+            let at1 = json::nested(at, "exit_code");
+            let member1 = json::member_at(value, at, "exit_code")?;
+            json::integer_at(member1, &at1, "an integer")?
+        },
+        message: {
+            let at2 = json::nested(at, "message");
+            let member2 = json::member_at(value, at, "message")?;
+            json::text_at(member2, &at2, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.auth.CredentialGranted` as JSON.
 pub fn encode_event_agency_auth_credential_granted(value: &crate::auth::CredentialGranted, out: &mut String) {
     out.push('{');
@@ -2052,6 +2187,31 @@ pub fn encode_event_agency_auth_credential_granted(value: &crate::auth::Credenti
     out.push('}');
 }
 
+/// Reads the event `agency.auth.CredentialGranted` from JSON, the payload [`encode_event_agency_auth_credential_granted`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_credential_granted(value: &json::Value, at: &str) -> Result<crate::auth::CredentialGranted, json::DecodeError> {
+    Ok(crate::auth::CredentialGranted {
+        grant_id: {
+            let at0 = json::nested(at, "grant_id");
+            let member0 = json::member_at(value, at, "grant_id")?;
+            decode_agency_auth_grant_id(member0, &at0)?
+        },
+        credential_id: {
+            let at1 = json::nested(at, "credential_id");
+            let member1 = json::member_at(value, at, "credential_id")?;
+            decode_agency_auth_credential_id(member1, &at1)?
+        },
+        purpose: {
+            let at2 = json::nested(at, "purpose");
+            let member2 = json::member_at(value, at, "purpose")?;
+            decode_agency_auth_grant_purpose(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.auth.CredentialRefreshed` as JSON.
 pub fn encode_event_agency_auth_credential_refreshed(value: &crate::auth::CredentialRefreshed, out: &mut String) {
     out.push('{');
@@ -2060,12 +2220,42 @@ pub fn encode_event_agency_auth_credential_refreshed(value: &crate::auth::Creden
     out.push('}');
 }
 
+/// Reads the event `agency.auth.CredentialRefreshed` from JSON, the payload [`encode_event_agency_auth_credential_refreshed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_credential_refreshed(value: &json::Value, at: &str) -> Result<crate::auth::CredentialRefreshed, json::DecodeError> {
+    Ok(crate::auth::CredentialRefreshed {
+        credential_id: {
+            let at0 = json::nested(at, "credential_id");
+            let member0 = json::member_at(value, at, "credential_id")?;
+            decode_agency_auth_credential_id(member0, &at0)?
+        },
+    })
+}
+
 /// Writes the event `agency.auth.CredentialRevoked` as JSON.
 pub fn encode_event_agency_auth_credential_revoked(value: &crate::auth::CredentialRevoked, out: &mut String) {
     out.push('{');
     json::member(out, "credential_id");
     encode_agency_auth_credential_id(&value.credential_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.auth.CredentialRevoked` from JSON, the payload [`encode_event_agency_auth_credential_revoked`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_credential_revoked(value: &json::Value, at: &str) -> Result<crate::auth::CredentialRevoked, json::DecodeError> {
+    Ok(crate::auth::CredentialRevoked {
+        credential_id: {
+            let at0 = json::nested(at, "credential_id");
+            let member0 = json::member_at(value, at, "credential_id")?;
+            decode_agency_auth_credential_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.auth.CredentialStored` as JSON.
@@ -2080,6 +2270,31 @@ pub fn encode_event_agency_auth_credential_stored(value: &crate::auth::Credentia
     out.push('}');
 }
 
+/// Reads the event `agency.auth.CredentialStored` from JSON, the payload [`encode_event_agency_auth_credential_stored`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_credential_stored(value: &json::Value, at: &str) -> Result<crate::auth::CredentialStored, json::DecodeError> {
+    Ok(crate::auth::CredentialStored {
+        credential_id: {
+            let at0 = json::nested(at, "credential_id");
+            let member0 = json::member_at(value, at, "credential_id")?;
+            decode_agency_auth_credential_id(member0, &at0)?
+        },
+        kind: {
+            let at1 = json::nested(at, "kind");
+            let member1 = json::member_at(value, at, "kind")?;
+            decode_agency_auth_credential_kind(member1, &at1)?
+        },
+        custody: {
+            let at2 = json::nested(at, "custody");
+            let member2 = json::member_at(value, at, "custody")?;
+            decode_agency_auth_custody(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.auth.GrantRevoked` as JSON.
 pub fn encode_event_agency_auth_grant_revoked(value: &crate::auth::GrantRevoked, out: &mut String) {
     out.push('{');
@@ -2088,12 +2303,42 @@ pub fn encode_event_agency_auth_grant_revoked(value: &crate::auth::GrantRevoked,
     out.push('}');
 }
 
+/// Reads the event `agency.auth.GrantRevoked` from JSON, the payload [`encode_event_agency_auth_grant_revoked`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_grant_revoked(value: &json::Value, at: &str) -> Result<crate::auth::GrantRevoked, json::DecodeError> {
+    Ok(crate::auth::GrantRevoked {
+        grant_id: {
+            let at0 = json::nested(at, "grant_id");
+            let member0 = json::member_at(value, at, "grant_id")?;
+            decode_agency_auth_grant_id(member0, &at0)?
+        },
+    })
+}
+
 /// Writes the event `agency.auth.PolicyActivated` as JSON.
 pub fn encode_event_agency_auth_policy_activated(value: &crate::auth::PolicyActivated, out: &mut String) {
     out.push('{');
     json::member(out, "policy_id");
     encode_agency_auth_policy_id(&value.policy_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.auth.PolicyActivated` from JSON, the payload [`encode_event_agency_auth_policy_activated`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_policy_activated(value: &json::Value, at: &str) -> Result<crate::auth::PolicyActivated, json::DecodeError> {
+    Ok(crate::auth::PolicyActivated {
+        policy_id: {
+            let at0 = json::nested(at, "policy_id");
+            let member0 = json::member_at(value, at, "policy_id")?;
+            decode_agency_auth_policy_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.auth.PolicyCreated` as JSON.
@@ -2106,6 +2351,26 @@ pub fn encode_event_agency_auth_policy_created(value: &crate::auth::PolicyCreate
     out.push('}');
 }
 
+/// Reads the event `agency.auth.PolicyCreated` from JSON, the payload [`encode_event_agency_auth_policy_created`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_policy_created(value: &json::Value, at: &str) -> Result<crate::auth::PolicyCreated, json::DecodeError> {
+    Ok(crate::auth::PolicyCreated {
+        policy_id: {
+            let at0 = json::nested(at, "policy_id");
+            let member0 = json::member_at(value, at, "policy_id")?;
+            decode_agency_auth_policy_id(member0, &at0)?
+        },
+        name: {
+            let at1 = json::nested(at, "name");
+            let member1 = json::member_at(value, at, "name")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.auth.PolicySuperseded` as JSON.
 pub fn encode_event_agency_auth_policy_superseded(value: &crate::auth::PolicySuperseded, out: &mut String) {
     out.push('{');
@@ -2114,12 +2379,42 @@ pub fn encode_event_agency_auth_policy_superseded(value: &crate::auth::PolicySup
     out.push('}');
 }
 
+/// Reads the event `agency.auth.PolicySuperseded` from JSON, the payload [`encode_event_agency_auth_policy_superseded`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_policy_superseded(value: &json::Value, at: &str) -> Result<crate::auth::PolicySuperseded, json::DecodeError> {
+    Ok(crate::auth::PolicySuperseded {
+        policy_id: {
+            let at0 = json::nested(at, "policy_id");
+            let member0 = json::member_at(value, at, "policy_id")?;
+            decode_agency_auth_policy_id(member0, &at0)?
+        },
+    })
+}
+
 /// Writes the event `agency.auth.PrincipalDisabled` as JSON.
 pub fn encode_event_agency_auth_principal_disabled(value: &crate::auth::PrincipalDisabled, out: &mut String) {
     out.push('{');
     json::member(out, "principal_id");
     encode_agency_auth_principal_id(&value.principal_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.auth.PrincipalDisabled` from JSON, the payload [`encode_event_agency_auth_principal_disabled`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_principal_disabled(value: &json::Value, at: &str) -> Result<crate::auth::PrincipalDisabled, json::DecodeError> {
+    Ok(crate::auth::PrincipalDisabled {
+        principal_id: {
+            let at0 = json::nested(at, "principal_id");
+            let member0 = json::member_at(value, at, "principal_id")?;
+            decode_agency_auth_principal_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.auth.PrincipalInvited` as JSON.
@@ -2136,6 +2431,36 @@ pub fn encode_event_agency_auth_principal_invited(value: &crate::auth::Principal
     out.push('}');
 }
 
+/// Reads the event `agency.auth.PrincipalInvited` from JSON, the payload [`encode_event_agency_auth_principal_invited`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_principal_invited(value: &json::Value, at: &str) -> Result<crate::auth::PrincipalInvited, json::DecodeError> {
+    Ok(crate::auth::PrincipalInvited {
+        principal_id: {
+            let at0 = json::nested(at, "principal_id");
+            let member0 = json::member_at(value, at, "principal_id")?;
+            decode_agency_auth_principal_id(member0, &at0)?
+        },
+        tenant_id: {
+            let at1 = json::nested(at, "tenant_id");
+            let member1 = json::member_at(value, at, "tenant_id")?;
+            decode_agency_auth_tenant_id(member1, &at1)?
+        },
+        kind: {
+            let at2 = json::nested(at, "kind");
+            let member2 = json::member_at(value, at, "kind")?;
+            decode_agency_auth_principal_kind(member2, &at2)?
+        },
+        subject: {
+            let at3 = json::nested(at, "subject");
+            let member3 = json::member_at(value, at, "subject")?;
+            json::text_at(member3, &at3, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.auth.RoleAssigned` as JSON.
 pub fn encode_event_agency_auth_role_assigned(value: &crate::auth::RoleAssigned, out: &mut String) {
     out.push('{');
@@ -2144,6 +2469,26 @@ pub fn encode_event_agency_auth_role_assigned(value: &crate::auth::RoleAssigned,
     json::member(out, "role");
     encode_agency_auth_role(&value.role, out);
     out.push('}');
+}
+
+/// Reads the event `agency.auth.RoleAssigned` from JSON, the payload [`encode_event_agency_auth_role_assigned`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_role_assigned(value: &json::Value, at: &str) -> Result<crate::auth::RoleAssigned, json::DecodeError> {
+    Ok(crate::auth::RoleAssigned {
+        principal_id: {
+            let at0 = json::nested(at, "principal_id");
+            let member0 = json::member_at(value, at, "principal_id")?;
+            decode_agency_auth_principal_id(member0, &at0)?
+        },
+        role: {
+            let at1 = json::nested(at, "role");
+            let member1 = json::member_at(value, at, "role")?;
+            decode_agency_auth_role(member1, &at1)?
+        },
+    })
 }
 
 /// Writes the event `agency.auth.TenantCreated` as JSON.
@@ -2156,12 +2501,47 @@ pub fn encode_event_agency_auth_tenant_created(value: &crate::auth::TenantCreate
     out.push('}');
 }
 
+/// Reads the event `agency.auth.TenantCreated` from JSON, the payload [`encode_event_agency_auth_tenant_created`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_auth_tenant_created(value: &json::Value, at: &str) -> Result<crate::auth::TenantCreated, json::DecodeError> {
+    Ok(crate::auth::TenantCreated {
+        tenant_id: {
+            let at0 = json::nested(at, "tenant_id");
+            let member0 = json::member_at(value, at, "tenant_id")?;
+            decode_agency_auth_tenant_id(member0, &at0)?
+        },
+        name: {
+            let at1 = json::nested(at, "name");
+            let member1 = json::member_at(value, at, "name")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.runs.RunAdmitted` as JSON.
 pub fn encode_event_agency_runs_run_admitted(value: &crate::runs::RunAdmitted, out: &mut String) {
     out.push('{');
     json::member(out, "run_id");
     encode_agency_runs_run_id(&value.run_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.runs.RunAdmitted` from JSON, the payload [`encode_event_agency_runs_run_admitted`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_admitted(value: &json::Value, at: &str) -> Result<crate::runs::RunAdmitted, json::DecodeError> {
+    Ok(crate::runs::RunAdmitted {
+        run_id: {
+            let at0 = json::nested(at, "run_id");
+            let member0 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.runs.RunApprovalDenied` as JSON.
@@ -2174,6 +2554,26 @@ pub fn encode_event_agency_runs_run_approval_denied(value: &crate::runs::RunAppr
     out.push('}');
 }
 
+/// Reads the event `agency.runs.RunApprovalDenied` from JSON, the payload [`encode_event_agency_runs_run_approval_denied`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_approval_denied(value: &json::Value, at: &str) -> Result<crate::runs::RunApprovalDenied, json::DecodeError> {
+    Ok(crate::runs::RunApprovalDenied {
+        approval_id: {
+            let at0 = json::nested(at, "approval_id");
+            let member0 = json::member_at(value, at, "approval_id")?;
+            decode_agency_runs_approval_id(member0, &at0)?
+        },
+        answered_by: {
+            let at1 = json::nested(at, "answered_by");
+            let member1 = json::member_at(value, at, "answered_by")?;
+            decode_agency_auth_principal_id(member1, &at1)?
+        },
+    })
+}
+
 /// Writes the event `agency.runs.RunApprovalGranted` as JSON.
 pub fn encode_event_agency_runs_run_approval_granted(value: &crate::runs::RunApprovalGranted, out: &mut String) {
     out.push('{');
@@ -2182,6 +2582,26 @@ pub fn encode_event_agency_runs_run_approval_granted(value: &crate::runs::RunApp
     json::member(out, "answered_by");
     encode_agency_auth_principal_id(&value.answered_by, out);
     out.push('}');
+}
+
+/// Reads the event `agency.runs.RunApprovalGranted` from JSON, the payload [`encode_event_agency_runs_run_approval_granted`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_approval_granted(value: &json::Value, at: &str) -> Result<crate::runs::RunApprovalGranted, json::DecodeError> {
+    Ok(crate::runs::RunApprovalGranted {
+        approval_id: {
+            let at0 = json::nested(at, "approval_id");
+            let member0 = json::member_at(value, at, "approval_id")?;
+            decode_agency_runs_approval_id(member0, &at0)?
+        },
+        answered_by: {
+            let at1 = json::nested(at, "answered_by");
+            let member1 = json::member_at(value, at, "answered_by")?;
+            decode_agency_auth_principal_id(member1, &at1)?
+        },
+    })
 }
 
 /// Writes the event `agency.runs.RunApprovalRequested` as JSON.
@@ -2198,6 +2618,36 @@ pub fn encode_event_agency_runs_run_approval_requested(value: &crate::runs::RunA
     out.push('}');
 }
 
+/// Reads the event `agency.runs.RunApprovalRequested` from JSON, the payload [`encode_event_agency_runs_run_approval_requested`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_approval_requested(value: &json::Value, at: &str) -> Result<crate::runs::RunApprovalRequested, json::DecodeError> {
+    Ok(crate::runs::RunApprovalRequested {
+        approval_id: {
+            let at0 = json::nested(at, "approval_id");
+            let member0 = json::member_at(value, at, "approval_id")?;
+            decode_agency_runs_approval_id(member0, &at0)?
+        },
+        run_id: {
+            let at1 = json::nested(at, "run_id");
+            let member1 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member1, &at1)?
+        },
+        subject: {
+            let at2 = json::nested(at, "subject");
+            let member2 = json::member_at(value, at, "subject")?;
+            json::text_at(member2, &at2, "a string")?.to_owned()
+        },
+        capability: {
+            let at3 = json::nested(at, "capability");
+            let member3 = json::member_at(value, at, "capability")?;
+            json::text_at(member3, &at3, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.runs.RunBudgetSet` as JSON.
 pub fn encode_event_agency_runs_run_budget_set(value: &crate::runs::RunBudgetSet, out: &mut String) {
     out.push('{');
@@ -2206,6 +2656,26 @@ pub fn encode_event_agency_runs_run_budget_set(value: &crate::runs::RunBudgetSet
     json::member(out, "budget");
     encode_agency_shared_run_budget(&value.budget, out);
     out.push('}');
+}
+
+/// Reads the event `agency.runs.RunBudgetSet` from JSON, the payload [`encode_event_agency_runs_run_budget_set`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_budget_set(value: &json::Value, at: &str) -> Result<crate::runs::RunBudgetSet, json::DecodeError> {
+    Ok(crate::runs::RunBudgetSet {
+        run_id: {
+            let at0 = json::nested(at, "run_id");
+            let member0 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member0, &at0)?
+        },
+        budget: {
+            let at1 = json::nested(at, "budget");
+            let member1 = json::member_at(value, at, "budget")?;
+            decode_agency_shared_run_budget(member1, &at1)?
+        },
+    })
 }
 
 /// Writes the event `agency.runs.RunFailed` as JSON.
@@ -2218,6 +2688,26 @@ pub fn encode_event_agency_runs_run_failed(value: &crate::runs::RunFailed, out: 
     out.push('}');
 }
 
+/// Reads the event `agency.runs.RunFailed` from JSON, the payload [`encode_event_agency_runs_run_failed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_failed(value: &json::Value, at: &str) -> Result<crate::runs::RunFailed, json::DecodeError> {
+    Ok(crate::runs::RunFailed {
+        run_id: {
+            let at0 = json::nested(at, "run_id");
+            let member0 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member0, &at0)?
+        },
+        reason: {
+            let at1 = json::nested(at, "reason");
+            let member1 = json::member_at(value, at, "reason")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.runs.RunProposed` as JSON.
 pub fn encode_event_agency_runs_run_proposed(value: &crate::runs::RunProposed, out: &mut String) {
     out.push('{');
@@ -2226,6 +2716,26 @@ pub fn encode_event_agency_runs_run_proposed(value: &crate::runs::RunProposed, o
     json::member(out, "usage");
     encode_agency_runs_run_usage(&value.usage, out);
     out.push('}');
+}
+
+/// Reads the event `agency.runs.RunProposed` from JSON, the payload [`encode_event_agency_runs_run_proposed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_proposed(value: &json::Value, at: &str) -> Result<crate::runs::RunProposed, json::DecodeError> {
+    Ok(crate::runs::RunProposed {
+        run_id: {
+            let at0 = json::nested(at, "run_id");
+            let member0 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member0, &at0)?
+        },
+        usage: {
+            let at1 = json::nested(at, "usage");
+            let member1 = json::member_at(value, at, "usage")?;
+            decode_agency_runs_run_usage(member1, &at1)?
+        },
+    })
 }
 
 /// Writes the event `agency.runs.RunRequested` as JSON.
@@ -2240,6 +2750,31 @@ pub fn encode_event_agency_runs_run_requested(value: &crate::runs::RunRequested,
     out.push('}');
 }
 
+/// Reads the event `agency.runs.RunRequested` from JSON, the payload [`encode_event_agency_runs_run_requested`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_requested(value: &json::Value, at: &str) -> Result<crate::runs::RunRequested, json::DecodeError> {
+    Ok(crate::runs::RunRequested {
+        run_id: {
+            let at0 = json::nested(at, "run_id");
+            let member0 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member0, &at0)?
+        },
+        agent_id: {
+            let at1 = json::nested(at, "agent_id");
+            let member1 = json::member_at(value, at, "agent_id")?;
+            decode_agency_agents_agent_id(member1, &at1)?
+        },
+        work_item_ref: {
+            let at2 = json::nested(at, "work_item_ref");
+            let member2 = json::member_at(value, at, "work_item_ref")?;
+            decode_agency_work_work_item_ref(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.runs.RunStarted` as JSON.
 pub fn encode_event_agency_runs_run_started(value: &crate::runs::RunStarted, out: &mut String) {
     out.push('{');
@@ -2252,6 +2787,31 @@ pub fn encode_event_agency_runs_run_started(value: &crate::runs::RunStarted, out
     out.push('}');
 }
 
+/// Reads the event `agency.runs.RunStarted` from JSON, the payload [`encode_event_agency_runs_run_started`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_started(value: &json::Value, at: &str) -> Result<crate::runs::RunStarted, json::DecodeError> {
+    Ok(crate::runs::RunStarted {
+        run_id: {
+            let at0 = json::nested(at, "run_id");
+            let member0 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member0, &at0)?
+        },
+        session_id: {
+            let at1 = json::nested(at, "session_id");
+            let member1 = json::member_at(value, at, "session_id")?;
+            decode_agency_runs_loom_session_id(member1, &at1)?
+        },
+        credential_source: {
+            let at2 = json::nested(at, "credential_source");
+            let member2 = json::member_at(value, at, "credential_source")?;
+            decode_agency_runs_credential_source(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.runs.RunStopped` as JSON.
 pub fn encode_event_agency_runs_run_stopped(value: &crate::runs::RunStopped, out: &mut String) {
     out.push('{');
@@ -2262,12 +2822,47 @@ pub fn encode_event_agency_runs_run_stopped(value: &crate::runs::RunStopped, out
     out.push('}');
 }
 
+/// Reads the event `agency.runs.RunStopped` from JSON, the payload [`encode_event_agency_runs_run_stopped`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_runs_run_stopped(value: &json::Value, at: &str) -> Result<crate::runs::RunStopped, json::DecodeError> {
+    Ok(crate::runs::RunStopped {
+        run_id: {
+            let at0 = json::nested(at, "run_id");
+            let member0 = json::member_at(value, at, "run_id")?;
+            decode_agency_runs_run_id(member0, &at0)?
+        },
+        reason: {
+            let at1 = json::nested(at, "reason");
+            let member1 = json::member_at(value, at, "reason")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.service.SessionClosed` as JSON.
 pub fn encode_event_agency_service_session_closed(value: &crate::service::SessionClosed, out: &mut String) {
     out.push('{');
     json::member(out, "session_id");
     encode_agency_service_session_id(&value.session_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.service.SessionClosed` from JSON, the payload [`encode_event_agency_service_session_closed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_service_session_closed(value: &json::Value, at: &str) -> Result<crate::service::SessionClosed, json::DecodeError> {
+    Ok(crate::service::SessionClosed {
+        session_id: {
+            let at0 = json::nested(at, "session_id");
+            let member0 = json::member_at(value, at, "session_id")?;
+            decode_agency_service_session_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.service.SessionOpened` as JSON.
@@ -2282,6 +2877,31 @@ pub fn encode_event_agency_service_session_opened(value: &crate::service::Sessio
     out.push('}');
 }
 
+/// Reads the event `agency.service.SessionOpened` from JSON, the payload [`encode_event_agency_service_session_opened`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_service_session_opened(value: &json::Value, at: &str) -> Result<crate::service::SessionOpened, json::DecodeError> {
+    Ok(crate::service::SessionOpened {
+        session_id: {
+            let at0 = json::nested(at, "session_id");
+            let member0 = json::member_at(value, at, "session_id")?;
+            decode_agency_service_session_id(member0, &at0)?
+        },
+        principal_id: {
+            let at1 = json::nested(at, "principal_id");
+            let member1 = json::member_at(value, at, "principal_id")?;
+            decode_agency_auth_principal_id(member1, &at1)?
+        },
+        kind: {
+            let at2 = json::nested(at, "kind");
+            let member2 = json::member_at(value, at, "kind")?;
+            decode_agency_service_session_kind(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.teams.LeadSet` as JSON.
 pub fn encode_event_agency_teams_lead_set(value: &crate::teams::LeadSet, out: &mut String) {
     out.push('{');
@@ -2290,6 +2910,26 @@ pub fn encode_event_agency_teams_lead_set(value: &crate::teams::LeadSet, out: &m
     json::member(out, "lead_agent_id");
     encode_agency_agents_agent_id(&value.lead_agent_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.teams.LeadSet` from JSON, the payload [`encode_event_agency_teams_lead_set`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_lead_set(value: &json::Value, at: &str) -> Result<crate::teams::LeadSet, json::DecodeError> {
+    Ok(crate::teams::LeadSet {
+        team_id: {
+            let at0 = json::nested(at, "team_id");
+            let member0 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member0, &at0)?
+        },
+        lead_agent_id: {
+            let at1 = json::nested(at, "lead_agent_id");
+            let member1 = json::member_at(value, at, "lead_agent_id")?;
+            decode_agency_agents_agent_id(member1, &at1)?
+        },
+    })
 }
 
 /// Writes the event `agency.teams.MemberAdded` as JSON.
@@ -2302,6 +2942,26 @@ pub fn encode_event_agency_teams_member_added(value: &crate::teams::MemberAdded,
     out.push('}');
 }
 
+/// Reads the event `agency.teams.MemberAdded` from JSON, the payload [`encode_event_agency_teams_member_added`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_member_added(value: &json::Value, at: &str) -> Result<crate::teams::MemberAdded, json::DecodeError> {
+    Ok(crate::teams::MemberAdded {
+        team_id: {
+            let at0 = json::nested(at, "team_id");
+            let member0 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member0, &at0)?
+        },
+        agent_id: {
+            let at1 = json::nested(at, "agent_id");
+            let member1 = json::member_at(value, at, "agent_id")?;
+            decode_agency_agents_agent_id(member1, &at1)?
+        },
+    })
+}
+
 /// Writes the event `agency.teams.MemberRemoved` as JSON.
 pub fn encode_event_agency_teams_member_removed(value: &crate::teams::MemberRemoved, out: &mut String) {
     out.push('{');
@@ -2310,6 +2970,26 @@ pub fn encode_event_agency_teams_member_removed(value: &crate::teams::MemberRemo
     json::member(out, "agent_id");
     encode_agency_agents_agent_id(&value.agent_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.teams.MemberRemoved` from JSON, the payload [`encode_event_agency_teams_member_removed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_member_removed(value: &json::Value, at: &str) -> Result<crate::teams::MemberRemoved, json::DecodeError> {
+    Ok(crate::teams::MemberRemoved {
+        team_id: {
+            let at0 = json::nested(at, "team_id");
+            let member0 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member0, &at0)?
+        },
+        agent_id: {
+            let at1 = json::nested(at, "agent_id");
+            let member1 = json::member_at(value, at, "agent_id")?;
+            decode_agency_agents_agent_id(member1, &at1)?
+        },
+    })
 }
 
 /// Writes the event `agency.teams.MessageSent` as JSON.
@@ -2326,6 +3006,36 @@ pub fn encode_event_agency_teams_message_sent(value: &crate::teams::MessageSent,
     out.push('}');
 }
 
+/// Reads the event `agency.teams.MessageSent` from JSON, the payload [`encode_event_agency_teams_message_sent`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_message_sent(value: &json::Value, at: &str) -> Result<crate::teams::MessageSent, json::DecodeError> {
+    Ok(crate::teams::MessageSent {
+        team_id: {
+            let at0 = json::nested(at, "team_id");
+            let member0 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member0, &at0)?
+        },
+        from_agent_id: {
+            let at1 = json::nested(at, "from_agent_id");
+            let member1 = json::member_at(value, at, "from_agent_id")?;
+            decode_agency_agents_agent_id(member1, &at1)?
+        },
+        to: {
+            let at2 = json::nested(at, "to");
+            let member2 = json::member_at(value, at, "to")?;
+            json::text_at(member2, &at2, "a string")?.to_owned()
+        },
+        text: {
+            let at3 = json::nested(at, "text");
+            let member3 = json::member_at(value, at, "text")?;
+            json::text_at(member3, &at3, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.teams.QueueAttached` as JSON.
 pub fn encode_event_agency_teams_queue_attached(value: &crate::teams::QueueAttached, out: &mut String) {
     out.push('{');
@@ -2334,6 +3044,26 @@ pub fn encode_event_agency_teams_queue_attached(value: &crate::teams::QueueAttac
     json::member(out, "input_id");
     encode_agency_work_input_id(&value.input_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.teams.QueueAttached` from JSON, the payload [`encode_event_agency_teams_queue_attached`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_queue_attached(value: &json::Value, at: &str) -> Result<crate::teams::QueueAttached, json::DecodeError> {
+    Ok(crate::teams::QueueAttached {
+        workforce_id: {
+            let at0 = json::nested(at, "workforce_id");
+            let member0 = json::member_at(value, at, "workforce_id")?;
+            decode_agency_teams_workforce_id(member0, &at0)?
+        },
+        input_id: {
+            let at1 = json::nested(at, "input_id");
+            let member1 = json::member_at(value, at, "input_id")?;
+            decode_agency_work_input_id(member1, &at1)?
+        },
+    })
 }
 
 /// Writes the event `agency.teams.ReportSent` as JSON.
@@ -2350,6 +3080,36 @@ pub fn encode_event_agency_teams_report_sent(value: &crate::teams::ReportSent, o
     out.push('}');
 }
 
+/// Reads the event `agency.teams.ReportSent` from JSON, the payload [`encode_event_agency_teams_report_sent`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_report_sent(value: &json::Value, at: &str) -> Result<crate::teams::ReportSent, json::DecodeError> {
+    Ok(crate::teams::ReportSent {
+        team_id: {
+            let at0 = json::nested(at, "team_id");
+            let member0 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member0, &at0)?
+        },
+        from_agent_id: {
+            let at1 = json::nested(at, "from_agent_id");
+            let member1 = json::member_at(value, at, "from_agent_id")?;
+            decode_agency_agents_agent_id(member1, &at1)?
+        },
+        status: {
+            let at2 = json::nested(at, "status");
+            let member2 = json::member_at(value, at, "status")?;
+            json::text_at(member2, &at2, "a string")?.to_owned()
+        },
+        line: {
+            let at3 = json::nested(at, "line");
+            let member3 = json::member_at(value, at, "line")?;
+            json::text_at(member3, &at3, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.teams.SwarmDeclared` as JSON.
 pub fn encode_event_agency_teams_swarm_declared(value: &crate::teams::SwarmDeclared, out: &mut String) {
     out.push('{');
@@ -2362,6 +3122,31 @@ pub fn encode_event_agency_teams_swarm_declared(value: &crate::teams::SwarmDecla
     out.push('}');
 }
 
+/// Reads the event `agency.teams.SwarmDeclared` from JSON, the payload [`encode_event_agency_teams_swarm_declared`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_swarm_declared(value: &json::Value, at: &str) -> Result<crate::teams::SwarmDeclared, json::DecodeError> {
+    Ok(crate::teams::SwarmDeclared {
+        swarm_id: {
+            let at0 = json::nested(at, "swarm_id");
+            let member0 = json::member_at(value, at, "swarm_id")?;
+            decode_agency_teams_swarm_id(member0, &at0)?
+        },
+        goal_ref: {
+            let at1 = json::nested(at, "goal_ref");
+            let member1 = json::member_at(value, at, "goal_ref")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+        team_id: {
+            let at2 = json::nested(at, "team_id");
+            let member2 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.teams.SwarmStopped` as JSON.
 pub fn encode_event_agency_teams_swarm_stopped(value: &crate::teams::SwarmStopped, out: &mut String) {
     out.push('{');
@@ -2370,12 +3155,42 @@ pub fn encode_event_agency_teams_swarm_stopped(value: &crate::teams::SwarmStoppe
     out.push('}');
 }
 
+/// Reads the event `agency.teams.SwarmStopped` from JSON, the payload [`encode_event_agency_teams_swarm_stopped`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_swarm_stopped(value: &json::Value, at: &str) -> Result<crate::teams::SwarmStopped, json::DecodeError> {
+    Ok(crate::teams::SwarmStopped {
+        swarm_id: {
+            let at0 = json::nested(at, "swarm_id");
+            let member0 = json::member_at(value, at, "swarm_id")?;
+            decode_agency_teams_swarm_id(member0, &at0)?
+        },
+    })
+}
+
 /// Writes the event `agency.teams.TeamDisbanded` as JSON.
 pub fn encode_event_agency_teams_team_disbanded(value: &crate::teams::TeamDisbanded, out: &mut String) {
     out.push('{');
     json::member(out, "team_id");
     encode_agency_teams_team_id(&value.team_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.teams.TeamDisbanded` from JSON, the payload [`encode_event_agency_teams_team_disbanded`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_team_disbanded(value: &json::Value, at: &str) -> Result<crate::teams::TeamDisbanded, json::DecodeError> {
+    Ok(crate::teams::TeamDisbanded {
+        team_id: {
+            let at0 = json::nested(at, "team_id");
+            let member0 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.teams.TeamFormed` as JSON.
@@ -2390,6 +3205,31 @@ pub fn encode_event_agency_teams_team_formed(value: &crate::teams::TeamFormed, o
     out.push('}');
 }
 
+/// Reads the event `agency.teams.TeamFormed` from JSON, the payload [`encode_event_agency_teams_team_formed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_team_formed(value: &json::Value, at: &str) -> Result<crate::teams::TeamFormed, json::DecodeError> {
+    Ok(crate::teams::TeamFormed {
+        team_id: {
+            let at0 = json::nested(at, "team_id");
+            let member0 = json::member_at(value, at, "team_id")?;
+            decode_agency_teams_team_id(member0, &at0)?
+        },
+        name: {
+            let at1 = json::nested(at, "name");
+            let member1 = json::member_at(value, at, "name")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+        lead_agent_id: {
+            let at2 = json::nested(at, "lead_agent_id");
+            let member2 = json::member_at(value, at, "lead_agent_id")?;
+            decode_agency_agents_agent_id(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.teams.WorkforceDefined` as JSON.
 pub fn encode_event_agency_teams_workforce_defined(value: &crate::teams::WorkforceDefined, out: &mut String) {
     out.push('{');
@@ -2400,12 +3240,47 @@ pub fn encode_event_agency_teams_workforce_defined(value: &crate::teams::Workfor
     out.push('}');
 }
 
+/// Reads the event `agency.teams.WorkforceDefined` from JSON, the payload [`encode_event_agency_teams_workforce_defined`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_workforce_defined(value: &json::Value, at: &str) -> Result<crate::teams::WorkforceDefined, json::DecodeError> {
+    Ok(crate::teams::WorkforceDefined {
+        workforce_id: {
+            let at0 = json::nested(at, "workforce_id");
+            let member0 = json::member_at(value, at, "workforce_id")?;
+            decode_agency_teams_workforce_id(member0, &at0)?
+        },
+        name: {
+            let at1 = json::nested(at, "name");
+            let member1 = json::member_at(value, at, "name")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+    })
+}
+
 /// Writes the event `agency.teams.WorkforceRetired` as JSON.
 pub fn encode_event_agency_teams_workforce_retired(value: &crate::teams::WorkforceRetired, out: &mut String) {
     out.push('{');
     json::member(out, "workforce_id");
     encode_agency_teams_workforce_id(&value.workforce_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.teams.WorkforceRetired` from JSON, the payload [`encode_event_agency_teams_workforce_retired`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_workforce_retired(value: &json::Value, at: &str) -> Result<crate::teams::WorkforceRetired, json::DecodeError> {
+    Ok(crate::teams::WorkforceRetired {
+        workforce_id: {
+            let at0 = json::nested(at, "workforce_id");
+            let member0 = json::member_at(value, at, "workforce_id")?;
+            decode_agency_teams_workforce_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.teams.WorkforceStaffed` as JSON.
@@ -2434,12 +3309,66 @@ pub fn encode_event_agency_teams_workforce_staffed(value: &crate::teams::Workfor
     out.push('}');
 }
 
+/// Reads the event `agency.teams.WorkforceStaffed` from JSON, the payload [`encode_event_agency_teams_workforce_staffed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_teams_workforce_staffed(value: &json::Value, at: &str) -> Result<crate::teams::WorkforceStaffed, json::DecodeError> {
+    Ok(crate::teams::WorkforceStaffed {
+        workforce_id: {
+            let at0 = json::nested(at, "workforce_id");
+            let member0 = json::member_at(value, at, "workforce_id")?;
+            decode_agency_teams_workforce_id(member0, &at0)?
+        },
+        teams: {
+            let at1 = json::nested(at, "teams");
+            let member1 = json::member_at(value, at, "teams")?;
+            {
+                let mut items1 = Vec::new();
+                for (index1, element1) in json::items_at(member1, &at1, "an array")?.iter().enumerate() {
+                    let nested1 = json::nested(&at1, &index1.to_string());
+                    items1.push(decode_agency_teams_team_id(element1, &nested1)?);
+                }
+                items1
+            }
+        },
+        solo_agents: {
+            let at2 = json::nested(at, "solo_agents");
+            let member2 = json::member_at(value, at, "solo_agents")?;
+            {
+                let mut items2 = Vec::new();
+                for (index2, element2) in json::items_at(member2, &at2, "an array")?.iter().enumerate() {
+                    let nested2 = json::nested(&at2, &index2.to_string());
+                    items2.push(decode_agency_agents_agent_id(element2, &nested2)?);
+                }
+                items2
+            }
+        },
+    })
+}
+
 /// Writes the event `agency.tools.BindingRevoked` as JSON.
 pub fn encode_event_agency_tools_binding_revoked(value: &crate::tools::BindingRevoked, out: &mut String) {
     out.push('{');
     json::member(out, "binding_id");
     encode_agency_tools_binding_id(&value.binding_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.tools.BindingRevoked` from JSON, the payload [`encode_event_agency_tools_binding_revoked`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_tools_binding_revoked(value: &json::Value, at: &str) -> Result<crate::tools::BindingRevoked, json::DecodeError> {
+    Ok(crate::tools::BindingRevoked {
+        binding_id: {
+            let at0 = json::nested(at, "binding_id");
+            let member0 = json::member_at(value, at, "binding_id")?;
+            decode_agency_tools_binding_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.tools.ToolBound` as JSON.
@@ -2461,6 +3390,38 @@ pub fn encode_event_agency_tools_tool_bound(value: &crate::tools::ToolBound, out
     out.push('}');
 }
 
+/// Reads the event `agency.tools.ToolBound` from JSON, the payload [`encode_event_agency_tools_tool_bound`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_tools_tool_bound(value: &json::Value, at: &str) -> Result<crate::tools::ToolBound, json::DecodeError> {
+    Ok(crate::tools::ToolBound {
+        binding_id: {
+            let at0 = json::nested(at, "binding_id");
+            let member0 = json::member_at(value, at, "binding_id")?;
+            decode_agency_tools_binding_id(member0, &at0)?
+        },
+        tool_id: {
+            let at1 = json::nested(at, "tool_id");
+            let member1 = json::member_at(value, at, "tool_id")?;
+            decode_agency_tools_tool_id(member1, &at1)?
+        },
+        verbs: {
+            let at2 = json::nested(at, "verbs");
+            let member2 = json::member_at(value, at, "verbs")?;
+            {
+                let mut items2 = Vec::new();
+                for (index2, element2) in json::items_at(member2, &at2, "an array")?.iter().enumerate() {
+                    let nested2 = json::nested(&at2, &index2.to_string());
+                    items2.push(decode_agency_shared_verb(element2, &nested2)?);
+                }
+                items2
+            }
+        },
+    })
+}
+
 /// Writes the event `agency.tools.ToolRegistered` as JSON.
 pub fn encode_event_agency_tools_tool_registered(value: &crate::tools::ToolRegistered, out: &mut String) {
     out.push('{');
@@ -2471,12 +3432,47 @@ pub fn encode_event_agency_tools_tool_registered(value: &crate::tools::ToolRegis
     out.push('}');
 }
 
+/// Reads the event `agency.tools.ToolRegistered` from JSON, the payload [`encode_event_agency_tools_tool_registered`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_tools_tool_registered(value: &json::Value, at: &str) -> Result<crate::tools::ToolRegistered, json::DecodeError> {
+    Ok(crate::tools::ToolRegistered {
+        tool_id: {
+            let at0 = json::nested(at, "tool_id");
+            let member0 = json::member_at(value, at, "tool_id")?;
+            decode_agency_tools_tool_id(member0, &at0)?
+        },
+        contract_ref: {
+            let at1 = json::nested(at, "contract_ref");
+            let member1 = json::member_at(value, at, "contract_ref")?;
+            decode_agency_tools_contract_ref(member1, &at1)?
+        },
+    })
+}
+
 /// Writes the event `agency.tools.ToolWithdrawn` as JSON.
 pub fn encode_event_agency_tools_tool_withdrawn(value: &crate::tools::ToolWithdrawn, out: &mut String) {
     out.push('{');
     json::member(out, "tool_id");
     encode_agency_tools_tool_id(&value.tool_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.tools.ToolWithdrawn` from JSON, the payload [`encode_event_agency_tools_tool_withdrawn`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_tools_tool_withdrawn(value: &json::Value, at: &str) -> Result<crate::tools::ToolWithdrawn, json::DecodeError> {
+    Ok(crate::tools::ToolWithdrawn {
+        tool_id: {
+            let at0 = json::nested(at, "tool_id");
+            let member0 = json::member_at(value, at, "tool_id")?;
+            decode_agency_tools_tool_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.work.WorkInputConfigured` as JSON.
@@ -2491,12 +3487,52 @@ pub fn encode_event_agency_work_work_input_configured(value: &crate::work::WorkI
     out.push('}');
 }
 
+/// Reads the event `agency.work.WorkInputConfigured` from JSON, the payload [`encode_event_agency_work_work_input_configured`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_input_configured(value: &json::Value, at: &str) -> Result<crate::work::WorkInputConfigured, json::DecodeError> {
+    Ok(crate::work::WorkInputConfigured {
+        input_id: {
+            let at0 = json::nested(at, "input_id");
+            let member0 = json::member_at(value, at, "input_id")?;
+            decode_agency_work_input_id(member0, &at0)?
+        },
+        name: {
+            let at1 = json::nested(at, "name");
+            let member1 = json::member_at(value, at, "name")?;
+            json::text_at(member1, &at1, "a string")?.to_owned()
+        },
+        workforce_id: {
+            let at2 = json::nested(at, "workforce_id");
+            let member2 = json::member_at(value, at, "workforce_id")?;
+            decode_agency_teams_workforce_id(member2, &at2)?
+        },
+    })
+}
+
 /// Writes the event `agency.work.WorkInputPaused` as JSON.
 pub fn encode_event_agency_work_work_input_paused(value: &crate::work::WorkInputPaused, out: &mut String) {
     out.push('{');
     json::member(out, "input_id");
     encode_agency_work_input_id(&value.input_id, out);
     out.push('}');
+}
+
+/// Reads the event `agency.work.WorkInputPaused` from JSON, the payload [`encode_event_agency_work_work_input_paused`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_input_paused(value: &json::Value, at: &str) -> Result<crate::work::WorkInputPaused, json::DecodeError> {
+    Ok(crate::work::WorkInputPaused {
+        input_id: {
+            let at0 = json::nested(at, "input_id");
+            let member0 = json::member_at(value, at, "input_id")?;
+            decode_agency_work_input_id(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.work.WorkInputRemoved` as JSON.
@@ -2507,12 +3543,42 @@ pub fn encode_event_agency_work_work_input_removed(value: &crate::work::WorkInpu
     out.push('}');
 }
 
+/// Reads the event `agency.work.WorkInputRemoved` from JSON, the payload [`encode_event_agency_work_work_input_removed`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_input_removed(value: &json::Value, at: &str) -> Result<crate::work::WorkInputRemoved, json::DecodeError> {
+    Ok(crate::work::WorkInputRemoved {
+        input_id: {
+            let at0 = json::nested(at, "input_id");
+            let member0 = json::member_at(value, at, "input_id")?;
+            decode_agency_work_input_id(member0, &at0)?
+        },
+    })
+}
+
 /// Writes the event `agency.work.WorkItemAbandoned` as JSON.
 pub fn encode_event_agency_work_work_item_abandoned(value: &crate::work::WorkItemAbandoned, out: &mut String) {
     out.push('{');
     json::member(out, "item_ref");
     encode_agency_work_work_item_ref(&value.item_ref, out);
     out.push('}');
+}
+
+/// Reads the event `agency.work.WorkItemAbandoned` from JSON, the payload [`encode_event_agency_work_work_item_abandoned`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_item_abandoned(value: &json::Value, at: &str) -> Result<crate::work::WorkItemAbandoned, json::DecodeError> {
+    Ok(crate::work::WorkItemAbandoned {
+        item_ref: {
+            let at0 = json::nested(at, "item_ref");
+            let member0 = json::member_at(value, at, "item_ref")?;
+            decode_agency_work_work_item_ref(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.work.WorkItemAssigned` as JSON.
@@ -2525,6 +3591,26 @@ pub fn encode_event_agency_work_work_item_assigned(value: &crate::work::WorkItem
     out.push('}');
 }
 
+/// Reads the event `agency.work.WorkItemAssigned` from JSON, the payload [`encode_event_agency_work_work_item_assigned`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_item_assigned(value: &json::Value, at: &str) -> Result<crate::work::WorkItemAssigned, json::DecodeError> {
+    Ok(crate::work::WorkItemAssigned {
+        item_ref: {
+            let at0 = json::nested(at, "item_ref");
+            let member0 = json::member_at(value, at, "item_ref")?;
+            decode_agency_work_work_item_ref(member0, &at0)?
+        },
+        agent_id: {
+            let at1 = json::nested(at, "agent_id");
+            let member1 = json::member_at(value, at, "agent_id")?;
+            decode_agency_agents_agent_id(member1, &at1)?
+        },
+    })
+}
+
 /// Writes the event `agency.work.WorkItemReturned` as JSON.
 pub fn encode_event_agency_work_work_item_returned(value: &crate::work::WorkItemReturned, out: &mut String) {
     out.push('{');
@@ -2533,12 +3619,42 @@ pub fn encode_event_agency_work_work_item_returned(value: &crate::work::WorkItem
     out.push('}');
 }
 
+/// Reads the event `agency.work.WorkItemReturned` from JSON, the payload [`encode_event_agency_work_work_item_returned`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_item_returned(value: &json::Value, at: &str) -> Result<crate::work::WorkItemReturned, json::DecodeError> {
+    Ok(crate::work::WorkItemReturned {
+        item_ref: {
+            let at0 = json::nested(at, "item_ref");
+            let member0 = json::member_at(value, at, "item_ref")?;
+            decode_agency_work_work_item_ref(member0, &at0)?
+        },
+    })
+}
+
 /// Writes the event `agency.work.WorkItemSettled` as JSON.
 pub fn encode_event_agency_work_work_item_settled(value: &crate::work::WorkItemSettled, out: &mut String) {
     out.push('{');
     json::member(out, "item_ref");
     encode_agency_work_work_item_ref(&value.item_ref, out);
     out.push('}');
+}
+
+/// Reads the event `agency.work.WorkItemSettled` from JSON, the payload [`encode_event_agency_work_work_item_settled`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_item_settled(value: &json::Value, at: &str) -> Result<crate::work::WorkItemSettled, json::DecodeError> {
+    Ok(crate::work::WorkItemSettled {
+        item_ref: {
+            let at0 = json::nested(at, "item_ref");
+            let member0 = json::member_at(value, at, "item_ref")?;
+            decode_agency_work_work_item_ref(member0, &at0)?
+        },
+    })
 }
 
 /// Writes the event `agency.work.WorkItemSubmitted` as JSON.
@@ -2551,6 +3667,31 @@ pub fn encode_event_agency_work_work_item_submitted(value: &crate::work::WorkIte
     json::member(out, "payload_digest");
     encode_agency_shared_digest(&value.payload_digest, out);
     out.push('}');
+}
+
+/// Reads the event `agency.work.WorkItemSubmitted` from JSON, the payload [`encode_event_agency_work_work_item_submitted`] writes.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] naming the path and what the declaration says belongs there.
+pub fn decode_event_agency_work_work_item_submitted(value: &json::Value, at: &str) -> Result<crate::work::WorkItemSubmitted, json::DecodeError> {
+    Ok(crate::work::WorkItemSubmitted {
+        item_ref: {
+            let at0 = json::nested(at, "item_ref");
+            let member0 = json::member_at(value, at, "item_ref")?;
+            decode_agency_work_work_item_ref(member0, &at0)?
+        },
+        input_id: {
+            let at1 = json::nested(at, "input_id");
+            let member1 = json::member_at(value, at, "input_id")?;
+            decode_agency_work_input_id(member1, &at1)?
+        },
+        payload_digest: {
+            let at2 = json::nested(at, "payload_digest");
+            let member2 = json::member_at(value, at, "payload_digest")?;
+            decode_agency_shared_digest(member2, &at2)?
+        },
+    })
 }
 
 /// Writes the declared error `agency.agents.NotFound` as JSON.
@@ -7848,4 +8989,78 @@ pub fn encode_system_event(value: &crate::system::SystemEvent) -> String {
     }
     out.push('}');
     out
+}
+
+/// Reads any event on the system's log back from the envelope [`encode_system_event`] writes,
+/// `{"event": …, "payload": {…}}`: its qualified name selects the event, and its payload is read
+/// under the wire names that event declares.
+///
+/// # Errors
+///
+/// [`json::DecodeError`] at `event` when the envelope names no event this system publishes,
+/// naming the one it carried, and at the payload's own path when the payload is not that
+/// event's.
+pub fn decode_system_event(value: &json::Value) -> Result<crate::system::SystemEvent, json::DecodeError> {
+    let event = json::text_at(json::member_at(value, "", "event")?, "event", "a qualified event name")?;
+    Ok(match event {
+        "agency.agents.AgentDefinitionCreated" => crate::system::SystemEvent::AgentDefinitionCreated(decode_event_agency_agents_agent_definition_created(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.agents.AgentDefinitionDeprecated" => crate::system::SystemEvent::AgentDefinitionDeprecated(decode_event_agency_agents_agent_definition_deprecated(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.agents.AgentDefinitionPublished" => crate::system::SystemEvent::AgentDefinitionPublished(decode_event_agency_agents_agent_definition_published(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.agents.AgentProvisioned" => crate::system::SystemEvent::AgentProvisioned(decode_event_agency_agents_agent_provisioned(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.agents.AgentRetired" => crate::system::SystemEvent::AgentRetired(decode_event_agency_agents_agent_retired(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.agents.AgentSpecChecked" => crate::system::SystemEvent::AgentSpecChecked(decode_event_agency_agents_agent_spec_checked(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.agents.AgentSpecRefused" => crate::system::SystemEvent::AgentSpecRefused(decode_event_agency_agents_agent_spec_refused(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.CredentialGranted" => crate::system::SystemEvent::CredentialGranted(decode_event_agency_auth_credential_granted(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.CredentialRefreshed" => crate::system::SystemEvent::CredentialRefreshed(decode_event_agency_auth_credential_refreshed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.CredentialRevoked" => crate::system::SystemEvent::CredentialRevoked(decode_event_agency_auth_credential_revoked(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.CredentialStored" => crate::system::SystemEvent::CredentialStored(decode_event_agency_auth_credential_stored(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.GrantRevoked" => crate::system::SystemEvent::GrantRevoked(decode_event_agency_auth_grant_revoked(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.PolicyActivated" => crate::system::SystemEvent::PolicyActivated(decode_event_agency_auth_policy_activated(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.PolicyCreated" => crate::system::SystemEvent::PolicyCreated(decode_event_agency_auth_policy_created(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.PolicySuperseded" => crate::system::SystemEvent::PolicySuperseded(decode_event_agency_auth_policy_superseded(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.PrincipalDisabled" => crate::system::SystemEvent::PrincipalDisabled(decode_event_agency_auth_principal_disabled(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.PrincipalInvited" => crate::system::SystemEvent::PrincipalInvited(decode_event_agency_auth_principal_invited(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.RoleAssigned" => crate::system::SystemEvent::RoleAssigned(decode_event_agency_auth_role_assigned(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.auth.TenantCreated" => crate::system::SystemEvent::TenantCreated(decode_event_agency_auth_tenant_created(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunAdmitted" => crate::system::SystemEvent::RunAdmitted(decode_event_agency_runs_run_admitted(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunApprovalDenied" => crate::system::SystemEvent::RunApprovalDenied(decode_event_agency_runs_run_approval_denied(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunApprovalGranted" => crate::system::SystemEvent::RunApprovalGranted(decode_event_agency_runs_run_approval_granted(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunApprovalRequested" => crate::system::SystemEvent::RunApprovalRequested(decode_event_agency_runs_run_approval_requested(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunBudgetSet" => crate::system::SystemEvent::RunBudgetSet(decode_event_agency_runs_run_budget_set(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunFailed" => crate::system::SystemEvent::RunFailed(decode_event_agency_runs_run_failed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunProposed" => crate::system::SystemEvent::RunProposed(decode_event_agency_runs_run_proposed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunRequested" => crate::system::SystemEvent::RunRequested(decode_event_agency_runs_run_requested(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunStarted" => crate::system::SystemEvent::RunStarted(decode_event_agency_runs_run_started(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.runs.RunStopped" => crate::system::SystemEvent::RunStopped(decode_event_agency_runs_run_stopped(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.service.SessionClosed" => crate::system::SystemEvent::SessionClosed(decode_event_agency_service_session_closed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.service.SessionOpened" => crate::system::SystemEvent::SessionOpened(decode_event_agency_service_session_opened(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.LeadSet" => crate::system::SystemEvent::LeadSet(decode_event_agency_teams_lead_set(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.MemberAdded" => crate::system::SystemEvent::MemberAdded(decode_event_agency_teams_member_added(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.MemberRemoved" => crate::system::SystemEvent::MemberRemoved(decode_event_agency_teams_member_removed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.MessageSent" => crate::system::SystemEvent::MessageSent(decode_event_agency_teams_message_sent(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.QueueAttached" => crate::system::SystemEvent::QueueAttached(decode_event_agency_teams_queue_attached(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.ReportSent" => crate::system::SystemEvent::ReportSent(decode_event_agency_teams_report_sent(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.SwarmDeclared" => crate::system::SystemEvent::SwarmDeclared(decode_event_agency_teams_swarm_declared(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.SwarmStopped" => crate::system::SystemEvent::SwarmStopped(decode_event_agency_teams_swarm_stopped(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.TeamDisbanded" => crate::system::SystemEvent::TeamDisbanded(decode_event_agency_teams_team_disbanded(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.TeamFormed" => crate::system::SystemEvent::TeamFormed(decode_event_agency_teams_team_formed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.WorkforceDefined" => crate::system::SystemEvent::WorkforceDefined(decode_event_agency_teams_workforce_defined(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.WorkforceRetired" => crate::system::SystemEvent::WorkforceRetired(decode_event_agency_teams_workforce_retired(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.teams.WorkforceStaffed" => crate::system::SystemEvent::WorkforceStaffed(decode_event_agency_teams_workforce_staffed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.tools.BindingRevoked" => crate::system::SystemEvent::BindingRevoked(decode_event_agency_tools_binding_revoked(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.tools.ToolBound" => crate::system::SystemEvent::ToolBound(decode_event_agency_tools_tool_bound(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.tools.ToolRegistered" => crate::system::SystemEvent::ToolRegistered(decode_event_agency_tools_tool_registered(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.tools.ToolWithdrawn" => crate::system::SystemEvent::ToolWithdrawn(decode_event_agency_tools_tool_withdrawn(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkInputConfigured" => crate::system::SystemEvent::WorkInputConfigured(decode_event_agency_work_work_input_configured(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkInputPaused" => crate::system::SystemEvent::WorkInputPaused(decode_event_agency_work_work_input_paused(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkInputRemoved" => crate::system::SystemEvent::WorkInputRemoved(decode_event_agency_work_work_input_removed(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkItemAbandoned" => crate::system::SystemEvent::WorkItemAbandoned(decode_event_agency_work_work_item_abandoned(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkItemAssigned" => crate::system::SystemEvent::WorkItemAssigned(decode_event_agency_work_work_item_assigned(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkItemReturned" => crate::system::SystemEvent::WorkItemReturned(decode_event_agency_work_work_item_returned(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkItemSettled" => crate::system::SystemEvent::WorkItemSettled(decode_event_agency_work_work_item_settled(json::member_at(value, "", "payload")?, "payload")?),
+        "agency.work.WorkItemSubmitted" => crate::system::SystemEvent::WorkItemSubmitted(decode_event_agency_work_work_item_submitted(json::member_at(value, "", "payload")?, "payload")?),
+        other => {
+            return Err(json::DecodeError { at: "event".to_owned(), expected: "one of `agency.agents.AgentDefinitionCreated`, `agency.agents.AgentDefinitionDeprecated`, `agency.agents.AgentDefinitionPublished`, `agency.agents.AgentProvisioned`, `agency.agents.AgentRetired`, `agency.agents.AgentSpecChecked`, `agency.agents.AgentSpecRefused`, `agency.auth.CredentialGranted`, `agency.auth.CredentialRefreshed`, `agency.auth.CredentialRevoked`, `agency.auth.CredentialStored`, `agency.auth.GrantRevoked`, `agency.auth.PolicyActivated`, `agency.auth.PolicyCreated`, `agency.auth.PolicySuperseded`, `agency.auth.PrincipalDisabled`, `agency.auth.PrincipalInvited`, `agency.auth.RoleAssigned`, `agency.auth.TenantCreated`, `agency.runs.RunAdmitted`, `agency.runs.RunApprovalDenied`, `agency.runs.RunApprovalGranted`, `agency.runs.RunApprovalRequested`, `agency.runs.RunBudgetSet`, `agency.runs.RunFailed`, `agency.runs.RunProposed`, `agency.runs.RunRequested`, `agency.runs.RunStarted`, `agency.runs.RunStopped`, `agency.service.SessionClosed`, `agency.service.SessionOpened`, `agency.teams.LeadSet`, `agency.teams.MemberAdded`, `agency.teams.MemberRemoved`, `agency.teams.MessageSent`, `agency.teams.QueueAttached`, `agency.teams.ReportSent`, `agency.teams.SwarmDeclared`, `agency.teams.SwarmStopped`, `agency.teams.TeamDisbanded`, `agency.teams.TeamFormed`, `agency.teams.WorkforceDefined`, `agency.teams.WorkforceRetired`, `agency.teams.WorkforceStaffed`, `agency.tools.BindingRevoked`, `agency.tools.ToolBound`, `agency.tools.ToolRegistered`, `agency.tools.ToolWithdrawn`, `agency.work.WorkInputConfigured`, `agency.work.WorkInputPaused`, `agency.work.WorkInputRemoved`, `agency.work.WorkItemAbandoned`, `agency.work.WorkItemAssigned`, `agency.work.WorkItemReturned`, `agency.work.WorkItemSettled`, `agency.work.WorkItemSubmitted`".to_owned(), found: format!("`{other}`") })
+        }
+    })
 }
