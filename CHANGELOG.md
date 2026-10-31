@@ -6,10 +6,12 @@ All notable changes to this repository are recorded here, in the format of
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-31
+
 ### Added
 
 - Repository, plan and gates.
-- The ESS specification `ess/` (ess 0.69.2, `ess/31`): domains shared, auth, agents, runs, tools,
+- The ESS specification `ess/` (`ess/31`): domains shared, auth, agents, runs, tools,
   teams, work and service, with five authored scenarios. Agent definitions hold their
   `loom.agent/1` document by value; run workspaces, run-level approvals and application sessions
   are specified.
@@ -28,4 +30,5 @@ All notable changes to this repository are recorded here, in the format of
   `generated/` regenerated: the synthesized crate's server gains `dispatch_with_events`,
   `handle_with_events` and per-event wire decoders; the suite and projections are unchanged.
 
-[Unreleased]: https://github.com/beyond10x/agency/commits/main
+[Unreleased]: https://github.com/beyond10x/agency/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/beyond10x/agency/releases/tag/0.1.0
